@@ -23,6 +23,21 @@ document.getElementById('timestamp').addEventListener('click', function() {
     document.body.appendChild(iframe);
 });
 
+// 二维码生成功能
+document.getElementById('qrcode').addEventListener('click', function() {
+    // 清空弹层内容
+    document.body.innerHTML = '';
+    
+    // 创建iframe加载qrcode.html
+    const iframe = document.createElement('iframe');
+    iframe.src = chrome.runtime.getURL('qrcode.html');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = 'none';
+    
+    document.body.appendChild(iframe);
+});
+
 // Base64编码/解码功能
 // document.getElementById('base64').addEventListener('click', () => {
 //   chrome.tabs.create({url: 'base64.html'});
