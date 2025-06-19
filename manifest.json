@@ -14,5 +14,22 @@
   "permissions": [
     "clipboardWrite",
     "clipboardRead"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval' http://localhost:* http://127.0.0.1:*; object-src 'self';"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "popup/timestamp.html",
+        "popup/timestamp.js",
+        "popup/qrcode.html",
+        "popup/qrcode.js",
+        "js/qrcode.min.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
   ]
 }
