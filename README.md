@@ -3,17 +3,47 @@
 ![Chrome Web Store](https://img.shields.io/chrome-web-store/v/your-extension-id-here) 
 ![GitHub](https://img.shields.io/github/license/ct-zh/ToolboxForChrome)
 
-一个为开发者设计的Chrome插件，提供日常开发工具集合：
-- JSON解析与格式化
-- 时间戳转换工具
-- 其他实用开发辅助功能
+一个为开发者设计的Chrome插件，提供日常开发工具集合。
 
 ## 功能特性
 - ✅ 时间戳与日期互转
-- todo URL编码/解码
-- todo JSON美化与压缩  
 - ✅ 二维码生成
+- todo URL编码/解码
+  - 对URL中的特殊字符进行编码和解码，方便处理网络请求参数。
+- todo JSON美化与压缩
+  - 快速格式化凌乱的JSON字符串，使其易于阅读；或压缩JSON以减少传输大小。
+- todo XML美化与压缩
+  - 类似于JSON工具，用于格式化或压缩XML数据。
+- todo Base64 编解码
+  - 对文本或图片进行Base64编码和解码，常用于数据传输和嵌入。
+- todo Markdown 预览
+  - 实时预览Markdown文本的渲染效果，方便编写文档。
+- todo SQL 格式化
+  - 美化SQL查询语句，使其结构清晰，易于阅读和调试。
+- todo HTTP 请求测试工具（简易版）
+  - 允许用户构造并发送简单的HTTP请求（GET/POST等），并查看响应结果。
+- todo IP 地址查询/归属地查询
+  - 快速查询IP地址的地理位置信息，辅助网络排查。
+- todo User-Agent 解析器
+  - 解析浏览器User-Agent字符串，显示操作系统、浏览器版本等详细信息。
+- todo Cookie/LocalStorage 管理器
+  - 方便查看、编辑和删除当前网站的Cookie和LocalStorage数据。
+- todo 正则表达式测试工具
+  - 输入正则表达式和测试文本，实时显示匹配结果，辅助正则编写和调试。
+- todo UUID/GUID 生成器
+  - 快速生成通用唯一标识符（UUID/GUID），常用于唯一ID的生成。
+- todo MD5/SHA 加密工具
+  - 对输入的字符串进行MD5、SHA1、SHA256等常见哈希加密。
+- todo 代码片段管理
+  - 存储和管理常用的代码片段，方便快速插入到开发中。
+- todo 单位转换
+  - 提供多种单位之间的转换，包括颜色格式（RGB、HEX、HSL等）、进制（二进制、八进制、十进制、十六进制）以及长度单位（像素px到rem/em等）。
+- todo 图片 Base64 转换
+  - 将图片文件转换为Base64编码字符串，方便在CSS或HTML中直接嵌入图片。
 - todo 内网接口扫描添加 + 自动造参数
+  - 探索内网接口并尝试自动生成请求参数，提高接口调试效率。
+- todo Mermaid 实时预览
+- todo 常用ai工具网站跳转
 
 ## 安装
 1. 克隆本仓库
