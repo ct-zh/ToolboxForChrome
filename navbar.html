@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .navbar {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ccc;
+        }
+        .home-button {
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .home-button svg {
+            width: 24px;
+            height: 24px;
+            fill: #333;
+        }
+        .navbar-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="home-button" id="homeButton">
+            <svg viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </div>
+        <div class="navbar-title" id="navbarTitle"></div>
+    </div>
+    <script src="navbar.js"></script>
+</body>
+</html>

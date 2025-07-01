@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
+    const navbarFrame = document.getElementById('navbarFrame');
+    if (navbarFrame) {
+        navbarFrame.onload = () => {
+            navbarFrame.contentWindow.postMessage({ type: 'setTitle', title: '二维码生成' }, '*');
+        };
+    }
+
     const qrInput = document.getElementById('qrInput');
     const generateQrBtn = document.getElementById('generateQr');
     const qrcodeDiv = document.getElementById('qrcode');
@@ -21,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     colorLight : "#ffffff",
                     correctLevel : QRCode.CorrectLevel.H
                 });
+
 
                 // 保存历史记录
                 chrome.storage.local.get(['qrHistory'], function(result) {
