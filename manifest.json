@@ -26,7 +26,10 @@
         "popup/timestamp.js",
         "popup/qrcode.html",
         "popup/qrcode.js",
-        "js/qrcode.min.js"
+        "js/qrcode.min.js",
+        "urlEncoderDecoder.html",
+        "urlEncoderDecoder.js",
+        "navbar.html"
       ],
       "matches": [
         "<all_urls>"

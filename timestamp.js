@@ -75,6 +75,12 @@ function convertDatetimeToTimestamp() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    const navbarFrame = document.getElementById('navbarFrame');
+    if (navbarFrame) {
+        navbarFrame.onload = () => {
+            navbarFrame.contentWindow.postMessage({ type: 'setTitle', title: '时间戳转换' }, '*');
+        };
+    }
     updateTimestamp();
     setInterval(updateTimestamp, 1000);
     setupEventListeners();
