@@ -81,6 +81,14 @@ document.addEventListener('DOMContentLoaded', function() {
             navbarFrame.contentWindow.postMessage({ type: 'setTitle', title: '时间戳转换' }, '*');
         };
     }
+    
+    // 监听来自 navbar.js 的消息
+    window.addEventListener('message', function(event) {
+        // 如果收到 goHome 消息，则转发到父窗口
+        if (event.data && event.data.type === 'goHome') {
+            window.parent.postMessage({ type: 'goHome' }, '*');
+        }
+    });
     updateTimestamp();
     setInterval(updateTimestamp, 1000);
     setupEventListeners();
