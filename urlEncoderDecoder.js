@@ -5,6 +5,14 @@ document.addEventListener('DOMContentLoaded', function() {
             navbarFrame.contentWindow.postMessage({ type: 'setTitle', title: 'URL编码/解码' }, '*');
         };
     }
+    
+    // 监听来自 navbar.js 的消息
+    window.addEventListener('message', function(event) {
+        // 如果收到 goHome 消息，则转发到父窗口
+        if (event.data && event.data.type === 'goHome') {
+            window.parent.postMessage({ type: 'goHome' }, '*');
+        }
+    });
 
   const inputArea = document.getElementById('inputArea');
   const outputArea = document.getElementById('outputArea');

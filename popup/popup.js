@@ -11,7 +11,7 @@
 // 时间戳转换功能
 document.addEventListener('DOMContentLoaded', function() {
     const mainContent = document.getElementById('mainContent');
-    const backButton = document.getElementById('backButton');
+    // const backButton = document.getElementById('backButton');
 
     // 恢复上次打开的页面
     chrome.storage.local.get(['lastOpenedPage'], function(result) {
@@ -20,19 +20,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    document.getElementById('timestamp').addEventListener('click', function() {
-        loadPage('timestamp.html');
-    });
+    function bindMainButtons() {
+        document.getElementById('timestamp').addEventListener('click', function() {
+            loadPage('timestamp.html');
+        });
 
-    document.getElementById('urlEncoderDecoder').addEventListener('click', function() {
-        loadPage('urlEncoderDecoder.html');
-    });
+        document.getElementById('urlEncoderDecoder').addEventListener('click', function() {
+            loadPage('urlEncoderDecoder.html');
+        });
 
-    document.getElementById('qrcode').addEventListener('click', function() {
-        loadPage('qrcode.html');
-    });
+        document.getElementById('qrcode').addEventListener('click', function() {
+            loadPage('qrcode.html');
+        });
+    }
 
-    backButton.addEventListener('click', function() {
+    bindMainButtons();
+
+    function showMainContent() {
         mainContent.innerHTML = `
             <h2>开发者工具 Dev Tools</h2>
             <button id="timestamp">时间戳转换</button>
@@ -40,35 +44,26 @@ document.addEventListener('DOMContentLoaded', function() {
             <button id="urlEncoderDecoder">URL 编码/解码</button>
         `;
         // 重新绑定事件监听器
-        document.getElementById('timestamp').addEventListener('click', function() {
-            loadPage('timestamp.html');
-        });
-        document.getElementById('qrcode').addEventListener('click', function() {
-            loadPage('qrcode.html');
-        });
-        document.getElementById('urlEncoderDecoder').addEventListener('click', function() {
-            loadPage('urlEncoderDecoder.html');
-        });
+        bindMainButtons();
         chrome.storage.local.remove('lastOpenedPage');
-        backButton.style.display = 'none';
-    });
+    }
 
     function loadPage(pageName) {
         mainContent.innerHTML = '';
         const iframe = document.createElement('iframe');
+        iframe.id = 'contentFrame';
         iframe.src = chrome.runtime.getURL(pageName);
         iframe.style.width = '100%';
         iframe.style.height = '100%';
         iframe.style.border = 'none';
         mainContent.appendChild(iframe);
         chrome.storage.local.set({lastOpenedPage: pageName});
-        backButton.style.display = 'block';
     }
 
     // 监听子页面发送的消息
     window.addEventListener('message', function(event) {
-        if (event.data.action === 'goHome') {
-            backButton.click(); // 模拟点击返回按钮
+        if (event.data.type === 'goHome') {
+            showMainContent();
         }
     });
 });
