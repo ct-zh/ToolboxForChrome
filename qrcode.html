@@ -9,10 +9,6 @@
       padding: 0;
       margin: 0;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
     }
     .content-wrapper {
       flex-grow: 1;
@@ -65,16 +61,17 @@
   </style>
 </head>
 <body>
-  <iframe src="navbar.html" id="navbarFrame" style="width: 100%; height: 50px; border: none;"></iframe>
-  <h2>二维码生成</h2>
-  <div class="content-wrapper">
-    <textarea id="qrInput" placeholder="请输入要生成二维码的内容"></textarea>
-    <button id="generateQr">生成二维码</button>
-    <div id="qrcode"></div>
-    <h3 id="historyTitle">历史记录</h3>
-    <div id="historyList"></div>
+  <div id="qrcode-container" style="height: 100%; display: flex; flex-direction: column;">
+    <iframe src="navbar.html" id="navbarFrame" style="width: 100%; height: 50px; border: none;"></iframe>
+    <h2>二维码生成</h2>
+    <div class="content-wrapper">
+      <textarea id="qrInput" placeholder="请输入要生成二维码的内容"></textarea>
+      <button id="generateQr">生成二维码</button>
+      <div id="qrcode"></div>
+      <h3 id="historyTitle">历史记录</h3>
+      <div id="historyList"></div>
+    </div>
+    <script src="qrcode.js"></script>
   </div>
-  <script src="qrcode.js"></script>
-
 </body>
 </html>
