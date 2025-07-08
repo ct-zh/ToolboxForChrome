@@ -11,6 +11,7 @@
 // 时间戳转换功能
 document.addEventListener('DOMContentLoaded', function() {
     const mainContent = document.getElementById('mainContent');
+    const initialMainContentHTML = mainContent.innerHTML; // 捕获初始HTML内容
     // const backButton = document.getElementById('backButton');
 
     // 恢复上次打开的页面
@@ -29,6 +30,13 @@ document.addEventListener('DOMContentLoaded', function() {
             loadPage('urlEncoderDecoder.html');
         });
 
+        document.getElementById('apiTester').addEventListener('click', function() {
+            chrome.tabs.create({
+                url: chrome.runtime.getURL('apiTester.html'),
+                active: true
+            });
+        });
+
         document.getElementById('qrcode').addEventListener('click', function() {
             loadPage('qrcode.html');
         });
@@ -37,12 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
     bindMainButtons();
 
     function showMainContent() {
-        mainContent.innerHTML = `
-            <h2>开发者工具 Dev Tools</h2>
-            <button id="timestamp">时间戳转换</button>
-            <button id="qrcode">二维码生成</button>
-            <button id="urlEncoderDecoder">URL 编码/解码</button>
-        `;
+        mainContent.innerHTML = initialMainContentHTML;
         // 重新绑定事件监听器
         bindMainButtons();
         chrome.storage.local.remove('lastOpenedPage');
