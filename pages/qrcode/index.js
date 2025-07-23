@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 引入 qrcode.min.js 库
     const script = document.createElement('script');
-    script.src = '../js/qrcode.min.js';
+    script.src = '../../assets/libs/qrcode.min.js';
     script.onload = () => {
         generateQrBtn.addEventListener('click', () => {
             const text = qrInput.value;

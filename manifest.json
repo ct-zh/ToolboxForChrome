@@ -6,9 +6,9 @@
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+      "16": "assets/icons/icon16.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
     }
   },
   "permissions": [
@@ -22,14 +22,14 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "popup/timestamp.html",
-        "popup/timestamp.js",
-        "popup/qrcode.html",
-        "popup/qrcode.js",
-        "js/qrcode.min.js",
-        "urlEncoderDecoder.html",
-        "urlEncoderDecoder.js",
-        "navbar.html"
+        "pages/timestamp/index.html",
+        "pages/timestamp/index.js",
+        "pages/qrcode/index.html",
+        "pages/qrcode/index.js",
+        "assets/libs/qrcode.min.js",
+        "pages/urlEncoderDecoder/index.html",
+        "pages/urlEncoderDecoder/index.js",
+        "components/navbar/navbar.html"
       ],
       "matches": [
         "<all_urls>"
