@@ -65,5 +65,37 @@ npm run dev
 npm run build
 ```
 
+## 项目结构
+```
+/
+├───assets/
+│   ├───icons/          # 存放扩展图标
+│   ├───libs/           # 存放第三方库，如 qrcode.min.js
+│   └───css/            # 存放全局CSS文件 (如果需要)
+├───components/         # 存放可复用的UI组件，如导航栏
+│   └───navbar/
+│       ├───navbar.html
+│       └───navbar.js
+├───pages/              # 存放各个独立功能的页面及其逻辑
+│   ├───apiTester/
+│   │   ├───index.html
+│   │   └───index.js
+│   ├───qrcode/
+│   │   ├───index.html
+│   │   └───index.js
+│   ├───timestamp/
+│   │   ├───index.html
+│   │   └───index.js
+│   └───urlEncoderDecoder/
+│       ├───index.html
+│       └───index.js
+├───popup/              # 扩展的弹出页面及其逻辑
+│   ├───popup.html
+│   └───popup.js
+├───manifest.json       # 扩展的配置文件
+├───README.md           # 项目说明文件
+└───.gitignore          # Git忽略文件
+```
+
 ## 许可证
 MIT © 2023 ct-zh

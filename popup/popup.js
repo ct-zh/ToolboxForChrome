@@ -23,22 +23,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function bindMainButtons() {
         document.getElementById('timestamp').addEventListener('click', function() {
-            loadPage('timestamp.html');
+            loadPage('pages/timestamp/index.html');
         });
 
         document.getElementById('urlEncoderDecoder').addEventListener('click', function() {
-            loadPage('urlEncoderDecoder.html');
+            loadPage('pages/urlEncoderDecoder/index.html');
         });
 
         document.getElementById('apiTester').addEventListener('click', function() {
             chrome.tabs.create({
-                url: chrome.runtime.getURL('apiTester.html'),
+                url: chrome.runtime.getURL('pages/apiTester/index.html'),
                 active: true
             });
         });
 
         document.getElementById('qrcode').addEventListener('click', function() {
-            loadPage('qrcode.html');
+            loadPage('pages/qrcode/index.html');
         });
     }
 
