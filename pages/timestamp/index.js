@@ -93,10 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(updateTimestamp, 1000);
     setupEventListeners();
 
-    // Module Two Event Listeners
-    document.getElementById('convertTimestamp').addEventListener('click', convertTimestampToDatetime);
-    document.getElementById('convertDatetime').addEventListener('click', convertDatetimeToTimestamp);
-
     // Add input event listeners for real-time conversion (optional, but good UX)
     document.getElementById('timestampInput').addEventListener('input', convertTimestampToDatetime);
     document.getElementById('timestampUnit').addEventListener('change', convertTimestampToDatetime);
