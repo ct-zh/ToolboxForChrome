@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showMainContent() {
         mainContent.innerHTML = initialMainContentHTML;
+        mainContent.className = 'tools-grid';
         // 重新绑定事件监听器
         bindMainButtons();
         chrome.storage.local.remove('lastOpenedPage');
@@ -53,12 +54,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function loadPage(pageName) {
         mainContent.innerHTML = '';
+        mainContent.className = 'iframe-container';
         const iframe = document.createElement('iframe');
         iframe.id = 'contentFrame';
         iframe.src = chrome.runtime.getURL(pageName);
         iframe.style.width = '100%';
         iframe.style.height = '100%';
         iframe.style.border = 'none';
+        iframe.style.display = 'block';
+        iframe.style.overflow = 'hidden';
         mainContent.appendChild(iframe);
         chrome.storage.local.set({lastOpenedPage: pageName});
     }
