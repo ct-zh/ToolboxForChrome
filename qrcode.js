@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const generateQrBtn = document.getElementById('generateQr');
     const qrcodeDiv = document.getElementById('qrcode');
     const historyListDiv = document.getElementById('historyList');
-    const historyTitle = document.getElementById('historyTitle');
 
     // 引入 qrcode.min.js 库
     const script = document.createElement('script');
@@ -62,8 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderHistory(history) {
         historyListDiv.innerHTML = '';
         if (history && history.length > 0) {
-            historyTitle.style.display = 'block'; // 显示标题
-            historyListDiv.style.display = 'block'; // 显示列表
             history.forEach(item => {
                 const historyItem = document.createElement('div');
                 historyItem.className = 'history-item';
@@ -75,8 +72,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 historyListDiv.appendChild(historyItem);
             });
         } else {
-            historyTitle.style.display = 'none'; // 隐藏标题
-            historyListDiv.style.display = 'none'; // 隐藏列表
+            const emptyState = document.createElement('div');
+            emptyState.className = 'empty-state';
+            emptyState.textContent = '暂无历史记录';
+            historyListDiv.appendChild(emptyState);
         }
     }
 

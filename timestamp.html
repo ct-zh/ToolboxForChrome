@@ -1,147 +1,306 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>时间戳转换</title>
     <style>
+        html {
+            height: 100%;
+        }
         body {
-            padding: 0;
             margin: 0;
-            font-family: Arial, sans-serif;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            height: 100%;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
-        .content-wrapper {
-            flex-grow: 1;
-            padding: 10px;
-            overflow-y: auto; /* Allow content to scroll if needed */
-        }
-        .timestamp-display {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            margin-bottom: 20px;
+        
+        .container {
+            flex: 1;
             padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
         }
-        .timestamp-title {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
-            align-self: flex-start;
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: box-shadow 0.3s ease;
         }
+        
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 16px 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            font-size: 16px;
+            color: #495057;
+        }
+        
+        .card-body {
+            padding: 15px;
+        }
+        
+        .current-timestamp-card {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .current-timestamp-card .card-header {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
         .current-timestamp {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 700;
             cursor: pointer;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .current-timestamp:hover {
-            background-color: #f5f5f5;
-        }
-        .module-two {
             padding: 15px;
-            border: 1px solid #ddd;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            user-select: all;
+            word-break: break-all;
+        }
+        
+        .current-timestamp:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .copy-status {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .converter-section {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        .module-content {
+        
+        .converter-item {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f8f9fa;
+        }
+        
+        .converter-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 12px;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            align-items: center;
+            gap: 8px;
         }
-        .module-title {
+        
+        .input-group {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
             font-size: 14px;
-            color: #666;
-            margin-bottom: 5px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            min-width: 0;
         }
-        .input-group,
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+        
+        .input-group select {
+            padding: 10px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .input-group select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+        
+        .convert-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+            white-space: nowrap;
+        }
+        
+        .convert-btn:hover {
+            background: linear-gradient(135deg, #218838 0%, #1c7d74 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+        
         .result-group {
             display: flex;
-            gap: 5px;
+            gap: 6px;
+            flex-wrap: wrap;
         }
-        .input-group input,
-        .result-group input,
-        .input-group select,
-        .result-group select,
-        .input-group button {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .input-group input,
+        
         .result-group input {
-            flex-grow: 1;
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 500;
+            min-width: 0;
         }
-        .input-group button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            border: none;
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .input-group button:hover {
-            background-color: #45a049;
+        
+        .card {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+
+        @media (max-width: 500px) {
+            .input-group {
+                flex-direction: column; /* 在窄屏幕下垂直排列 */
+                align-items: stretch;   /* 让内部元素宽度占满容器 */
+            }
+
+            .convert-btn {
+                width: 100%; /* 让按钮宽度也占满 */
+                box-sizing: border-box; /* 确保 padding 不会撑破宽度 */
+            }
         }
     </style>
 </head>
 <body>
     <iframe src="navbar.html" id="navbarFrame" style="width: 100%; height: 50px; border: none;"></iframe>
-    <div class="content-wrapper">
-        <div class="timestamp-display">
-            <div class="timestamp-title">当前时间戳</div>
-            <div style="display: flex; align-items: center;">
+    <div class="container">
+        <div class="card current-timestamp-card">
+            <div class="card-header">
+                ⏰ 当前时间戳
+            </div>
+            <div class="card-body">
                 <div class="current-timestamp" id="currentTimestamp"></div>
-                <span id="copyStatus" style="margin-left: 10px; color: green; font-weight: bold;"></span>
+                <div id="copyStatus" class="copy-status"></div>
             </div>
         </div>
-        <div class="module-two">
-            <div class="module-content">
-                <div class="module-title">&#128340; 时间戳转日期时间</div>
-                <div class="input-group">
-                    <input type="text" id="timestampInput" placeholder="输入时间戳">
-                    <select id="timestampUnit">
-                        <option value="s">秒(s)</option>
-                        <option value="ms">毫秒(ms)</option>
-                    </select>
-                    <button id="convertTimestamp">转换</button>
-                </div>
-                <div class="result-group">
-                    <input type="text" id="datetimeOutput" placeholder="转换结果" readonly>
-                    <select id="timezoneSelect1">
-                        <option value="Asia/Shanghai">Asia/Shanghai</option>
-                        <option value="UTC">UTC</option>
-                    </select>
-                </div>
+        
+        <div class="card">
+            <div class="card-header">
+                🔄 时间戳转换工具
             </div>
-
-            <div class="module-content" style="margin-top: 20px;">
-                <div class="module-title">&#128197; 日期时间转时间戳</div>
-                <div class="input-group">
-                    <input type="text" id="datetimeInput" placeholder="输入日期时间">
-                    <select id="timezoneSelect2">
-                        <option value="Asia/Shanghai">Asia/Shanghai</option>
-                        <option value="UTC">UTC</option>
-                    </select>
-                    <button id="convertDatetime">转换</button>
-                </div>
-                <div class="result-group">
-                    <input type="text" id="timestampOutput" placeholder="转换结果" readonly>
-                    <select id="timestampUnit2">
-                        <option value="s">秒(s)</option>
-                        <option value="ms">毫秒(ms)</option>
-                    </select>
+            <div class="card-body">
+                <div class="converter-section">
+                    <div class="converter-item">
+                        <div class="converter-title">
+                            📅 时间戳转日期时间
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="timestampInput" placeholder="输入时间戳">
+                            <select id="timestampUnit">
+                                <option value="s">秒(s)</option>
+                                <option value="ms">毫秒(ms)</option>
+                            </select>
+                            <button class="convert-btn" id="convertTimestamp">转换</button>
+                        </div>
+                        <div class="result-group">
+                            <input type="text" id="datetimeOutput" placeholder="转换结果" readonly>
+                            <select id="timezoneSelect1">
+                                <option value="Asia/Shanghai">Asia/Shanghai</option>
+                                <option value="UTC">UTC</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="converter-item">
+                        <div class="converter-title">
+                            🕒 日期时间转时间戳
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="datetimeInput" placeholder="输入日期时间">
+                            <select id="timezoneSelect2">
+                                <option value="Asia/Shanghai">Asia/Shanghai</option>
+                                <option value="UTC">UTC</option>
+                            </select>
+                            <button class="convert-btn" id="convertDatetime">转换</button>
+                        </div>
+                        <div class="result-group">
+                            <input type="text" id="timestampOutput" placeholder="转换结果" readonly>
+                            <select id="timestampUnit2">
+                                <option value="s">秒(s)</option>
+                                <option value="ms">毫秒(ms)</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <script src="timestamp.js"></script>
-
 </body>
 </html>

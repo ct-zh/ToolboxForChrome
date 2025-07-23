@@ -8,205 +8,382 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
     }
     .main-container {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
+      height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      transition: box-shadow 0.3s ease;
+    }
+    .card:hover {
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 16px 20px;
+      border-bottom: 1px solid #e9ecef;
+      font-weight: 600;
+      font-size: 16px;
+      color: #495057;
+    }
+    .card-body {
+      padding: 20px;
     }
     .request-panel {
-      padding: 15px;
-      border-bottom: 1px solid #ccc;
+      flex: 1;
+      min-height: 0;
     }
     .url-bar {
       display: flex;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
+      gap: 8px;
     }
     .url-bar select {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-right: none;
-      border-radius: 4px 0 0 4px;
+      padding: 12px 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      background: white;
+      font-size: 14px;
+      font-weight: 500;
+      color: #495057;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .url-bar select:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
     }
     .url-bar input {
       flex-grow: 1;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 0;
+      padding: 12px 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .url-bar input:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+    .url-bar input::placeholder {
+      color: #6c757d;
     }
     .url-bar button {
-      padding: 8px 15px;
-      border: 1px solid #007bff;
-      background-color: #007bff;
-      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
-      border-radius: 0 4px 4px 0;
-      margin-right: 5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    .url-bar button:last-child {
-      margin-right: 0;
-      border-radius: 4px;
+    .url-bar button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
-    .url-bar button:disabled {
-      background-color: #6c757d;
-      border-color: #6c757d;
+    .url-bar button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .url-bar button#send {
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+      color: white;
+    }
+    .url-bar button#send:disabled {
+      background: #adb5bd;
       cursor: not-allowed;
+      transform: none;
     }
     .url-bar button#generateCode {
-      background-color: #28a745;
-      border-color: #28a745;
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
     }
     .url-bar button#generateCode:hover {
-      background-color: #218838;
-      border-color: #1e7e34;
+      background: linear-gradient(135deg, #218838 0%, #1c7d74 100%);
     }
     .tabs {
       display: flex;
-      border-bottom: 1px solid #ccc;
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 20px;
     }
     .tab-button {
-      padding: 10px 15px;
+      flex: 1;
+      padding: 12px 16px;
       cursor: pointer;
       border: none;
-      background-color: transparent;
-      border-bottom: 2px solid transparent;
+      background: transparent;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #6c757d;
+      transition: all 0.3s ease;
+    }
+    .tab-button:hover {
+      background: rgba(0, 123, 255, 0.1);
+      color: #007bff;
     }
     .tab-button.active {
-      border-bottom: 2px solid #007bff;
+      background: white;
+      color: #007bff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     .tab-content {
-      padding: 10px;
-      flex-grow: 1;
+      min-height: 200px;
       overflow-y: auto;
     }
     .key-value-editor, .body-editor {
         display: block;
     }
     .response-panel {
-      flex-grow: 1;
-      padding: 15px;
+      flex: 1;
+      min-height: 0;
       overflow-y: auto;
-      border-top: 1px solid #ccc;
+    }
+    .response-content {
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 0;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #495057;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-x: auto;
+      min-height: 100px;
+    }
+    
+    /* 滚动条样式 */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a1a1a1;
+    }
+    
+    /* 动画效果 */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .card {
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    .key-value-row {
+      animation: fadeIn 0.2s ease-out;
     }
     textarea {
-        width: 95%;
-        height: 150px;
-        resize: vertical;
+      width: 100%;
+      min-height: 150px;
+      padding: 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      resize: vertical;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      box-sizing: border-box;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+    textarea::placeholder {
+      color: #6c757d;
     }
     .key-value-row {
-        display: flex;
-        margin-bottom: 5px;
+      display: flex;
+      margin-bottom: 12px;
+      gap: 8px;
+      align-items: center;
     }
     .key-value-row input {
-        flex: 1;
-        margin-right: 5px;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid #e9ecef;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .key-value-row input:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
     }
     .key-value-row button {
-        padding: 8px 12px;
-        border: 1px solid #dc3545;
-        background-color: #dc3545;
-        color: white;
-        cursor: pointer;
-        border-radius: 4px;
+      padding: 10px 12px;
+      border: none;
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+    }
+    .key-value-row button:hover {
+      background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
     }
     .add-btn {
-        margin-top: 10px;
-        padding: 8px 15px;
-        border: 1px solid #28a745;
-        background-color: #28a745;
-        color: white;
-        cursor: pointer;
-        border-radius: 4px;
+      margin-top: 16px;
+      padding: 12px 20px;
+      border: none;
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+    }
+    .add-btn:hover {
+      background: linear-gradient(135deg, #218838 0%, #1c7d74 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
     }
     .code-panel {
-      padding: 15px;
-      border-top: 1px solid #ccc;
-      border-bottom: 1px solid #ccc;
+      display: none;
     }
     .code-container {
       position: relative;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      background: #f8f9fa;
+      overflow: hidden;
     }
     .code-container pre {
       margin: 0;
-      padding: 15px;
+      padding: 20px;
+      padding-right: 60px;
       white-space: pre-wrap;
       word-wrap: break-word;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-      line-height: 1.4;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      background: #f8f9fa;
+      color: #495057;
       overflow-x: auto;
     }
     .code-container button {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      padding: 5px 10px;
-      border: 1px solid #007bff;
-      background-color: #007bff;
+      top: 12px;
+      right: 12px;
+      padding: 8px 12px;
+      border: none;
+      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
       color: white;
       cursor: pointer;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
     }
     .code-container button:hover {
-      background-color: #0056b3;
-      border-color: #0056b3;
+      background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
     }
   </style>
 </head>
 <body>
   <div class="main-container">
-    <div class="request-panel">
-      <div class="url-bar">
-        <select id="method">
-          <option>GET</option>
-          <option>POST</option>
-          <option>PUT</option>
-          <option>DELETE</option>
-          <option>PATCH</option>
-        </select>
-        <input type="text" id="url" placeholder="请输入请求 URL">
-        <button id="send" disabled>发送</button>
-        <button id="generateCode">生成代码</button>
+    <div class="card request-panel">
+      <div class="card-header">
+        🚀 API 请求配置
       </div>
-      <div class="tabs">
-        <button class="tab-button active" data-tab="params">Params</button>
-        <button class="tab-button" data-tab="headers">Headers</button>
-        <button class="tab-button" data-tab="body">Body</button>
-      </div>
-      <div id="params" class="tab-content key-value-editor">
-        <div id="params-container"></div>
-        <button id="add-param-btn" class="add-btn">+ 添加参数</button>
-      </div>
-      <div id="headers" class="tab-content key-value-editor" style="display: none;">
-        <div id="headers-container"></div>
-        <button id="add-header-btn" class="add-btn">+ 添加请求头</button>
-      </div>
-      <div id="body" class="tab-content body-editor" style="display: none;">
-        <textarea placeholder="请求体内容，例如：{\"key\": \"value\"}"></textarea>
-      </div>
-    </div>
-
-    <div class="code-panel" id="codePanel" style="display: none;">
-      <h3>生成的代码</h3>
-      <div class="code-container">
-        <pre id="generatedCode"></pre>
-        <button id="copyCode">复制</button>
+      <div class="card-body">
+        <div class="url-bar">
+          <select id="method">
+            <option>GET</option>
+            <option>POST</option>
+            <option>PUT</option>
+            <option>DELETE</option>
+            <option>PATCH</option>
+          </select>
+          <input type="text" id="url" placeholder="请输入请求 URL">
+          <button id="send" disabled>发送</button>
+          <button id="generateCode">生成代码</button>
+        </div>
+        <div class="tabs">
+          <button class="tab-button active" data-tab="params">Params</button>
+          <button class="tab-button" data-tab="headers">Headers</button>
+          <button class="tab-button" data-tab="body">Body</button>
+        </div>
+        <div id="params" class="tab-content key-value-editor">
+          <div id="params-container"></div>
+          <button id="add-param-btn" class="add-btn">+ 添加参数</button>
+        </div>
+        <div id="headers" class="tab-content key-value-editor" style="display: none;">
+          <div id="headers-container"></div>
+          <button id="add-header-btn" class="add-btn">+ 添加请求头</button>
+        </div>
+        <div id="body" class="tab-content body-editor" style="display: none;">
+          <textarea placeholder="请求体内容，例如：{\"key\": \"value\"}"></textarea>
+        </div>
       </div>
     </div>
 
-    <div class="response-panel">
-      <h3>响应</h3>
-      <pre id="response-content">响应内容将显示在这里...</pre>
+    <div class="card code-panel" id="codePanel" style="display: none;">
+      <div class="card-header">
+        💾 生成的代码
+      </div>
+      <div class="card-body">
+        <div class="code-container">
+          <pre id="generatedCode"></pre>
+          <button id="copyCode">复制</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card response-panel">
+      <div class="card-header">
+        📡 响应结果
+      </div>
+      <div class="card-body">
+        <pre id="response-content" class="response-content">响应内容将显示在这里...</pre>
+      </div>
     </div>
   </div>
 
