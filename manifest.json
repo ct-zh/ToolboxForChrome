@@ -3,6 +3,11 @@
   "name": "DevToolBox",
   "version": "1.0",
   "description": "开发者工具集合",
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
   "action": {
     "default_icon": {
       "16": "assets/icons/icon16.png",
@@ -39,6 +44,8 @@
         "pages/imageBase64/index.js",
         "pages/jsonParser/index.html",
         "pages/jsonParser/index.js",
+        "pages/redisManager/index.html",
+        "pages/redisManager/index.js",
         "components/navbar/navbar.html"
       ],
       "matches": [

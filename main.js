@@ -33,6 +33,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 active: true
             });
         });
+        
+        document.getElementById('redisManager').addEventListener('click', function() {
+            loadPage('pages/redisManager/index.html');
+        });
     }
 
     bindMainButtons();
