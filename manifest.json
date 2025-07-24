@@ -1,15 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "DevToolkit",
+  "name": "DevToolBox",
   "version": "1.0",
   "description": "开发者工具集合",
   "action": {
-    "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "assets/icons/icon16.png",
       "48": "assets/icons/icon48.png",
       "128": "assets/icons/icon128.png"
     }
+  },
+  "background": {
+    "service_worker": "background.js"
   },
   "permissions": [
     "clipboardWrite",
@@ -22,6 +24,8 @@
   "web_accessible_resources": [
     {
       "resources": [
+        "main.html",
+        "main.js",
         "pages/timestamp/index.html",
         "pages/timestamp/index.js",
         "pages/qrcode/index.html",
@@ -29,6 +33,12 @@
         "assets/libs/qrcode.min.js",
         "pages/urlEncoderDecoder/index.html",
         "pages/urlEncoderDecoder/index.js",
+        "pages/apiTester/index.html",
+        "pages/apiTester/index.js",
+        "pages/imageBase64/index.html",
+        "pages/imageBase64/index.js",
+        "pages/jsonParser/index.html",
+        "pages/jsonParser/index.js",
         "components/navbar/navbar.html"
       ],
       "matches": [

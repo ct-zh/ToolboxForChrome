@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>DevToolBox - 开发者工具集合</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #74D0CB 0%, #5BC0BA 100%);
+      color: #333;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+    
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 48px;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      margin: 0;
+      font-size: 18px;
+      opacity: 0.9;
+    }
+    
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      flex: 1;
+      align-content: start;
+    }
+
+    .iframe-container {
+      flex: 1;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      min-height: 600px;
+    }
+    
+    .tool-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border: none;
+      position: relative;
+      overflow: hidden;
+      min-height: 200px;
+    }
+    
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    }
+    
+    .tool-card:active {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #74D0CB 0%, #5BC0BA 100%);
+    }
+    
+    .tool-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    
+    .tool-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    
+    .tool-description {
+      font-size: 14px;
+      color: #6c757d;
+      line-height: 1.5;
+    }
+    
+    .footer {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      margin-top: auto;
+      padding-top: 20px;
+    }
+    
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(116, 208, 203, 0.3);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      display: none;
+    }
+    
+    .back-button:hover {
+      background: rgba(116, 208, 203, 0.5);
+      transform: scale(1.1);
+    }
+    
+    /* 特殊样式为不同工具卡片 */
+    .tool-card.timestamp::before {
+      background: linear-gradient(90deg, #74D0CB 0%, #6BC5C0 100%);
+    }
+    
+    .tool-card.qrcode::before {
+      background: linear-gradient(90deg, #5BC0BA 0%, #4FB5AF 100%);
+    }
+    
+    .tool-card.url-encoder::before {
+      background: linear-gradient(90deg, #8DD8D4 0%, #74D0CB 100%);
+    }
+    
+    .tool-card.api-tester::before {
+      background: linear-gradient(90deg, #A0E0DD 0%, #8DD8D4 100%);
+    }
+    
+    .tool-card.image-base64::before {
+      background: linear-gradient(90deg, #6BC5C0 0%, #5BC0BA 100%);
+    }
+    
+    .tool-card.json-parser::before {
+      background: linear-gradient(90deg, #4FB5AF 0%, #43AAA4 100%);
+    }
+    
+    /* 动画效果 */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .tool-card {
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .tool-card:nth-child(1) { animation-delay: 0.1s; }
+    .tool-card:nth-child(2) { animation-delay: 0.2s; }
+    .tool-card:nth-child(3) { animation-delay: 0.3s; }
+    .tool-card:nth-child(4) { animation-delay: 0.4s; }
+    .tool-card:nth-child(5) { animation-delay: 0.5s; }
+    .tool-card:nth-child(6) { animation-delay: 0.6s; }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 16px;
+      }
+      
+      .header h1 {
+        font-size: 36px;
+      }
+      
+      .header p {
+        font-size: 16px;
+      }
+      
+      .tools-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      
+      .tool-card {
+        padding: 24px;
+        min-height: 160px;
+      }
+      
+      .tool-icon {
+        font-size: 40px;
+      }
+      
+      .tool-title {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button id="backButton" class="back-button">←</button>
+  
+  <div class="container">
+    <div class="header">
+      <h1>🛠️ DevToolBox</h1>
+      <p>开发者工具集合 - 让开发更高效</p>
+    </div>
+    
+    <div id="mainContent" class="tools-grid">
+      <button id="timestamp" class="tool-card timestamp">
+        <span class="tool-icon">⏰</span>
+        <div class="tool-title">时间戳转换</div>
+        <div class="tool-description">Unix时间戳与日期格式互转，支持多种时间格式</div>
+      </button>
+      
+      <button id="qrcode" class="tool-card qrcode">
+        <span class="tool-icon">📱</span>
+        <div class="tool-title">二维码生成</div>
+        <div class="tool-description">快速生成文本二维码，支持多种尺寸</div>
+      </button>
+      
+      <button id="urlEncoderDecoder" class="tool-card url-encoder">
+        <span class="tool-icon">🔗</span>
+        <div class="tool-title">URL编码/解码</div>
+        <div class="tool-description">URL编码解码处理，支持批量操作</div>
+      </button>
+      
+      <button id="apiTester" class="tool-card api-tester">
+        <span class="tool-icon">🚀</span>
+        <div class="tool-title">API测试工具</div>
+        <div class="tool-description">强大的API接口测试工具，支持多种请求方式</div>
+      </button>
+      
+      <button id="imageBase64" class="tool-card image-base64">
+        <span class="tool-icon">🖼️</span>
+        <div class="tool-title">图片Base64</div>
+        <div class="tool-description">图片与Base64编码互转，支持多种图片格式</div>
+      </button>
+      
+      <button id="jsonParser" class="tool-card json-parser">
+        <span class="tool-icon">📋</span>
+        <div class="tool-title">JSON解析器</div>
+        <div class="tool-description">JSON格式化与解析工具，支持语法高亮</div>
+      </button>
+    </div>
+    
+    <div class="footer">
+      Created by caoting and Gemini | DevToolBox v1.0
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
