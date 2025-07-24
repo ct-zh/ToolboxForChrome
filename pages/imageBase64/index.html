@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>图片Base64转换</title>
+    <style>
+        html {
+            height: 100%;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 16px 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            font-size: 16px;
+            color: #495057;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #f8f9fa;
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            border-color: #007bff;
+            background: #e7f3ff;
+        }
+        
+        .upload-area.dragover {
+            border-color: #007bff;
+            background: #e7f3ff;
+            transform: scale(1.02);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #6c757d;
+            margin-bottom: 16px;
+        }
+        
+        .upload-text {
+            font-size: 16px;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .upload-hint {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .preview-section {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+        
+        .image-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        
+        .base64-output {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            max-height: 150px;
+            overflow-y: auto;
+            word-break: break-all;
+            white-space: pre-wrap;
+            margin-bottom: 15px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(135deg, #218838 0%, #1c7d74 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+            color: white;
+            box-shadow: 0 2px 4px rgba(108, 117, 125, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #545b62 0%, #383d41 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+        }
+        
+        .reverse-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .base64-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            resize: vertical;
+            margin-bottom: 15px;
+        }
+        
+        .base64-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+        
+        .copy-status {
+            margin-left: 10px;
+            font-size: 14px;
+            color: #28a745;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .card {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+
+        @media (max-width: 500px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <iframe src="../../components/navbar/navbar.html" id="navbarFrame" style="width: 100%; height: 50px; border: none;"></iframe>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                🖼️ 图片转Base64
+            </div>
+            <div class="card-body">
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" class="file-input" id="fileInput" accept="image/*">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">点击选择图片或拖拽图片到此处</div>
+                    <div class="upload-hint">支持 JPG、PNG、GIF、WebP 等格式</div>
+                </div>
+                
+                <div class="preview-section" id="previewSection">
+                    <img class="preview-image" id="previewImage" alt="预览图片">
+                    <div class="image-info" id="imageInfo"></div>
+                    <div class="base64-output" id="base64Output"></div>
+                    <div class="action-buttons">
+                        <button class="btn btn-success" id="copyBtn">
+                            📋 复制Base64
+                        </button>
+                        <button class="btn btn-secondary" id="downloadBtn">
+                            💾 下载Base64文件
+                        </button>
+                        <button class="btn btn-primary" id="clearBtn">
+                            🗑️ 清除
+                        </button>
+                        <span class="copy-status" id="copyStatus"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                🔄 Base64转图片
+            </div>
+            <div class="card-body">
+                <div class="reverse-section">
+                    <textarea 
+                        class="base64-input" 
+                        id="base64Input" 
+                        placeholder="请粘贴Base64字符串...&#10;例如: data:image/png;base64,iVBORw0KGgoAAAANSU...&#10;或直接粘贴Base64编码字符串"
+                    ></textarea>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="decodeBtn">
+                            🔍 解码显示图片
+                        </button>
+                        <button class="btn btn-success" id="downloadImageBtn" style="display: none;">
+                            💾 下载图片
+                        </button>
+                    </div>
+                    <div class="preview-section" id="decodePreviewSection">
+                        <img class="preview-image" id="decodePreviewImage" alt="解码图片">
+                        <div class="image-info" id="decodeImageInfo"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>
