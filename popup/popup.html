@@ -138,6 +138,10 @@
       background: linear-gradient(90deg, #6f42c1 0%, #e83e8c 100%);
     }
     
+    .tool-card.json-parser::before {
+      background: linear-gradient(90deg, #17a2b8 0%, #138496 100%);
+    }
+    
     /* 动画效果 */
     @keyframes fadeIn {
       from {
@@ -197,6 +201,12 @@
         <span class="tool-icon">🖼️</span>
         <div class="tool-title">图片Base64</div>
         <div class="tool-description">图片与Base64互转</div>
+      </button>
+      
+      <button id="jsonParser" class="tool-card json-parser">
+        <span class="tool-icon">📋</span>
+        <div class="tool-title">JSON解析</div>
+        <div class="tool-description">JSON格式化与解析工具</div>
       </button>
     </div>
     
