@@ -40,6 +40,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('qrcode').addEventListener('click', function() {
             loadPage('pages/qrcode/index.html');
         });
+        
+        document.getElementById('imageBase64').addEventListener('click', function() {
+            loadPage('pages/imageBase64/index.html');
+        });
     }
 
     bindMainButtons();
