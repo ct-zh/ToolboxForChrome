@@ -67,6 +67,8 @@ document.addEventListener('DOMContentLoaded', function() {
         iframe.style.border = 'none';
         iframe.style.display = 'block';
         iframe.style.borderRadius = '16px';
+        iframe.style.flex = '1'; // 让iframe占满flex容器
+        iframe.style.minHeight = '0'; // 允许iframe缩小
         mainContent.appendChild(iframe);
     }
 

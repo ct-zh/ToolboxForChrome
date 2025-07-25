@@ -58,6 +58,9 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       overflow: hidden;
       min-height: 600px;
+      height: calc(100vh - 160px); /* 减去header和padding的高度 */
+      display: flex;
+      flex-direction: column;
     }
     
     .tool-card {
