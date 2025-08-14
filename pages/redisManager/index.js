@@ -25,17 +25,13 @@ class RedisManager {
 
     // 绑定事件
     bindEvents() {
-        // 侧边栏控制
-        document.getElementById('openSidebar').addEventListener('click', () => {
-            this.openSidebar();
-        });
 
-        document.getElementById('closeSidebar').addEventListener('click', () => {
-            this.closeSidebar();
-        });
-
-        document.getElementById('overlay').addEventListener('click', () => {
-            this.closeSidebar();
+        // 标签页切换
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const tabName = e.target.dataset.tab;
+                this.switchTab(tabName);
+            });
         });
 
         // 添加连接
@@ -53,24 +49,54 @@ class RedisManager {
             });
         });
 
-        // ESC键关闭侧边栏
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closeSidebar();
+        // 配置文件搜索和选择
+        this.bindConfigEvents();
+
+
+    }
+
+
+
+    // 切换标签页
+    switchTab(tabName) {
+        // 移除所有标签页的active状态
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+
+        // 激活选中的标签页
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        document.getElementById(`${tabName}Tab`).classList.add('active');
+
+        console.log(`切换到标签页: ${tabName}`);
+    }
+
+    // 绑定配置文件相关事件
+    bindConfigEvents() {
+        const configSearch = document.getElementById('configSearch');
+        const configDropdownList = document.getElementById('configDropdownList');
+
+        if (!configSearch || !configDropdownList) {
+            console.warn('配置文件相关元素未找到');
+            return;
+        }
+
+        // 搜索输入事件已在renderConfigSelector中处理
+
+        // 点击输入框显示下拉列表
+        configSearch.addEventListener('focus', () => {
+            this.showConfigDropdown();
+        });
+
+        // 点击外部隐藏下拉列表
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.config-dropdown')) {
+                this.hideConfigDropdown();
             }
         });
-    }
-
-    // 打开侧边栏
-    openSidebar() {
-        document.getElementById('sidebar').classList.add('open');
-        document.getElementById('overlay').classList.add('show');
-    }
-
-    // 关闭侧边栏
-    closeSidebar() {
-        document.getElementById('sidebar').classList.remove('open');
-        document.getElementById('overlay').classList.remove('show');
     }
 
     // 检查服务状态
@@ -234,10 +260,22 @@ class RedisManager {
     renderConfigSelector() {
         const configSearch = document.getElementById('configSearch');
         const configDropdownList = document.getElementById('configDropdownList');
+        const configEmptyState = document.getElementById('configEmptyState');
         
         if (!configSearch || !configDropdownList) {
             console.error('配置选择器元素未找到');
             return;
+        }
+
+        // 根据配置文件数量显示/隐藏空状态
+        if (configEmptyState) {
+            if (this.configFiles.length === 0) {
+                configEmptyState.style.display = 'block';
+                configSearch.parentElement.parentElement.style.display = 'none';
+            } else {
+                configEmptyState.style.display = 'none';
+                configSearch.parentElement.parentElement.style.display = 'block';
+            }
         }
 
         // 绑定搜索输入事件
@@ -294,12 +332,25 @@ class RedisManager {
     }
 
     // 处理配置搜索
-    handleConfigSearch(event) {
-        const searchTerm = event.target.value;
+    handleConfigSearch(searchTerm) {
         this.renderConfigOptions(searchTerm);
-        
+        this.showConfigDropdown();
+    }
+
+    // 显示配置下拉列表
+    showConfigDropdown() {
         const configDropdownList = document.getElementById('configDropdownList');
-        configDropdownList.classList.add('show');
+        if (configDropdownList) {
+            configDropdownList.classList.add('show');
+        }
+    }
+
+    // 隐藏配置下拉列表
+    hideConfigDropdown() {
+        const configDropdownList = document.getElementById('configDropdownList');
+        if (configDropdownList) {
+            configDropdownList.classList.remove('show');
+        }
     }
 
     // 处理配置输入框获得焦点
