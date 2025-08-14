@@ -5,6 +5,8 @@ class RedisManager {
         this.apiBaseUrl = 'http://localhost:8080';
         this.connections = [];
         this.currentConnection = null;
+        this.configFiles = [];
+        this.selectedConfig = null;
         this.init();
     }
 
@@ -12,6 +14,7 @@ class RedisManager {
     init() {
         this.bindEvents();
         this.loadConnections();
+        this.loadConfigFiles();
         this.checkServiceStatus();
         
         // 定期检查服务状态
@@ -195,6 +198,167 @@ class RedisManager {
                 this.selectConnection(connectionId);
             });
         });
+    }
+
+    // 加载配置文件
+    async loadConfigFiles() {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/configs`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                signal: AbortSignal.timeout(10000)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.status === 'success') {
+                    this.configFiles = data.data || [];
+                    this.renderConfigSelector();
+                    console.log('配置文件加载成功:', this.configFiles);
+                } else {
+                    throw new Error(data.message || '配置文件加载失败');
+                }
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+        } catch (error) {
+            console.error('加载配置文件失败:', error.message);
+            this.configFiles = [];
+            this.renderConfigSelector();
+        }
+    }
+
+    // 渲染配置选择器
+    renderConfigSelector() {
+        const configSearch = document.getElementById('configSearch');
+        const configDropdownList = document.getElementById('configDropdownList');
+        
+        if (!configSearch || !configDropdownList) {
+            console.error('配置选择器元素未找到');
+            return;
+        }
+
+        // 绑定搜索输入事件
+        configSearch.removeEventListener('input', this.handleConfigSearchBound);
+        configSearch.removeEventListener('focus', this.handleConfigFocusBound);
+        configSearch.removeEventListener('blur', this.handleConfigBlurBound);
+        
+        this.handleConfigSearchBound = this.handleConfigSearch.bind(this);
+        this.handleConfigFocusBound = this.handleConfigFocus.bind(this);
+        this.handleConfigBlurBound = this.handleConfigBlur.bind(this);
+        
+        configSearch.addEventListener('input', this.handleConfigSearchBound);
+        configSearch.addEventListener('focus', this.handleConfigFocusBound);
+        configSearch.addEventListener('blur', this.handleConfigBlurBound);
+
+        // 渲染配置选项
+        this.renderConfigOptions();
+    }
+
+    // 渲染配置选项
+    renderConfigOptions(searchTerm = '') {
+        const configDropdownList = document.getElementById('configDropdownList');
+        
+        if (this.configFiles.length === 0) {
+            configDropdownList.innerHTML = '<div class="config-empty-state">暂无可用的配置文件</div>';
+            return;
+        }
+
+        // 过滤配置文件
+        const filteredConfigs = this.configFiles.filter(config => 
+            config.service_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            config.file_name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        if (filteredConfigs.length === 0) {
+            configDropdownList.innerHTML = '<div class="config-empty-state">未找到匹配的配置文件</div>';
+            return;
+        }
+
+        configDropdownList.innerHTML = filteredConfigs.map(config => `
+            <div class="config-option" data-config-id="${this.escapeHtml(config.file_name)}">
+                <div class="config-option-name">${this.escapeHtml(config.service_name)}</div>
+                <div class="config-option-file">${this.escapeHtml(config.file_name)}</div>
+            </div>
+        `).join('');
+
+        // 绑定配置选项点击事件
+        configDropdownList.querySelectorAll('.config-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const configId = option.dataset.configId;
+                this.selectConfigFile(configId);
+            });
+        });
+    }
+
+    // 处理配置搜索
+    handleConfigSearch(event) {
+        const searchTerm = event.target.value;
+        this.renderConfigOptions(searchTerm);
+        
+        const configDropdownList = document.getElementById('configDropdownList');
+        configDropdownList.classList.add('show');
+    }
+
+    // 处理配置输入框获得焦点
+    handleConfigFocus() {
+        const configDropdownList = document.getElementById('configDropdownList');
+        configDropdownList.classList.add('show');
+        this.renderConfigOptions(document.getElementById('configSearch').value);
+    }
+
+    // 处理配置输入框失去焦点
+    handleConfigBlur() {
+        // 延迟隐藏下拉列表，以便点击事件能够触发
+        setTimeout(() => {
+            const configDropdownList = document.getElementById('configDropdownList');
+            configDropdownList.classList.remove('show');
+        }, 200);
+    }
+
+    // 选择配置文件
+    selectConfigFile(configId) {
+        const config = this.configFiles.find(c => c.file_name === configId);
+        if (!config) {
+            console.error('配置文件未找到:', configId);
+            return;
+        }
+
+        this.selectedConfig = config;
+        
+        // 更新输入框显示
+        const configSearch = document.getElementById('configSearch');
+        configSearch.value = config.service_name;
+        
+        // 隐藏下拉列表
+        const configDropdownList = document.getElementById('configDropdownList');
+        configDropdownList.classList.remove('show');
+        
+        // 显示Redis键值
+        this.displayRedisKeys(config);
+        
+        console.log('选择配置文件:', config);
+    }
+
+    // 显示Redis键值
+    displayRedisKeys(config) {
+        const redisKeysDisplay = document.getElementById('redisKeysDisplay');
+        const redisKeysList = document.getElementById('redisKeysList');
+        
+        if (!config || !config.redis_key || config.redis_key.length === 0) {
+            redisKeysDisplay.style.display = 'none';
+            return;
+        }
+
+        // 渲染Redis键值列表
+        redisKeysList.innerHTML = config.redis_key.map(keyObj => `
+            <div class="redis-key-item">${this.escapeHtml(keyObj.key)}</div>
+        `).join('');
+        
+        // 显示键值展示区域
+        redisKeysDisplay.style.display = 'block';
     }
 
     // 选择连接
