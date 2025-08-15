@@ -411,8 +411,7 @@ class RedisManager {
         const redisKeysTitle = document.getElementById('redisKeysTitle');
         const redisKeysList = document.getElementById('redisKeysList');
         
-        // 兼容新旧格式
-        const redisKeys = config.redis_keys || config.redis_key || [];
+        const redisKeys = config.redis_keys || [];
         
         if (!config || redisKeys.length === 0) {
             redisKeysTitle.style.display = 'none';
@@ -422,23 +421,16 @@ class RedisManager {
 
         // 渲染Redis键值列表 - 将name和template合并到一个div中
         redisKeysList.innerHTML = redisKeys.map(keyObj => {
-            // 新格式包含详细信息
+            // 只支持新格式包含详细信息
             if (keyObj.name && keyObj.template) {
                 return `
                     <div class="redis-key-item horizontal">
                         <div class="redis-key-content">${this.escapeHtml(keyObj.name)}: ${this.escapeHtml(keyObj.template)}</div>
                     </div>
                 `;
-            } else {
-                // 旧格式兼容
-                const keyValue = keyObj.key || keyObj.template || keyObj.name || '';
-                return `
-                    <div class="redis-key-item horizontal">
-                        <div class="redis-key-content">未知键名: ${this.escapeHtml(keyValue)}</div>
-                    </div>
-                `;
             }
-        }).join('');
+            return ''; // 不符合新格式的数据不显示
+        }).filter(item => item !== '').join('');
         
         // 显示键值展示区域
         redisKeysTitle.style.display = 'block';
