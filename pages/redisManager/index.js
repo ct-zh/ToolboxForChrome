@@ -60,7 +60,13 @@ class RedisManager {
         // 配置文件搜索和选择
         this.bindConfigEvents();
 
-
+        // 新增卡片按钮
+        const addCardButton = document.getElementById('addCardButton');
+        if (addCardButton) {
+            addCardButton.addEventListener('click', () => {
+                this.addNewCard();
+            });
+        }
     }
 
 
@@ -114,6 +120,8 @@ class RedisManager {
         
         try {
             statusText.textContent = '检查服务状态...';
+            statusText.style.cursor = 'default';
+            statusText.onclick = null;
             
             const response = await fetch(`${this.apiBaseUrl}/ping`, {
                 method: 'GET',
@@ -128,13 +136,21 @@ class RedisManager {
                 const data = await response.json();
                 statusLight.classList.add('connected');
                 statusText.textContent = '服务连接成功';
+                statusText.style.cursor = 'default';
+                statusText.onclick = null;
                 console.log('服务状态检查成功:', data);
             } else {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
         } catch (error) {
             statusLight.classList.remove('connected');
-            statusText.textContent = '服务连接失败';
+            statusText.textContent = '点击重新连接';
+            statusText.style.cursor = 'pointer';
+            statusText.style.color = '#74D0CB';
+            statusText.style.textDecoration = 'underline';
+            statusText.onclick = () => {
+                this.checkServiceStatus();
+            };
             console.error('服务状态检查失败:', error.message);
         }
     }
@@ -543,6 +559,27 @@ class RedisManager {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    // 新增卡片
+    addNewCard() {
+        const cardsContainer = document.querySelector('.cards-container');
+        const addCardButton = document.getElementById('addCardButton');
+        
+        if (!cardsContainer || !addCardButton) {
+            console.error('未找到卡片容器或新增按钮');
+            return;
+        }
+
+        // 创建新的空白卡片
+        const newCard = document.createElement('div');
+        newCard.className = 'feature-card';
+        newCard.innerHTML = '';
+        
+        // 在新增按钮前插入新卡片
+        cardsContainer.insertBefore(newCard, addCardButton);
+        
+        console.log('新增卡片成功');
     }
 }
 

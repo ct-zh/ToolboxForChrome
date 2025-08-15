@@ -732,6 +732,124 @@
             font-size: 14px;
         }
 
+        /* 卡片布局样式 */
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 0;
+            width: 100%;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 新增卡片按钮样式 */
+        .add-card-button {
+            background: transparent;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 24px;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .add-card-button:hover {
+            border-color: #74D0CB;
+            background: rgba(116, 208, 203, 0.05);
+        }
+
+        .add-card-icon {
+            font-size: 32px;
+            color: #9ca3af;
+            transition: color 0.3s ease;
+        }
+
+        .add-card-button:hover .add-card-icon {
+            color: #74D0CB;
+        }
+
+        .feature-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .feature-card-icon {
+            font-size: 24px;
+            margin-right: 12px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .feature-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .feature-card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .feature-card-placeholder {
+            font-size: 14px;
+            color: #9ca3af;
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        .feature-card-status {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #fef3c7;
+            color: #d97706;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .feature-card.coming-soon .feature-card-status {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
         /* 响应式设计 */
         @media (max-width: 768px) {
             .container {
@@ -763,7 +881,31 @@
             }
             
             .workspace {
+                padding: 15px;
+            }
+
+            /* 移动端卡片布局 */
+            .cards-container {
+                gap: 12px;
+            }
+
+            .feature-card {
                 padding: 20px;
+                min-height: 160px;
+            }
+
+            .feature-card-icon {
+                font-size: 20px;
+                width: 36px;
+                height: 36px;
+            }
+
+            .feature-card-title {
+                font-size: 16px;
+            }
+
+            .feature-card-placeholder {
+                font-size: 13px;
             }
 
             .config-selector {
@@ -815,6 +957,13 @@
             }
         }
 
+        /* 平板端适配 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .workspace {
+                padding: 18px;
+            }
+        }
+
         /* 大屏幕优化 */
         @media (min-width: 1200px) {
             .sidebar {
@@ -826,7 +975,12 @@
             }
 
             .workspace {
-                padding: 20px;
+                padding: 24px;
+            }
+
+            .feature-card {
+                padding: 28px;
+                min-height: 140px;
             }
         }
     </style>
@@ -940,10 +1094,18 @@
             
             <!-- 主工作区域 -->
             <div class="workspace">
-                <div class="empty-state">
-                    <div class="empty-state-icon">🗄️</div>
-                    <h3>欢迎使用Redis管理器</h3>
-                    <p>点击左上角的"连接管理"按钮添加Redis连接<br>或管理配置文件</p>
+                <div class="cards-container">
+                    <!-- 空白卡片 -->
+                    <div class="feature-card"></div>
+                    <div class="feature-card"></div>
+                    <div class="feature-card"></div>
+                    <div class="feature-card"></div>
+                    <div class="feature-card"></div>
+                    
+                    <!-- 新增卡片按钮 -->
+                    <div class="add-card-button" id="addCardButton">
+                        <div class="add-card-icon">+</div>
+                    </div>
                 </div>
             </div>
         </div>
