@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/devtoolbox/redis/config"
 )
 
 // PingResponse ping接口响应结构
@@ -156,15 +158,28 @@ func configsHandler(w http.ResponseWriter, r *http.Request) {
 
 // loadConfigFiles 加载配置文件
 func loadConfigFiles() ([]ConfigFile, error) {
+	// 从配置中获取配置目录
+	redisConfig := config.GetRedisBackendConfig()
+	configDirFromConfig := redisConfig.ConfigDir
+	
 	// 获取项目根目录
 	workDir, err := os.Getwd()
 	if err != nil {
 		return nil, fmt.Errorf("获取工作目录失败: %v", err)
 	}
 	
-	// 构造data/redis目录路径
-	configDir := filepath.Join(filepath.Dir(filepath.Dir(workDir)), "data", "redis")
-	log.Printf("配置文件目录: %s", configDir)
+	// 构造配置目录路径
+	var configDir string
+	if filepath.IsAbs(configDirFromConfig) {
+		// 如果是绝对路径，直接使用
+		configDir = configDirFromConfig
+	} else {
+		// 如果是相对路径，相对于项目根目录
+		projectRoot := filepath.Dir(filepath.Dir(workDir))
+		configDir = filepath.Join(projectRoot, configDirFromConfig)
+	}
+	
+	log.Printf("配置文件目录: %s (来源: %s)", configDir, configDirFromConfig)
 	
 	// 检查目录是否存在
 	if _, err := os.Stat(configDir); os.IsNotExist(err) {
@@ -246,19 +261,46 @@ func loadConfigFiles() ([]ConfigFile, error) {
 }
 
 func main() {
+	// 初始化配置
+	if err := config.InitConfig(""); err != nil {
+		log.Printf("配置初始化失败，使用默认配置: %v", err)
+	}
+
+	// 获取配置
+	appConfig := config.GetConfig()
+	redisConfig := config.GetRedisBackendConfig()
+
+	// 打印配置信息（调试用）
+	if redisConfig.LogLevel == "debug" {
+		config.PrintConfig()
+	}
+
 	// 注册路由
 	http.HandleFunc("/ping", pingHandler)
 	http.HandleFunc("/health", healthHandler)
 	http.HandleFunc("/api/configs", configsHandler)
 	
 	// 启动服务器
-	port := ":8080"
+	port := fmt.Sprintf(":%d", redisConfig.Port)
+	host := redisConfig.Host
+	
 	fmt.Printf("Redis API服务启动中...\n")
-	fmt.Printf("服务地址: http://localhost%s\n", port)
-	fmt.Printf("Ping接口: http://localhost%s/ping\n", port)
-	fmt.Printf("健康检查: http://localhost%s/health\n", port)
-	fmt.Printf("配置文件接口: http://localhost%s/api/configs\n", port)
+	fmt.Printf("配置名称: %s v%s\n", appConfig.Name, appConfig.Version)
+	fmt.Printf("服务地址: http://%s%s\n", host, port)
+	fmt.Printf("日志级别: %s\n", redisConfig.LogLevel)
+	fmt.Printf("配置目录: %s\n", redisConfig.ConfigDir)
+	fmt.Printf("CORS启用: %t\n", redisConfig.CORSEnabled)
+	fmt.Printf("Ping接口: http://%s%s/ping\n", host, port)
+	fmt.Printf("健康检查: http://%s%s/health\n", host, port)
+	fmt.Printf("配置文件接口: http://%s%s/api/configs\n", host, port)
 	fmt.Println("按 Ctrl+C 停止服务")
+	fmt.Println("")
+	fmt.Println("环境变量支持:")
+	fmt.Println("  REDIS_API_PORT - 覆盖服务端口")
+	fmt.Println("  REDIS_API_HOST - 覆盖服务主机")
+	fmt.Println("  REDIS_API_LOG_LEVEL - 覆盖日志级别")
+	fmt.Println("  REDIS_CONFIG_DIR - 覆盖配置目录")
+	fmt.Println("")
 	
 	// 启动HTTP服务器
 	if err := http.ListenAndServe(port, nil); err != nil {
