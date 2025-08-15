@@ -53,23 +53,74 @@ type ConfigResponse struct {
 	Data    []ConfigFile `json:"data"`
 }
 
-// enableCORS 启用跨域请求
-func enableCORS(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+// originValidationMiddleware 来源验证中间件
+func originValidationMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// 获取配置
+		redisConfig := config.GetRedisBackendConfig()
+		
+		// 获取请求来源
+		origin := r.Header.Get("Origin")
+		referer := r.Header.Get("Referer")
+		
+		// 验证来源
+		if !isOriginAllowed(origin, referer, redisConfig.AllowedOrigins) {
+			log.Printf("拒绝来源: Origin=%s, Referer=%s", origin, referer)
+			http.Error(w, "Forbidden: 来源不被允许", http.StatusForbidden)
+			return
+		}
+		
+		// 设置CORS头
+		if origin != "" {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+		} else {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+		}
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		
+		// 处理预检请求
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		
+		// 调用下一个处理器
+		next(w, r)
+	}
+}
+
+// isOriginAllowed 检查来源是否被允许
+func isOriginAllowed(origin, referer string, allowedOrigins []string) bool {
+	// 如果没有配置允许的来源，则允许所有请求
+	if len(allowedOrigins) == 0 {
+		return true
+	}
+	
+	// 检查Origin头
+	if origin != "" {
+		for _, allowed := range allowedOrigins {
+			if strings.HasPrefix(origin, allowed) {
+				return true
+			}
+		}
+	}
+	
+	// 检查Referer头（用于Chrome插件等情况）
+	if referer != "" {
+		for _, allowed := range allowedOrigins {
+			if strings.HasPrefix(referer, allowed) {
+				return true
+			}
+		}
+	}
+	
+	// 如果都不匹配，则拒绝
+	return false
 }
 
 // pingHandler 处理ping请求
 func pingHandler(w http.ResponseWriter, r *http.Request) {
-	enableCORS(w)
-	
-	// 处理预检请求
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-	
 	// 只允许GET请求
 	if r.Method != "GET" {
 		http.Error(w, "方法不允许", http.StatusMethodNotAllowed)
@@ -99,12 +150,6 @@ func pingHandler(w http.ResponseWriter, r *http.Request) {
 
 // healthHandler 健康检查接口
 func healthHandler(w http.ResponseWriter, r *http.Request) {
-	enableCORS(w)
-	
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -119,14 +164,6 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 
 // configsHandler 处理配置文件列表请求
 func configsHandler(w http.ResponseWriter, r *http.Request) {
-	enableCORS(w)
-	
-	// 处理预检请求
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-	
 	// 只允许GET请求
 	if r.Method != "GET" {
 		http.Error(w, "方法不允许", http.StatusMethodNotAllowed)
@@ -325,10 +362,10 @@ func main() {
 		config.PrintConfig()
 	}
 
-	// 注册路由
-	http.HandleFunc("/ping", pingHandler)
-	http.HandleFunc("/health", healthHandler)
-	http.HandleFunc("/api/configs", configsHandler)
+	// 注册路由（使用来源验证中间件）
+	http.HandleFunc("/ping", originValidationMiddleware(pingHandler))
+	http.HandleFunc("/health", originValidationMiddleware(healthHandler))
+	http.HandleFunc("/api/configs", originValidationMiddleware(configsHandler))
 	
 	// 启动服务器
 	port := fmt.Sprintf(":%d", redisConfig.Port)

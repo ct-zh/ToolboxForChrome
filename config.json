@@ -4,46 +4,25 @@
   "description": "开发者工具箱配置文件",
   "frontend": {
     "redisManager": {
-      "apiBaseUrl": "http://localhost:8080",
+      "apiBaseUrl": "http://localhost:11367",
       "timeout": 5000,
       "retryAttempts": 3
     }
   },
   "backend": {
     "redis": {
-      "port": 8080,
+      "port": 11367,
       "host": "localhost",
       "logLevel": "info",
       "corsEnabled": true,
-      "configDir": "data/redis"
-    }
-  },
-  "environment": {
-    "development": {
-      "frontend": {
-        "redisManager": {
-          "apiBaseUrl": "http://localhost:8080"
-        }
-      },
-      "backend": {
-        "redis": {
-          "port": 8080,
-          "logLevel": "debug"
-        }
-      }
-    },
-    "production": {
-      "frontend": {
-        "redisManager": {
-          "apiBaseUrl": "http://localhost:8080"
-        }
-      },
-      "backend": {
-        "redis": {
-          "port": 8080,
-          "logLevel": "warn"
-        }
-      }
+      "configDir": "data/redis",
+      "allowedOrigins": [
+        "chrome-extension://",
+        "http://localhost",
+        "http://127.0.0.1",
+        "https://localhost",
+        "https://127.0.0.1"
+      ]
     }
   }
 }

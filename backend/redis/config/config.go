@@ -12,12 +12,11 @@ import (
 
 // Config 应用配置结构
 type Config struct {
-	Name        string      `json:"name"`
-	Version     string      `json:"version"`
-	Description string      `json:"description"`
-	Frontend    Frontend    `json:"frontend"`
-	Backend     Backend     `json:"backend"`
-	Environment Environment `json:"environment"`
+	Name        string   `json:"name"`
+	Version     string   `json:"version"`
+	Description string   `json:"description"`
+	Frontend    Frontend `json:"frontend"`
+	Backend     Backend  `json:"backend"`
 }
 
 // Frontend 前端配置
@@ -39,24 +38,15 @@ type Backend struct {
 
 // RedisBackend Redis后端配置
 type RedisBackend struct {
-	Port        int    `json:"port"`
-	Host        string `json:"host"`
-	LogLevel    string `json:"logLevel"`
-	CORSEnabled bool   `json:"corsEnabled"`
-	ConfigDir   string `json:"configDir"`
+	Port           int      `json:"port"`
+	Host           string   `json:"host"`
+	LogLevel       string   `json:"logLevel"`
+	CORSEnabled    bool     `json:"corsEnabled"`
+	ConfigDir      string   `json:"configDir"`
+	AllowedOrigins []string `json:"allowedOrigins"`
 }
 
-// Environment 环境配置
-type Environment struct {
-	Development EnvConfig `json:"development"`
-	Production  EnvConfig `json:"production"`
-}
 
-// EnvConfig 环境特定配置
-type EnvConfig struct {
-	Frontend Frontend `json:"frontend"`
-	Backend  Backend  `json:"backend"`
-}
 
 // 全局配置实例
 var AppConfig *Config
@@ -127,6 +117,13 @@ func getDefaultConfig() *Config {
 				LogLevel:    "info",
 				CORSEnabled: true,
 				ConfigDir:   "data/redis",
+				AllowedOrigins: []string{
+					"chrome-extension://",
+					"http://localhost",
+					"http://127.0.0.1",
+					"https://localhost",
+					"https://127.0.0.1",
+				},
 			},
 		},
 	}
