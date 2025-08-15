@@ -1,8 +1,0 @@
-{
-    "service_name": "test",
-    "redis_key": [
-        {
-            "key": "%s:test:%d"
-        }
-    ]
-}

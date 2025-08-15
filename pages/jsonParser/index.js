@@ -29,6 +29,7 @@ class JSONParser {
         // 绑定事件监听器
         this.jsonInput.addEventListener('input', () => this.handleInputChange());
         this.jsonInput.addEventListener('scroll', () => this.syncLineNumbers());
+        this.jsonOutput.addEventListener('scroll', () => this.syncRightLineNumbers());
         
         // 工具栏事件
         this.expandAllBtn.addEventListener('click', () => this.expandAll());
@@ -72,9 +73,7 @@ class JSONParser {
         
         this.jsonInput.value = JSON.stringify(sampleJson, null, 2);
         
-        // 初始化时展开第一层
-        this.expandedNodes.add('root');
-        
+        // 初始化时使用全展开
         this.handleInputChange();
     }
     
@@ -91,8 +90,8 @@ class JSONParser {
         try {
             this.parsedData = JSON.parse(input);
             this.updateValidationStatus('valid', '格式正确');
-            this.renderJsonTree();
-            this.updateLineNumbers();
+            // 自动展开所有节点
+            this.expandAll();
         } catch (error) {
             this.updateValidationStatus('invalid', '格式错误');
             this.showError(error.message);
@@ -351,46 +350,47 @@ class JSONParser {
         let lineCount = 0;
         
         const countElementLines = (element) => {
+            // 跳过隐藏元素
             if (element.style.display === 'none') return 0;
             
-            // 如果是json-node，计算其内部的行数
-            if (element.classList.contains('json-node')) {
-                let nodeLines = 0;
-                for (let child of element.children) {
-                    nodeLines += countElementLines(child);
-                }
-                return Math.max(nodeLines, 1); // 至少算作1行
+            // 检查元素是否实际可见
+            const computedStyle = window.getComputedStyle(element);
+            if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden') {
+                return 0;
             }
             
-            // 如果是json-expandable（头部），算作1行
+            let lines = 0;
+            
+            // 如果是json-expandable（可展开的头部），算作1行
             if (element.classList.contains('json-expandable')) {
-                return 1;
+                lines = 1;
             }
-            
-            // 如果是包含json-bracket的div（结束括号），算作1行
-            if (element.innerHTML && element.innerHTML.includes('json-bracket')) {
-                return 1;
-            }
-            
-            // 如果是包含具体值的div，算作1行
-            if (element.innerHTML && (
+            // 如果是包含具体值的div（叶子节点），算作1行
+            else if (element.innerHTML && (
                 element.innerHTML.includes('json-string') ||
                 element.innerHTML.includes('json-number') ||
                 element.innerHTML.includes('json-boolean') ||
                 element.innerHTML.includes('json-null')
             )) {
-                return 1;
+                lines = 1;
+            }
+            // 如果是单独的结束括号行
+            else if (element.innerHTML && 
+                     element.innerHTML.includes('json-bracket') && 
+                     !element.classList.contains('json-expandable') &&
+                     (element.innerHTML.includes('}') || element.innerHTML.includes(']'))) {
+                lines = 1;
             }
             
-            // 递归计算子元素
-            let childLines = 0;
+            // 递归计算子元素的行数
             for (let child of element.children) {
-                childLines += countElementLines(child);
+                lines += countElementLines(child);
             }
             
-            return childLines;
+            return lines;
         };
         
+        // 遍历所有顶级子元素
         for (let child of outputElement.children) {
             lineCount += countElementLines(child);
         }
@@ -403,6 +403,13 @@ class JSONParser {
         
         const scrollTop = this.jsonInput.scrollTop;
         this.leftLineNumbers.scrollTop = scrollTop;
+    }
+    
+    syncRightLineNumbers() {
+        if (!this.showLineNumbers) return;
+        
+        const scrollTop = this.jsonOutput.scrollTop;
+        this.rightLineNumbers.scrollTop = scrollTop;
     }
     
     clearAll() {

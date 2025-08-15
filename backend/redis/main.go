@@ -23,14 +23,27 @@ type PingResponse struct {
 
 // ConfigFile 配置文件结构
 type ConfigFile struct {
-	FileName    string     `json:"file_name"`
-	ServiceName string     `json:"service_name"`
-	RedisKeys   []RedisKey `json:"redis_key"`
+	FileName  string     `json:"file_name"`
+	Service   string     `json:"service"`
+	Package   string     `json:"package,omitempty"`
+	FilePath  string     `json:"file_path,omitempty"`
+	RedisKeys []RedisKey `json:"redis_keys"`
+}
+
+// Parameter Redis键参数结构
+type Parameter struct {
+	Index       int    `json:"index"`
+	Type        string `json:"type"`
+	Description string `json:"description"`
+	Placeholder string `json:"placeholder"`
 }
 
 // RedisKey Redis键结构
 type RedisKey struct {
-	Key string `json:"key"`
+	Name       string      `json:"name"`
+	Template   string      `json:"template"`
+	Comment    string      `json:"comment"`
+	Parameters []Parameter `json:"parameters"`
 }
 
 // ConfigResponse 配置文件响应结构
@@ -218,43 +231,80 @@ func loadConfigFiles() ([]ConfigFile, error) {
 		}
 		
 		// 验证必需字段
-		serviceName, hasServiceName := rawConfig["service_name"].(string)
-		redisKeyInterface, hasRedisKey := rawConfig["redis_key"]
+		service, hasService := rawConfig["service"].(string)
+		redisKeysInterface, hasRedisKeys := rawConfig["redis_keys"]
 		
-		if !hasServiceName || !hasRedisKey {
-			log.Printf("配置文件格式不正确 %s: 缺少service_name或redis_key字段", file.Name())
+		if !hasService || !hasRedisKeys {
+			log.Printf("配置文件格式不正确 %s: 缺少service或redis_keys字段", file.Name())
 			continue
 		}
 		
-		// 验证redis_key是否为数组
-		redisKeyArray, ok := redisKeyInterface.([]interface{})
+		// 验证redis_keys是否为数组
+		redisKeysArray, ok := redisKeysInterface.([]interface{})
 		if !ok {
-			log.Printf("配置文件格式不正确 %s: redis_key字段不是数组", file.Name())
+			log.Printf("配置文件格式不正确 %s: redis_keys字段不是数组", file.Name())
 			continue
-		}
-		
-		// 解析redis_key数组
-		var redisKeys []RedisKey
-		for _, keyInterface := range redisKeyArray {
-			keyMap, ok := keyInterface.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			
-			if keyValue, exists := keyMap["key"].(string); exists {
-				redisKeys = append(redisKeys, RedisKey{Key: keyValue})
-			}
 		}
 		
 		// 创建配置文件对象
 		config := ConfigFile{
-			FileName:    file.Name(),
-			ServiceName: serviceName,
-			RedisKeys:   redisKeys,
+			FileName: file.Name(),
+			Service:  service,
+		}
+		
+		// 可选字段
+		if pkg, ok := rawConfig["package"].(string); ok {
+			config.Package = pkg
+		}
+		if filePath, ok := rawConfig["file_path"].(string); ok {
+			config.FilePath = filePath
+		}
+		
+		// 解析redis_keys数组
+		for _, keyInterface := range redisKeysArray {
+			if keyMap, ok := keyInterface.(map[string]interface{}); ok {
+				redisKey := RedisKey{}
+				
+				if name, exists := keyMap["name"].(string); exists {
+					redisKey.Name = name
+				}
+				if template, exists := keyMap["template"].(string); exists {
+					redisKey.Template = template
+				}
+				if comment, exists := keyMap["comment"].(string); exists {
+					redisKey.Comment = comment
+				}
+				
+				// 解析parameters数组
+				if paramsInterface, exists := keyMap["parameters"]; exists {
+					if paramsArray, ok := paramsInterface.([]interface{}); ok {
+						for _, paramInterface := range paramsArray {
+							if paramMap, ok := paramInterface.(map[string]interface{}); ok {
+								param := Parameter{}
+								if index, exists := paramMap["index"].(float64); exists {
+									param.Index = int(index)
+								}
+								if paramType, exists := paramMap["type"].(string); exists {
+									param.Type = paramType
+								}
+								if desc, exists := paramMap["description"].(string); exists {
+									param.Description = desc
+								}
+								if placeholder, exists := paramMap["placeholder"].(string); exists {
+									param.Placeholder = placeholder
+								}
+								redisKey.Parameters = append(redisKey.Parameters, param)
+							}
+						}
+					}
+				}
+				
+				config.RedisKeys = append(config.RedisKeys, redisKey)
+			}
 		}
 		
 		configs = append(configs, config)
-		log.Printf("成功加载配置文件: %s (服务名: %s, 键数量: %d)", file.Name(), serviceName, len(redisKeys))
+		log.Printf("成功加载配置文件: %s (服务名: %s, 键数量: %d)", file.Name(), config.Service, len(config.RedisKeys))
 	}
 	
 	return configs, nil

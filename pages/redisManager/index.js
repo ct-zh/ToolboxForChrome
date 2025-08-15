@@ -306,22 +306,26 @@ class RedisManager {
         }
 
         // 过滤配置文件
-        const filteredConfigs = this.configFiles.filter(config => 
-            config.service_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            config.file_name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        const filteredConfigs = this.configFiles.filter(config => {
+            const serviceName = config.service || config.service_name || '';
+            return serviceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                   config.file_name.toLowerCase().includes(searchTerm.toLowerCase());
+        });
 
         if (filteredConfigs.length === 0) {
             configDropdownList.innerHTML = '<div class="config-empty-state">未找到匹配的配置文件</div>';
             return;
         }
 
-        configDropdownList.innerHTML = filteredConfigs.map(config => `
-            <div class="config-option" data-config-id="${this.escapeHtml(config.file_name)}">
-                <div class="config-option-name">${this.escapeHtml(config.service_name)}</div>
-                <div class="config-option-file">${this.escapeHtml(config.file_name)}</div>
-            </div>
-        `).join('');
+        configDropdownList.innerHTML = filteredConfigs.map(config => {
+            const serviceName = config.service || config.service_name || '未知服务';
+            return `
+                <div class="config-option" data-config-id="${this.escapeHtml(config.file_name)}">
+                    <div class="config-option-name">${this.escapeHtml(serviceName)}</div>
+                    <div class="config-option-file">${this.escapeHtml(config.file_name)}</div>
+                </div>
+            `;
+        }).join('');
 
         // 绑定配置选项点击事件
         configDropdownList.querySelectorAll('.config-option').forEach(option => {
@@ -382,7 +386,8 @@ class RedisManager {
         
         // 更新输入框显示
         const configSearch = document.getElementById('configSearch');
-        configSearch.value = config.service_name;
+        const serviceName = config.service || config.service_name || '未知服务';
+        configSearch.value = serviceName;
         
         // 隐藏下拉列表
         const configDropdownList = document.getElementById('configDropdownList');
@@ -396,21 +401,43 @@ class RedisManager {
 
     // 显示Redis键值
     displayRedisKeys(config) {
-        const redisKeysDisplay = document.getElementById('redisKeysDisplay');
+        const redisKeysTitle = document.getElementById('redisKeysTitle');
         const redisKeysList = document.getElementById('redisKeysList');
         
-        if (!config || !config.redis_key || config.redis_key.length === 0) {
-            redisKeysDisplay.style.display = 'none';
+        // 兼容新旧格式
+        const redisKeys = config.redis_keys || config.redis_key || [];
+        
+        if (!config || redisKeys.length === 0) {
+            redisKeysTitle.style.display = 'none';
+            redisKeysList.style.display = 'none';
             return;
         }
 
-        // 渲染Redis键值列表
-        redisKeysList.innerHTML = config.redis_key.map(keyObj => `
-            <div class="redis-key-item">${this.escapeHtml(keyObj.key)}</div>
-        `).join('');
+        // 渲染Redis键值列表 - 只显示name和template，水平排列
+        redisKeysList.innerHTML = redisKeys.map(keyObj => {
+            // 新格式包含详细信息
+            if (keyObj.name && keyObj.template) {
+                return `
+                    <div class="redis-key-item horizontal">
+                        <div class="redis-key-name">${this.escapeHtml(keyObj.name)}</div>
+                        <div class="redis-key-template">${this.escapeHtml(keyObj.template)}</div>
+                    </div>
+                `;
+            } else {
+                // 旧格式兼容
+                const keyValue = keyObj.key || keyObj.template || keyObj.name || '';
+                return `
+                    <div class="redis-key-item horizontal">
+                        <div class="redis-key-name">未知键名</div>
+                        <div class="redis-key-template">${this.escapeHtml(keyValue)}</div>
+                    </div>
+                `;
+            }
+        }).join('');
         
         // 显示键值展示区域
-        redisKeysDisplay.style.display = 'block';
+        redisKeysTitle.style.display = 'block';
+        redisKeysList.style.display = 'block';
     }
 
     // 选择连接
