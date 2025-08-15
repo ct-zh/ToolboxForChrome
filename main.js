@@ -35,7 +35,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         document.getElementById('redisManager').addEventListener('click', function() {
-            loadPage('pages/redisManager/index.html');
+            chrome.tabs.create({
+                url: chrome.runtime.getURL('pages/redisManager/index.html'),
+                active: true
+            });
         });
     }
 

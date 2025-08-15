@@ -26,6 +26,13 @@ class RedisManager {
 
     // 绑定事件
     bindEvents() {
+        // 侧边栏切换按钮
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                this.toggleSidebar();
+            });
+        }
 
         // 标签页切换
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -413,14 +420,13 @@ class RedisManager {
             return;
         }
 
-        // 渲染Redis键值列表 - 只显示name和template，水平排列
+        // 渲染Redis键值列表 - 将name和template合并到一个div中
         redisKeysList.innerHTML = redisKeys.map(keyObj => {
             // 新格式包含详细信息
             if (keyObj.name && keyObj.template) {
                 return `
                     <div class="redis-key-item horizontal">
-                        <div class="redis-key-name">${this.escapeHtml(keyObj.name)}</div>
-                        <div class="redis-key-template">${this.escapeHtml(keyObj.template)}</div>
+                        <div class="redis-key-content">${this.escapeHtml(keyObj.name)}: ${this.escapeHtml(keyObj.template)}</div>
                     </div>
                 `;
             } else {
@@ -428,8 +434,7 @@ class RedisManager {
                 const keyValue = keyObj.key || keyObj.template || keyObj.name || '';
                 return `
                     <div class="redis-key-item horizontal">
-                        <div class="redis-key-name">未知键名</div>
-                        <div class="redis-key-template">${this.escapeHtml(keyValue)}</div>
+                        <div class="redis-key-content">未知键名: ${this.escapeHtml(keyValue)}</div>
                     </div>
                 `;
             }
@@ -521,6 +526,24 @@ class RedisManager {
         }
         
         return value;
+    }
+
+    // 切换侧边栏显示/隐藏
+    toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const mainContent = document.querySelector('.main-content');
+        
+        sidebar.classList.toggle('hidden');
+        toggleBtn.classList.toggle('sidebar-visible');
+        mainContent.classList.toggle('sidebar-hidden');
+        
+        // 更新按钮图标
+        if (sidebar.classList.contains('hidden')) {
+            toggleBtn.textContent = '▶';
+        } else {
+            toggleBtn.textContent = '◀';
+        }
     }
 
     // HTML转义
