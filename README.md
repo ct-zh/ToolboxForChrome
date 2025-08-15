@@ -31,28 +31,55 @@
 /
 ├───assets/
 │   ├───icons/          # 存放扩展图标
-│   ├───libs/           # 存放第三方库，如 qrcode.min.js
-│   └───css/            # 存放全局CSS文件 (如果需要)
+│   │   ├───icon128.png
+│   │   ├───icon16.png
+│   │   └───icon48.png
+│   └───libs/           # 存放第三方库，如 qrcode.min.js
+│       └───qrcode.min.js
+├───backend/            # 后端服务目录
+│   └───redis/          # Redis管理后端服务
+│       ├───config/     # 后端配置管理
+│       ├───go.mod      # Go模块依赖
+│       └───main.go     # 后端服务主程序
 ├───components/         # 存放可复用的UI组件，如导航栏
 │   └───navbar/
 │       ├───navbar.html
 │       └───navbar.js
+├───data/               # 数据文件目录
+│   └───redis/          # Redis配置数据
+│       └───xiangyue.strategy.service.json
 ├───pages/              # 存放各个独立功能的页面及其逻辑
-│   ├───apiTester/
+│   ├───apiTester/      # API测试工具
 │   │   ├───index.html
 │   │   └───index.js
-│   ├───qrcode/
+│   ├───imageBase64/    # 图片Base64转换
 │   │   ├───index.html
 │   │   └───index.js
-│   ├───timestamp/
+│   ├───jsonParser/     # JSON美化与压缩
 │   │   ├───index.html
 │   │   └───index.js
-│   └───urlEncoderDecoder/
+│   ├───qrcode/         # 二维码生成
+│   │   ├───index.html
+│   │   └───index.js
+│   ├───redisManager/   # Redis管理工具
+│   │   ├───index.html
+│   │   └───index.js
+│   ├───timestamp/      # 时间戳转换
+│   │   ├───index.html
+│   │   └───index.js
+│   └───urlEncoderDecoder/ # URL编码/解码
 │       ├───index.html
 │       └───index.js
 ├───popup/              # 扩展的弹出页面及其逻辑
 │   ├───popup.html
 │   └───popup.js
+├───utils/              # 工具类目录
+│   └───ConfigManager.js # 统一配置管理工具
+├───background.js       # 后台脚本
+├───config.json         # 项目配置文件
+├───config.json.example # 配置文件示例
+├───main.html           # 主页面
+├───main.js             # 主页面逻辑
 ├───manifest.json       # 扩展的配置文件
 ├───README.md           # 项目说明文件
 └───.gitignore          # Git忽略文件

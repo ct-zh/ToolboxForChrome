@@ -490,50 +490,26 @@ class RedisManager {
     // 加载配置文件
     async loadConfig() {
         try {
-            // 尝试从项目根目录加载配置文件
-            const configPath = '../../config.json';
-            const response = await fetch(configPath);
+            // 使用ConfigManager加载配置
+            await window.ConfigManager.loadConfig();
             
-            if (response.ok) {
-                const config = await response.json();
-                
-                // 更新API基础URL
-                if (config.frontend && config.frontend.redisManager && config.frontend.redisManager.apiBaseUrl) {
-                    this.apiBaseUrl = config.frontend.redisManager.apiBaseUrl;
-                    console.log('从配置文件加载API基础URL:', this.apiBaseUrl);
-                } else {
-                    console.warn('配置文件中未找到redisManager.apiBaseUrl，使用默认值');
-                }
-                
-                // 保存完整配置供其他地方使用
-                this.config = config;
-                
-            } else {
-                console.warn('无法加载配置文件，使用默认配置:', response.status);
-            }
+            // 更新API基础URL
+            this.apiBaseUrl = window.ConfigManager.getApiBaseUrl('redisManager');
+            console.log('从配置文件加载API基础URL:', this.apiBaseUrl);
+            
+            // 保存完整配置供其他地方使用
+            this.config = window.ConfigManager.getFullConfig();
+            
         } catch (error) {
             console.warn('加载配置文件失败，使用默认配置:', error.message);
+            // 使用默认值
+            this.apiBaseUrl = 'http://localhost:8080';
         }
     }
 
     // 获取配置值
     getConfigValue(path, defaultValue) {
-        if (!this.config) {
-            return defaultValue;
-        }
-        
-        const keys = path.split('.');
-        let value = this.config;
-        
-        for (const key of keys) {
-            if (value && typeof value === 'object' && key in value) {
-                value = value[key];
-            } else {
-                return defaultValue;
-            }
-        }
-        
-        return value;
+        return window.ConfigManager.getConfigValue(path, defaultValue);
     }
 
     // 切换侧边栏显示/隐藏
