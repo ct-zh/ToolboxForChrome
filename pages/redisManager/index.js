@@ -2,7 +2,7 @@
 
 class RedisManager {
     constructor() {
-        this.apiBaseUrl = 'http://localhost:8080';
+        this.apiBaseUrl = 'http://localhost:8080'; // 默认值，将从配置文件覆盖
         this.connections = [];
         this.currentConnection = null;
         this.configFiles = [];
@@ -11,7 +11,8 @@ class RedisManager {
     }
 
     // 初始化
-    init() {
+    async init() {
+        await this.loadConfig(); // 首先加载配置
         this.bindEvents();
         this.loadConnections();
         this.loadConfigFiles();
@@ -444,6 +445,55 @@ class RedisManager {
             console.error('加载连接失败:', error);
             this.connections = [];
         }
+    }
+
+    // 加载配置文件
+    async loadConfig() {
+        try {
+            // 尝试从项目根目录加载配置文件
+            const configPath = '../../config.json';
+            const response = await fetch(configPath);
+            
+            if (response.ok) {
+                const config = await response.json();
+                
+                // 更新API基础URL
+                if (config.frontend && config.frontend.redisManager && config.frontend.redisManager.apiBaseUrl) {
+                    this.apiBaseUrl = config.frontend.redisManager.apiBaseUrl;
+                    console.log('从配置文件加载API基础URL:', this.apiBaseUrl);
+                } else {
+                    console.warn('配置文件中未找到redisManager.apiBaseUrl，使用默认值');
+                }
+                
+                // 保存完整配置供其他地方使用
+                this.config = config;
+                
+            } else {
+                console.warn('无法加载配置文件，使用默认配置:', response.status);
+            }
+        } catch (error) {
+            console.warn('加载配置文件失败，使用默认配置:', error.message);
+        }
+    }
+
+    // 获取配置值
+    getConfigValue(path, defaultValue) {
+        if (!this.config) {
+            return defaultValue;
+        }
+        
+        const keys = path.split('.');
+        let value = this.config;
+        
+        for (const key of keys) {
+            if (value && typeof value === 'object' && key in value) {
+                value = value[key];
+            } else {
+                return defaultValue;
+            }
+        }
+        
+        return value;
     }
 
     // HTML转义

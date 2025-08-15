@@ -1,0 +1,49 @@
+{
+  "name": "DevToolBox Configuration",
+  "version": "1.0.0",
+  "description": "开发者工具箱配置文件",
+  "frontend": {
+    "redisManager": {
+      "apiBaseUrl": "http://localhost:8080",
+      "timeout": 5000,
+      "retryAttempts": 3
+    }
+  },
+  "backend": {
+    "redis": {
+      "port": 8080,
+      "host": "localhost",
+      "logLevel": "info",
+      "corsEnabled": true,
+      "configDir": "data/redis"
+    }
+  },
+  "environment": {
+    "development": {
+      "frontend": {
+        "redisManager": {
+          "apiBaseUrl": "http://localhost:8080"
+        }
+      },
+      "backend": {
+        "redis": {
+          "port": 8080,
+          "logLevel": "debug"
+        }
+      }
+    },
+    "production": {
+      "frontend": {
+        "redisManager": {
+          "apiBaseUrl": "http://localhost:8080"
+        }
+      },
+      "backend": {
+        "redis": {
+          "port": 8080,
+          "logLevel": "warn"
+        }
+      }
+    }
+  }
+}
