@@ -293,13 +293,49 @@
 
         /* 状态指示器 */
         .status-indicator {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
+            padding: 4px 12px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
             background: #f8f9fa;
-            border-radius: 20px;
-            border: 1px solid #e1e5e9;
+            border: 1px solid #e9ecef;
+            border-radius: 16px;
+            font-size: 13px;
+            color: #495057;
+            margin-left: 16px;
+            margin-top: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+
+        .status-dot.connected {
+            background: #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connecting {
+            background: #ffc107;
+            animation: blink 1s infinite;
+        }
+
+        .status-dot.disconnected {
+            background: #dc3545;
         }
 
         .status-light {
@@ -318,6 +354,17 @@
             font-size: 14px;
             font-weight: 500;
             color: #333;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
         }
 
         /* 主工作区域 */
@@ -1111,6 +1158,9 @@
         </div>
     </div>
 
+    <!-- JSEncrypt库用于RSA加密 -->
+    <script src="https://cdn.jsdelivr.net/npm/jsencrypt@3.3.2/bin/jsencrypt.min.js"></script>
+    <script src="crypto.js"></script>
     <script src="../../utils/ConfigManager.js"></script>
     <script src="index.js"></script>
 </body>

@@ -7,12 +7,15 @@ class RedisManager {
         this.currentConnection = null;
         this.configFiles = [];
         this.selectedConfig = null;
+        this.cryptoUtils = new CryptoUtils(); // RSA加密工具
+        this.currentToken = null; // 当前连接token
         this.init();
     }
 
     // 初始化
     async init() {
         await this.loadConfig(); // 首先加载配置
+        this.initCrypto(); // 初始化加密工具
         this.bindEvents();
         this.loadConnections();
         this.loadConfigFiles();
@@ -155,8 +158,23 @@ class RedisManager {
         }
     }
 
+    // 初始化加密工具
+    initCrypto() {
+        try {
+            const publicKey = CryptoUtils.getPublicKeyFromConfig(this.config);
+            if (publicKey) {
+                this.cryptoUtils.init(publicKey);
+                console.log('RSA加密工具初始化成功');
+            } else {
+                console.error('无法从配置中获取RSA公钥');
+            }
+        } catch (error) {
+            console.error('初始化RSA加密工具失败:', error);
+        }
+    }
+
     // 添加连接
-    addConnection() {
+    async addConnection() {
         const name = document.getElementById('connectionName').value.trim();
         const host = document.getElementById('host').value.trim();
         const port = document.getElementById('port').value.trim();
@@ -195,25 +213,71 @@ class RedisManager {
             return;
         }
 
-        // 创建连接对象
-        const connection = {
-            id: Date.now().toString(),
-            name,
-            host,
-            port: parseInt(port),
-            password,
-            database: parseInt(database),
-            createdAt: new Date().toISOString()
-        };
+        try {
+            // 显示连接中状态
+            this.showConnectingStatus(name);
+            
+            // 加密密码
+            let encryptedPassword = '';
+            if (password) {
+                encryptedPassword = this.cryptoUtils.encryptPassword(password);
+            }
 
-        // 添加到连接列表
-        this.connections.push(connection);
-        this.saveConnections();
-        this.renderConnections();
-        this.clearForm();
-        
-        console.log('添加连接成功:', connection);
-        alert('连接添加成功！');
+            // 调用后端连接接口
+            const response = await fetch(`${this.apiBaseUrl}/api/redis/connect`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    host: host,
+                    port: parseInt(port),
+                    password: encryptedPassword,
+                    database: parseInt(database)
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // 连接成功，保存连接信息和token
+                const connection = {
+                    id: result.data.connection_id,
+                    name: name,
+                    host: host,
+                    port: parseInt(port),
+                    password: password, // 本地存储明文密码
+                    database: parseInt(database),
+                    createdAt: new Date().toISOString()
+                };
+
+                // 保存token
+                this.currentToken = result.data.token;
+                this.currentConnection = connection;
+
+                // 添加到连接列表并保存
+                this.connections.push(connection);
+                this.saveConnections();
+                this.renderConnections();
+                this.clearForm();
+
+                // 显示连接成功状态
+                this.showConnectionStatus(connection);
+                
+                console.log('Redis连接成功:', connection);
+                alert(`连接 "${name}" 建立成功！`);
+            } else {
+                // 连接失败
+                const errorMsg = result.message || '连接失败';
+                console.error('Redis连接失败:', errorMsg);
+                alert(`连接失败: ${errorMsg}`);
+                this.hideConnectionStatus();
+            }
+        } catch (error) {
+            console.error('连接过程中发生错误:', error);
+            alert(`连接失败: ${error.message}`);
+            this.hideConnectionStatus();
+        }
     }
 
     // 清空表单
@@ -451,6 +515,52 @@ class RedisManager {
         // 显示键值展示区域
         redisKeysTitle.style.display = 'block';
         redisKeysList.style.display = 'block';
+    }
+
+    // 显示连接中状态
+    showConnectingStatus(connectionName) {
+        const statusElement = this.getOrCreateStatusElement();
+        statusElement.innerHTML = `
+            <span class="status-dot connecting"></span>
+            <span class="status-text">正在连接到 ${this.escapeHtml(connectionName)}...</span>
+        `;
+        statusElement.style.display = 'inline-flex';
+    }
+
+    // 显示连接成功状态
+    showConnectionStatus(connection) {
+        const statusElement = this.getOrCreateStatusElement();
+        statusElement.innerHTML = `
+            <span class="status-dot connected"></span>
+            <span class="status-text">已连接到 ${this.escapeHtml(connection.name)} (${this.escapeHtml(connection.host)}:${connection.port}/DB${connection.database})</span>
+        `;
+        statusElement.style.display = 'inline-flex';
+    }
+
+    // 隐藏连接状态
+    hideConnectionStatus() {
+        const statusElement = document.getElementById('connectionStatus');
+        if (statusElement) {
+            statusElement.style.display = 'none';
+        }
+    }
+
+    // 获取或创建状态元素
+    getOrCreateStatusElement() {
+        let statusElement = document.getElementById('connectionStatus');
+        if (!statusElement) {
+            // 创建状态元素
+            statusElement = document.createElement('div');
+            statusElement.id = 'connectionStatus';
+            statusElement.className = 'connection-status';
+            
+            // 找到h1元素并在其后插入状态元素
+            const h1Element = document.querySelector('.main-content h1');
+            if (h1Element) {
+                h1Element.parentNode.insertBefore(statusElement, h1Element.nextSibling);
+            }
+        }
+        return statusElement;
     }
 
     // 选择连接
