@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/devtoolbox/redis/config"
+	"github.com/devtoolbox/redis/handlers"
 )
 
 // PingResponse ping接口响应结构
@@ -362,10 +363,17 @@ func main() {
 		config.PrintConfig()
 	}
 
+	// 创建Redis连接处理器
+	redisConnectHandler, err := handlers.NewRedisConnectHandler()
+	if err != nil {
+		log.Fatalf("Failed to create Redis connect handler: %v", err)
+	}
+
 	// 注册路由（使用来源验证中间件）
 	http.HandleFunc("/ping", originValidationMiddleware(pingHandler))
 	http.HandleFunc("/health", originValidationMiddleware(healthHandler))
 	http.HandleFunc("/api/configs", originValidationMiddleware(configsHandler))
+	http.HandleFunc("/api/redis/connect", originValidationMiddleware(redisConnectHandler.HandleConnect))
 	
 	// 启动服务器
 	port := fmt.Sprintf(":%d", redisConfig.Port)
@@ -380,6 +388,7 @@ func main() {
 	fmt.Printf("Ping接口: http://%s%s/ping\n", host, port)
 	fmt.Printf("健康检查: http://%s%s/health\n", host, port)
 	fmt.Printf("配置文件接口: http://%s%s/api/configs\n", host, port)
+	fmt.Printf("Redis连接接口: http://%s%s/api/redis/connect\n", host, port)
 	fmt.Println("按 Ctrl+C 停止服务")
 	fmt.Println("")
 	fmt.Println("环境变量支持:")

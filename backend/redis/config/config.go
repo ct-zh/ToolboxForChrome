@@ -17,6 +17,7 @@ type Config struct {
 	Description string   `json:"description"`
 	Frontend    Frontend `json:"frontend"`
 	Backend     Backend  `json:"backend"`
+	Security    Security `json:"security"`
 }
 
 // Frontend 前端配置
@@ -44,6 +45,21 @@ type RedisBackend struct {
 	CORSEnabled    bool     `json:"corsEnabled"`
 	ConfigDir      string   `json:"configDir"`
 	AllowedOrigins []string `json:"allowedOrigins"`
+}
+
+// Security 安全配置
+type Security struct {
+	Encryption     Encryption `json:"encryption"`
+	TokenExpiry    int        `json:"tokenExpiry"`
+	MaxConnections int        `json:"maxConnections"`
+}
+
+// Encryption 加密配置
+type Encryption struct {
+	Algorithm  string `json:"algorithm"`
+	KeySize    int    `json:"keySize"`
+	PublicKey  string `json:"publicKey"`
+	PrivateKey string `json:"privateKey"`
 }
 
 
@@ -219,13 +235,41 @@ func GetRedisBackendConfig() RedisBackend {
 }
 
 // GetRedisManagerFrontendConfig 获取Redis管理器前端配置
-func GetRedisManagerFrontendConfig() RedisManagerFrontend {
-	return GetConfig().Frontend.RedisManager
+func GetRedisManagerFrontendConfig() *RedisManagerFrontend {
+	if AppConfig == nil {
+		return nil
+	}
+	return &AppConfig.Frontend.RedisManager
 }
 
-// PrintConfig 打印当前配置（用于调试）
+// GetSecurityConfig 获取安全配置
+func GetSecurityConfig() *Security {
+	if AppConfig == nil {
+		return nil
+	}
+	return &AppConfig.Security
+}
+
+// GetEncryptionConfig 获取加密配置
+func GetEncryptionConfig() *Encryption {
+	if AppConfig == nil {
+		return nil
+	}
+	return &AppConfig.Security.Encryption
+}
+
+// PrintConfig 打印配置信息
 func PrintConfig() {
-	config := GetConfig()
-	configJSON, _ := json.MarshalIndent(config, "", "  ")
+	if AppConfig == nil {
+		log.Println("配置未初始化")
+		return
+	}
+
+	configJSON, err := json.MarshalIndent(AppConfig, "", "  ")
+	if err != nil {
+		log.Printf("序列化配置失败: %v", err)
+		return
+	}
+
 	log.Printf("当前配置:\n%s", string(configJSON))
 }
