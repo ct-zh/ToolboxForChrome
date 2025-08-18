@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/devtoolbox/redis/mock"
 )
 // RedisConnection Redis连接信息
 type RedisConnection struct {
@@ -15,7 +16,8 @@ type RedisConnection struct {
 	Port     int          `json:"port"`
 	DB       int          `json:"db"`
 	Alias    string       `json:"alias"`
-	Client   *redis.Client `json:"-"`
+	Client   mock.RedisInterface `json:"-"`
+	IsMock   bool         `json:"isMock"`
 	CreatedAt time.Time   `json:"createdAt"`
 	LastUsed time.Time    `json:"lastUsed"`
 }
@@ -25,6 +27,7 @@ type ConnectionPool struct {
 	connections map[string]*RedisConnection
 	mutex       sync.RWMutex
 	maxConn     int
+	mockMode    bool
 }
 
 // NewConnectionPool 创建新的连接池
@@ -32,7 +35,22 @@ func NewConnectionPool(maxConnections int) *ConnectionPool {
 	return &ConnectionPool{
 		connections: make(map[string]*RedisConnection),
 		maxConn:     maxConnections,
+		mockMode:    false,
 	}
+}
+
+// SetMockMode 设置mock模式
+func (cp *ConnectionPool) SetMockMode(enabled bool) {
+	cp.mutex.Lock()
+	defer cp.mutex.Unlock()
+	cp.mockMode = enabled
+}
+
+// IsMockMode 检查是否为mock模式
+func (cp *ConnectionPool) IsMockMode() bool {
+	cp.mutex.RLock()
+	defer cp.mutex.RUnlock()
+	return cp.mockMode
 }
 
 // CreateConnection 创建新的Redis连接
@@ -50,20 +68,39 @@ func (cp *ConnectionPool) CreateConnection(id, host string, port, db int, passwo
 		return nil, fmt.Errorf("connection with id %s already exists", id)
 	}
 
-	// 创建Redis客户端
-	client := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", host, port),
-		Password: password,
-		DB:       db,
-	})
+	var client mock.RedisInterface
+	isMock := cp.mockMode
 
-	// 测试连接
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	if err := client.Ping(ctx).Err(); err != nil {
-		client.Close()
-		return nil, fmt.Errorf("failed to connect to Redis: %v", err)
+	if cp.mockMode {
+		// 创建Mock Redis客户端
+		client = mock.NewRedisMock()
+		// Mock模式下选择数据库
+		if db > 0 {
+			ctx := context.Background()
+			if err := client.Select(ctx, db).Err(); err != nil {
+				return nil, fmt.Errorf("failed to select database %d: %v", db, err)
+			}
+		}
+	} else {
+		// 创建真实Redis客户端
+		realClient := redis.NewClient(&redis.Options{
+			Addr:     fmt.Sprintf("%s:%d", host, port),
+			Password: password,
+			DB:       db,
+		})
+		
+		// 测试连接
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		
+		if err := realClient.Ping(ctx).Err(); err != nil {
+			realClient.Close()
+			return nil, fmt.Errorf("failed to connect to Redis: %v", err)
+		}
+		
+		// 使用适配器包装真实客户端
+		client = mock.NewRedisClientAdapter(realClient)
+		isMock = false
 	}
 
 	// 创建连接对象
@@ -74,6 +111,7 @@ func (cp *ConnectionPool) CreateConnection(id, host string, port, db int, passwo
 		DB:        db,
 		Alias:     alias,
 		Client:    client,
+		IsMock:    isMock,
 		CreatedAt: time.Now(),
 		LastUsed:  time.Now(),
 	}
@@ -112,7 +150,9 @@ func (cp *ConnectionPool) RemoveConnection(id string) error {
 
 	// 关闭Redis客户端
 	if conn.Client != nil {
-		conn.Client.Close()
+		if closer, ok := conn.Client.(interface{ Close() error }); ok {
+			closer.Close()
+		}
 	}
 
 	// 从连接池中删除
@@ -165,7 +205,9 @@ func (cp *ConnectionPool) Close() {
 
 	for _, conn := range cp.connections {
 		if conn.Client != nil {
-			conn.Client.Close()
+			if closer, ok := conn.Client.(interface{ Close() error }); ok {
+				closer.Close()
+			}
 		}
 	}
 

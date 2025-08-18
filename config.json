@@ -16,6 +16,7 @@
       "logLevel": "info",
       "corsEnabled": true,
       "configDir": "data/redis",
+      "mockMode": false,
       "allowedOrigins": [
         "chrome-extension://",
         "http://localhost",
