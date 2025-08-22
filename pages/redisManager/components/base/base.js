@@ -3,6 +3,189 @@
  * 融合了键列表、键操作和TTL倒计时三个组件的功能
  */
 
+/**
+ * 事件总线类
+ * 用于组件间的事件通信
+ */
+class EventBus {
+    constructor() {
+        this.events = {};
+    }
+
+    /**
+     * 监听事件
+     * @param {string} event - 事件名称
+     * @param {Function} callback - 回调函数
+     */
+    on(event, callback) {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+        this.events[event].push(callback);
+    }
+
+    /**
+     * 移除事件监听
+     * @param {string} event - 事件名称
+     * @param {Function} callback - 回调函数
+     */
+    off(event, callback) {
+        if (!this.events[event]) return;
+        
+        if (callback) {
+            this.events[event] = this.events[event].filter(cb => cb !== callback);
+        } else {
+            delete this.events[event];
+        }
+    }
+
+    /**
+     * 触发事件
+     * @param {string} event - 事件名称
+     * @param {...any} args - 参数
+     */
+    emit(event, ...args) {
+        if (!this.events[event]) return;
+        
+        this.events[event].forEach(callback => {
+            try {
+                callback(...args);
+            } catch (error) {
+                console.error(`事件处理器错误 [${event}]:`, error);
+            }
+        });
+    }
+}
+
+/**
+ * Redis API服务类
+ * 负责与后端Redis服务的通信
+ */
+class RedisApiService {
+    constructor(baseUrl) {
+        this.baseUrl = baseUrl;
+        this.token = null;
+    }
+
+    /**
+     * 设置认证token
+     * @param {string} token - 认证token
+     */
+    setAuth(token) {
+        this.token = token;
+    }
+
+    /**
+     * 清除认证信息
+     */
+    clearAuth() {
+        this.token = null;
+    }
+
+    /**
+     * 获取请求头
+     * @returns {Object} 请求头对象
+     */
+    getHeaders() {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        
+        if (this.token) {
+            headers['Authorization'] = `Bearer ${this.token}`;
+        }
+        
+        return headers;
+    }
+
+    /**
+     * 发送API请求
+     * @param {string} endpoint - API端点
+     * @param {Object} options - 请求选项
+     * @returns {Promise} 请求结果
+     */
+    async request(endpoint, options = {}) {
+        const url = `${this.baseUrl}${endpoint}`;
+        const config = {
+            headers: this.getHeaders(),
+            ...options
+        };
+
+        try {
+            const response = await fetch(url, config);
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.message || `HTTP ${response.status}`);
+            }
+            
+            return data;
+        } catch (error) {
+            console.error(`API请求失败 [${endpoint}]:`, error);
+            throw error;
+        }
+    }
+
+    /**
+     * 获取Redis键列表
+     * @param {Object} params - 查询参数
+     * @returns {Promise<Array>} 键列表
+     */
+    async getKeys(params = {}) {
+        const queryString = new URLSearchParams(params).toString();
+        const endpoint = `/api/redis/keys${queryString ? '?' + queryString : ''}`;
+        
+        const result = await this.request(endpoint);
+        return result.data || [];
+    }
+
+    /**
+     * 获取键的详细信息
+     * @param {string} keyName - 键名
+     * @returns {Promise<Object>} 键信息
+     */
+    async getKeyInfo(keyName) {
+        const result = await this.request(`/api/redis/key/${encodeURIComponent(keyName)}`);
+        return result.data;
+    }
+
+    /**
+     * 获取键的TTL
+     * @param {string} keyName - 键名
+     * @returns {Promise<number>} TTL值
+     */
+    async getKeyTTL(keyName) {
+        const result = await this.request(`/api/redis/key/${encodeURIComponent(keyName)}/ttl`);
+        return result.data.ttl;
+    }
+
+    /**
+     * 删除键
+     * @param {string} keyName - 键名
+     * @returns {Promise<boolean>} 删除结果
+     */
+    async deleteKey(keyName) {
+        const result = await this.request(`/api/redis/key/${encodeURIComponent(keyName)}`, {
+            method: 'DELETE'
+        });
+        return result.success;
+    }
+
+    /**
+     * 设置键的TTL
+     * @param {string} keyName - 键名
+     * @param {number} ttl - TTL值（秒）
+     * @returns {Promise<boolean>} 设置结果
+     */
+    async setKeyTTL(keyName, ttl) {
+        const result = await this.request(`/api/redis/key/${encodeURIComponent(keyName)}/ttl`, {
+            method: 'PUT',
+            body: JSON.stringify({ ttl })
+        });
+        return result.success;
+    }
+}
+
 // Redis事件常量
 const REDIS_EVENTS = {
     CONNECTION_CHANGED: 'connection:changed',
@@ -63,152 +246,64 @@ class KeyListComponent {
      * 初始化组件
      */
     init() {
-        this.render();
+        this.initializeUI();
         this.bindEvents();
         this.loadKeys();
     }
 
     /**
-     * 渲染组件HTML结构
+     * 初始化组件UI
+     * 不再渲染HTML，直接使用已有的HTML结构
      */
-    render() {
-        this.container.innerHTML = `
-            <div class="key-list-component">
-                <!-- 工具栏 -->
-                <div class="key-list-toolbar">
-                    <div class="search-section">
-                        <div class="search-input-group">
-                            <input type="text" 
-                                   id="keySearchInput" 
-                                   class="search-input" 
-                                   placeholder="搜索键名（支持通配符 * ?）"
-                                   value="${this.filters.pattern}">
-                            <button id="searchBtn" class="search-btn" title="搜索">
-                                🔍
-                            </button>
-                            <button id="clearSearchBtn" class="clear-search-btn" title="清除搜索">
-                                ✕
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="filter-section">
-                        <div class="filter-group">
-                            <label>类型过滤:</label>
-                            <div class="type-filters">
-                                <label class="type-filter-item">
-                                    <input type="checkbox" value="string" ${this.filters.type.includes('string') ? 'checked' : ''}>
-                                    <span class="type-badge type-string">📝 String</span>
-                                </label>
-                                <label class="type-filter-item">
-                                    <input type="checkbox" value="hash" ${this.filters.type.includes('hash') ? 'checked' : ''}>
-                                    <span class="type-badge type-hash">🗂️ Hash</span>
-                                </label>
-                                <label class="type-filter-item">
-                                    <input type="checkbox" value="list" ${this.filters.type.includes('list') ? 'checked' : ''}>
-                                    <span class="type-badge type-list">📋 List</span>
-                                </label>
-                                <label class="type-filter-item">
-                                    <input type="checkbox" value="set" ${this.filters.type.includes('set') ? 'checked' : ''}>
-                                    <span class="type-badge type-set">🔗 Set</span>
-                                </label>
-                                <label class="type-filter-item">
-                                    <input type="checkbox" value="zset" ${this.filters.type.includes('zset') ? 'checked' : ''}>
-                                    <span class="type-badge type-zset">📊 ZSet</span>
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label>TTL过滤:</label>
-                            <select id="ttlFilter" class="ttl-filter">
-                                <option value="all" ${this.filters.ttlRange === 'all' ? 'selected' : ''}>全部</option>
-                                <option value="persistent" ${this.filters.ttlRange === 'persistent' ? 'selected' : ''}>永不过期</option>
-                                <option value="expiring" ${this.filters.ttlRange === 'expiring' ? 'selected' : ''}>有过期时间</option>
-                                <option value="soon" ${this.filters.ttlRange === 'soon' ? 'selected' : ''}>即将过期(&lt;1小时)</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="action-section">
-                        <button id="refreshBtn" class="action-btn refresh-btn" title="刷新列表">
-                            🔄 刷新
-                        </button>
-                        <button id="selectAllBtn" class="action-btn select-all-btn" title="全选">
-                            ☑️ 全选
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- 统计信息 -->
-                <div class="key-list-stats">
-                    <span class="stats-item">
-                        总计: <strong id="totalCount">${this.keys.length}</strong>
-                    </span>
-                    <span class="stats-item">
-                        显示: <strong id="filteredCount">${this.filteredKeys.length}</strong>
-                    </span>
-                    <span class="stats-item">
-                        已选: <strong id="selectedCount">0</strong>
-                    </span>
-                </div>
-                
-                <!-- 排序控制 -->
-                <div class="key-list-sorting">
-                    <label>排序:</label>
-                    <select id="sortField" class="sort-field">
-                        <option value="name" ${this.sorting.field === 'name' ? 'selected' : ''}>键名</option>
-                        <option value="type" ${this.sorting.field === 'type' ? 'selected' : ''}>类型</option>
-                        <option value="ttl" ${this.sorting.field === 'ttl' ? 'selected' : ''}>TTL</option>
-                        <option value="size" ${this.sorting.field === 'size' ? 'selected' : ''}>大小</option>
-                    </select>
-                    <button id="sortOrder" class="sort-order-btn" data-order="${this.sorting.order}">
-                        ${this.sorting.order === 'asc' ? '↑' : '↓'}
-                    </button>
-                </div>
-                
-                <!-- 键列表 -->
-                <div class="key-list-container">
-                    <div id="keyListLoading" class="loading-state" style="display: none;">
-                        <div class="loading-spinner"></div>
-                        <span>加载中...</span>
-                    </div>
-                    
-                    <div id="keyListError" class="error-state" style="display: none;">
-                        <div class="error-icon">⚠️</div>
-                        <div class="error-message"></div>
-                        <button class="retry-btn">重试</button>
-                    </div>
-                    
-                    <div id="keyListEmpty" class="empty-state" style="display: none;">
-                        <div class="empty-icon">📭</div>
-                        <div class="empty-message">没有找到匹配的键</div>
-                    </div>
-                    
-                    <div id="keyList" class="key-list"></div>
-                </div>
-                
-                <!-- 分页控制 -->
-                <div class="key-list-pagination">
-                    <button id="prevPageBtn" class="page-btn" disabled>上一页</button>
-                    <span class="page-info">
-                        第 <span id="currentPage">${this.pagination.current}</span> 页，
-                        共 <span id="totalPages">1</span> 页
-                    </span>
-                    <button id="nextPageBtn" class="page-btn" disabled>下一页</button>
-                    
-                    <div class="page-size-control">
-                        <label>每页显示:</label>
-                        <select id="pageSizeSelect">
-                            <option value="25" ${this.pagination.pageSize === 25 ? 'selected' : ''}>25</option>
-                            <option value="50" ${this.pagination.pageSize === 50 ? 'selected' : ''}>50</option>
-                            <option value="100" ${this.pagination.pageSize === 100 ? 'selected' : ''}>100</option>
-                            <option value="200" ${this.pagination.pageSize === 200 ? 'selected' : ''}>200</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        `;
+    initializeUI() {
+        // 更新动态内容
+        this.updateStats();
+        this.updateFilters();
+        this.updateSorting();
+    }
+
+    /**
+     * 更新统计信息
+     */
+    updateStats() {
+        const totalCount = this.container.querySelector('#totalCount');
+        const filteredCount = this.container.querySelector('#filteredCount');
+        const selectedCount = this.container.querySelector('#selectedCount');
+        
+        if (totalCount) totalCount.textContent = this.keys.length;
+        if (filteredCount) filteredCount.textContent = this.filteredKeys.length;
+        if (selectedCount) selectedCount.textContent = '0';
+    }
+
+    /**
+     * 更新过滤器状态
+     */
+    updateFilters() {
+        const searchInput = this.container.querySelector('#keySearchInput');
+        const ttlFilter = this.container.querySelector('#ttlFilter');
+        
+        if (searchInput) searchInput.value = this.filters.pattern;
+        if (ttlFilter) ttlFilter.value = this.filters.ttlRange;
+        
+        // 更新类型过滤器
+        const typeFilters = this.container.querySelectorAll('.type-filters input[type="checkbox"]');
+        typeFilters.forEach(checkbox => {
+            checkbox.checked = this.filters.type.includes(checkbox.value);
+        });
+    }
+
+    /**
+     * 更新排序状态
+     */
+    updateSorting() {
+        const sortField = this.container.querySelector('#sortField');
+        const sortOrder = this.container.querySelector('#sortOrder');
+        
+        if (sortField) sortField.value = this.sorting.field;
+        if (sortOrder) {
+            sortOrder.dataset.order = this.sorting.order;
+            sortOrder.textContent = this.sorting.order === 'asc' ? '↑' : '↓';
+        }
     }
 
     /**
@@ -1141,23 +1236,8 @@ class RedisBaseManager {
      * 初始化管理器
      */
     init() {
-        this.loadHTML();
-    }
-
-    /**
-     * 加载HTML模板
-     */
-    async loadHTML() {
-        try {
-            const response = await fetch('./components/base/base.html');
-            const html = await response.text();
-            this.container.innerHTML = html;
-            
-            this.initializeComponents();
-        } catch (error) {
-            console.error('加载base.html失败:', error);
-            this.container.innerHTML = '<div class="error">加载组件失败</div>';
-        }
+        // 直接初始化组件，因为HTML内容已经通过loadRedisCard方法加载了
+        this.initializeComponents();
     }
 
     /**
@@ -1213,12 +1293,20 @@ class RedisBaseManager {
 // 导出
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
+        EventBus,
+        RedisApiService,
         RedisBaseManager,
         KeyListComponent,
+        KeyOperationComponent,
+        TTLCountdownComponent,
         REDIS_EVENTS
     };
 } else {
+    window.EventBus = EventBus;
+    window.RedisApiService = RedisApiService;
     window.RedisBaseManager = RedisBaseManager;
     window.KeyListComponent = KeyListComponent;
+    window.KeyOperationComponent = KeyOperationComponent;
+    window.TTLCountdownComponent = TTLCountdownComponent;
     window.REDIS_EVENTS = REDIS_EVENTS;
 }

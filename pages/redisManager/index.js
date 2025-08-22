@@ -80,6 +80,17 @@ class RedisManager {
                 this.addNewCard();
             });
         }
+
+        // 统一的关闭按钮事件处理（使用事件委托）
+        const cardsContainer = document.querySelector('.cards-container');
+        if (cardsContainer) {
+            cardsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('card-close-btn')) {
+                    const cardId = e.target.getAttribute('data-card-id');
+                    this.removeCard(cardId);
+                }
+            });
+        }
     }
 
 
@@ -200,24 +211,11 @@ class RedisManager {
             this.redisApiService = new RedisApiService(this.apiBaseUrl);
             console.log('RedisApiService初始化成功');
 
-            // 获取Redis管理器容器
-            const redisManagerContainer = document.getElementById('redisManagerCardContainer');
-
-            if (!redisManagerContainer) {
-                console.warn('Redis管理器容器未找到，跳过组件初始化');
-                return;
-            }
-
-            // 初始化Redis基础管理器
-            this.redisBaseManager = new RedisBaseManager(
-                redisManagerContainer,
-                this.redisApiService,
-                this.eventBus
-            );
-            console.log('RedisBaseManager初始化成功');
-
             // 绑定Redis相关事件
             this.bindRedisEvents();
+
+            // 默认加载一个base类型的Redis管理卡片
+            this.loadRedisCard('base');
 
             console.log('所有Redis组件初始化完成');
         } catch (error) {
@@ -253,20 +251,20 @@ class RedisManager {
 
     // 更新Redis卡片状态
     updateRedisCardStatus(isConnected, connectionInfo) {
-        const redisCardStatus = document.getElementById('redisCardStatus');
-        if (!redisCardStatus) {
-            return;
-        }
-
-        if (isConnected && connectionInfo) {
-            redisCardStatus.textContent = `已连接: ${connectionInfo.host}:${connectionInfo.port}`;
-            redisCardStatus.style.background = '#d1fae5';
-            redisCardStatus.style.color = '#065f46';
-        } else {
-            redisCardStatus.textContent = '未连接';
-            redisCardStatus.style.background = '#fef3c7';
-            redisCardStatus.style.color = '#d97706';
-        }
+        // 更新所有Redis卡片的状态
+        const redisCardStatuses = document.querySelectorAll('[id^="redisCardStatus"]');
+        
+        redisCardStatuses.forEach(statusElement => {
+            if (isConnected && connectionInfo) {
+                statusElement.textContent = `已连接: ${connectionInfo.host}:${connectionInfo.port}`;
+                statusElement.style.background = '#d1fae5';
+                statusElement.style.color = '#065f46';
+            } else {
+                statusElement.textContent = '未连接';
+                statusElement.style.background = '#fef3c7';
+                statusElement.style.color = '#d97706';
+            }
+        });
     }
 
     // 显示错误消息
@@ -902,47 +900,45 @@ class RedisManager {
         // 启动TTL倒计时
         this.startTTLCountdown(keyData.ttl);
         
-        // 启用删除按钮
-        const deleteBtn = document.getElementById('deleteKeyBtn');
-        if (deleteBtn) {
-            deleteBtn.disabled = false;
-        }
+        // 启用所有删除按钮
+        const deleteBtns = document.querySelectorAll('[id^="deleteKeyBtn"]');
+        deleteBtns.forEach(btn => btn.disabled = false);
     }
 
     // 更新键值展示
     updateKeyDisplay(keyData) {
-        const keyNameElement = document.getElementById('displayKeyName');
-        const keyValueElement = document.getElementById('displayKeyValue');
+        const keyNameElements = document.querySelectorAll('[id^="displayKeyName"]');
+        const keyValueElements = document.querySelectorAll('[id^="displayKeyValue"]');
         
-        if (keyNameElement) {
-            keyNameElement.textContent = keyData.name;
-        }
+        keyNameElements.forEach(el => {
+            el.textContent = keyData.name;
+        });
         
-        if (keyValueElement) {
+        keyValueElements.forEach(el => {
             // 截断长值进行预览
             let preview = keyData.value;
             if (preview && preview.length > 50) {
                 preview = preview.substring(0, 50) + '...';
             }
-            keyValueElement.textContent = preview || '-';
-        }
+            el.textContent = preview || '-';
+        });
     }
 
     // 更新键类型展示
     updateKeyType(type) {
-        const typeElement = document.getElementById('currentKeyType');
-        if (typeElement) {
-            const typeMap = {
-                'string': '📝 String',
-                'hash': '🗂️ Hash',
-                'list': '📋 List',
-                'set': '🔗 Set',
-                'zset': '📊 ZSet'
-            };
-            
-            typeElement.textContent = typeMap[type] || '❓ 未知类型';
-            typeElement.className = `key-type-badge type-${type}`;
-        }
+        const typeElements = document.querySelectorAll('[id^="currentKeyType"]');
+        const typeMap = {
+            'string': '📝 String',
+            'hash': '🗂️ Hash',
+            'list': '📋 List',
+            'set': '🔗 Set',
+            'zset': '📊 ZSet'
+        };
+        
+        typeElements.forEach(el => {
+            el.textContent = typeMap[type] || '❓ 未知类型';
+            el.className = `key-type-badge type-${type}`;
+        });
     }
 
     // 启动TTL倒计时
@@ -955,21 +951,25 @@ class RedisManager {
         let currentTTL = initialTTL;
         
         const updateCountdown = () => {
-            const countdownElement = document.getElementById('currentTTLCountdown');
-            const statusElement = document.getElementById('ttlStatus');
+            const countdownElements = document.querySelectorAll('[id^="currentTTLCountdown"]');
+            const statusElements = document.querySelectorAll('[id^="ttlStatus"]');
             
-            if (!countdownElement || !statusElement) return;
+            if (countdownElements.length === 0 || statusElements.length === 0) return;
             
             if (currentTTL === -1) {
                 // 永不过期
-                countdownElement.textContent = '∞';
-                countdownElement.className = 'ttl-time';
-                statusElement.textContent = '永不过期';
+                countdownElements.forEach(el => {
+                    el.textContent = '∞';
+                    el.className = 'ttl-time';
+                });
+                statusElements.forEach(el => el.textContent = '永不过期');
             } else if (currentTTL <= 0) {
                 // 已过期
-                countdownElement.textContent = '00:00:00';
-                countdownElement.className = 'ttl-time critical';
-                statusElement.textContent = '已过期';
+                countdownElements.forEach(el => {
+                    el.textContent = '00:00:00';
+                    el.className = 'ttl-time critical';
+                });
+                statusElements.forEach(el => el.textContent = '已过期');
                 clearInterval(this.ttlInterval);
             } else {
                 // 格式化时间显示
@@ -984,19 +984,28 @@ class RedisManager {
                     timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 }
                 
-                countdownElement.textContent = timeStr;
+                countdownElements.forEach(el => {
+                    el.textContent = timeStr;
+                    
+                    // 设置样式
+                    if (currentTTL <= 60) {
+                        el.className = 'ttl-time critical';
+                    } else if (currentTTL <= 300) {
+                        el.className = 'ttl-time warning';
+                    } else {
+                        el.className = 'ttl-time';
+                    }
+                });
                 
-                // 设置样式
-                if (currentTTL <= 60) {
-                    countdownElement.className = 'ttl-time critical';
-                    statusElement.textContent = '即将过期';
-                } else if (currentTTL <= 300) {
-                    countdownElement.className = 'ttl-time warning';
-                    statusElement.textContent = '注意过期时间';
-                } else {
-                    countdownElement.className = 'ttl-time';
-                    statusElement.textContent = '正常';
-                }
+                statusElements.forEach(el => {
+                    if (currentTTL <= 60) {
+                        el.textContent = '即将过期';
+                    } else if (currentTTL <= 300) {
+                        el.textContent = '注意过期时间';
+                    } else {
+                        el.textContent = '正常';
+                    }
+                });
                 
                 currentTTL--;
             }
@@ -1051,47 +1060,149 @@ class RedisManager {
             this.ttlInterval = null;
         }
         
-        // 重置显示
-        const keyNameElement = document.getElementById('displayKeyName');
-        const keyValueElement = document.getElementById('displayKeyValue');
-        const typeElement = document.getElementById('currentKeyType');
-        const countdownElement = document.getElementById('currentTTLCountdown');
-        const statusElement = document.getElementById('ttlStatus');
-        const deleteBtn = document.getElementById('deleteKeyBtn');
+        // 重置所有卡片的显示
+        const keyNameElements = document.querySelectorAll('[id^="displayKeyName"]');
+        const keyValueElements = document.querySelectorAll('[id^="displayKeyValue"]');
+        const typeElements = document.querySelectorAll('[id^="currentKeyType"]');
+        const countdownElements = document.querySelectorAll('[id^="currentTTLCountdown"]');
+        const statusElements = document.querySelectorAll('[id^="ttlStatus"]');
+        const deleteBtns = document.querySelectorAll('[id^="deleteKeyBtn"]');
         
-        if (keyNameElement) keyNameElement.textContent = '未选择键';
-        if (keyValueElement) keyValueElement.textContent = '-';
-        if (typeElement) {
-            typeElement.textContent = '未知类型';
-            typeElement.className = 'key-type-badge';
-        }
-        if (countdownElement) {
-            countdownElement.textContent = '∞';
-            countdownElement.className = 'ttl-time';
-        }
-        if (statusElement) statusElement.textContent = '永不过期';
-        if (deleteBtn) deleteBtn.disabled = true;
+        keyNameElements.forEach(el => el.textContent = '未选择键');
+        keyValueElements.forEach(el => el.textContent = '-');
+        typeElements.forEach(el => {
+            el.textContent = '未知类型';
+            el.className = 'key-type-badge';
+        });
+        countdownElements.forEach(el => {
+            el.textContent = '∞';
+            el.className = 'ttl-time';
+        });
+        statusElements.forEach(el => el.textContent = '永不过期');
+        deleteBtns.forEach(btn => btn.disabled = true);
     }
+
+    // 加载Redis卡片
+    async loadRedisCard(cardType = 'base', cardId = null) {
+        try {
+            // 生成唯一的卡片ID
+            const uniqueId = cardId || `redis-card-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            
+            // 获取卡片容器
+            const cardsContainer = document.querySelector('.cards-container');
+            const addCardButton = document.getElementById('addCardButton');
+            
+            if (!cardsContainer) {
+                console.error('未找到卡片容器');
+                return null;
+            }
+
+            // 加载对应类型的HTML模板
+            const response = await fetch(`components/${cardType}/${cardType}.html`);
+            if (!response.ok) {
+                throw new Error(`无法加载${cardType}卡片模板`);
+            }
+            
+            const htmlContent = await response.text();
+            
+            // 创建新的卡片容器
+            const cardContainer = document.createElement('div');
+            cardContainer.className = 'redis-card-wrapper';
+            cardContainer.id = uniqueId;
+            cardContainer.style.position = 'relative';
+            cardContainer.innerHTML = htmlContent;
+            
+            // 创建关闭按钮
+            const closeButton = document.createElement('button');
+            closeButton.className = 'card-close-btn';
+            closeButton.id = `cardCloseBtn-${uniqueId}`;
+            closeButton.title = '关闭卡片';
+            closeButton.innerHTML = '✕';
+            closeButton.setAttribute('data-card-id', uniqueId);
+            
+            // 将关闭按钮添加到卡片容器中
+            cardContainer.appendChild(closeButton);
+            
+            // 更新卡片内部的ID，确保唯一性
+            this.updateCardIds(cardContainer, uniqueId);
+            
+            // 插入卡片
+            if (addCardButton) {
+                cardsContainer.insertBefore(cardContainer, addCardButton);
+            } else {
+                cardsContainer.appendChild(cardContainer);
+            }
+            
+            // 如果是base类型，初始化Redis基础管理器
+            if (cardType === 'base') {
+                const redisManagerCard = cardContainer.querySelector('.redis-manager-card');
+                if (redisManagerCard && typeof RedisBaseManager !== 'undefined') {
+                    const redisBaseManager = new RedisBaseManager(
+                        redisManagerCard,
+                        this.redisApiService,
+                        this.eventBus
+                    );
+                    console.log(`Redis基础管理器初始化成功 - 卡片ID: ${uniqueId}`);
+                }
+            }
+            
+            console.log(`${cardType}类型卡片加载成功 - ID: ${uniqueId}`);
+            return uniqueId;
+            
+        } catch (error) {
+            console.error(`加载${cardType}卡片失败:`, error);
+            return null;
+        }
+    }
+    
+    // 更新卡片内部元素的ID，确保唯一性
+    updateCardIds(cardContainer, uniqueId) {
+        const elementsWithId = cardContainer.querySelectorAll('[id]');
+        elementsWithId.forEach(element => {
+            const originalId = element.id;
+            element.id = `${originalId}-${uniqueId}`;
+        });
+    }
+
+
 
     // 新增卡片
     addNewCard() {
-        const cardsContainer = document.querySelector('.cards-container');
-        const addCardButton = document.getElementById('addCardButton');
-        
-        if (!cardsContainer || !addCardButton) {
-            console.error('未找到卡片容器或新增按钮');
+        // 默认新增base类型的卡片
+        this.loadRedisCard('base');
+        console.log('新增base类型卡片');
+    }
+
+    // 移除卡片
+    removeCard(cardId) {
+        if (!cardId) {
+            console.error('无效的卡片ID');
             return;
         }
 
-        // 创建新的空白卡片
-        const newCard = document.createElement('div');
-        newCard.className = 'feature-card';
-        newCard.innerHTML = '';
-        
-        // 在新增按钮前插入新卡片
-        cardsContainer.insertBefore(newCard, addCardButton);
-        
-        console.log('新增卡片成功');
+        // 确认删除
+        if (!confirm('确定要关闭这个卡片吗？')) {
+            return;
+        }
+
+        const cardContainer = document.getElementById(cardId);
+        if (!cardContainer) {
+            console.error(`未找到ID为 ${cardId} 的卡片`);
+            return;
+        }
+
+        // 添加移除动画
+        cardContainer.style.transition = 'all 0.3s ease';
+        cardContainer.style.transform = 'scale(0.8)';
+        cardContainer.style.opacity = '0';
+
+        // 延迟移除DOM元素
+        setTimeout(() => {
+            if (cardContainer.parentNode) {
+                cardContainer.parentNode.removeChild(cardContainer);
+                console.log(`卡片 ${cardId} 已移除`);
+            }
+        }, 300);
     }
 }
 
