@@ -961,7 +961,7 @@
             background: white;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            padding: 24px;
+            padding: 8px;
             min-height: 120px;
             transition: all 0.3s ease;
             border: 1px solid #e5e7eb;
