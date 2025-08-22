@@ -9,14 +9,14 @@ class RedisManager {
         this.selectedConfig = null;
         this.cryptoUtils = new CryptoUtils(); // RSA加密工具
         this.currentToken = null; // 当前连接token
-        
+
         // Redis组件相关
         this.eventBus = null;
         this.redisApiService = null;
         this.keyListComponent = null;
         this.keyOperationComponent = null;
         this.ttlCountdownComponent = null;
-        
+
         this.init();
     }
 
@@ -30,7 +30,7 @@ class RedisManager {
         this.loadConfigFiles();
         this.checkServiceStatus();
         // 移除简化组件初始化，键操作功能已移至base组件
-        
+
         // 定期检查服务状态
         setInterval(() => {
             this.checkServiceStatus();
@@ -141,12 +141,12 @@ class RedisManager {
     async checkServiceStatus() {
         const statusLight = document.getElementById('statusLight');
         const statusText = document.getElementById('statusText');
-        
+
         try {
             statusText.textContent = '检查服务状态...';
             statusText.style.cursor = 'default';
             statusText.onclick = null;
-            
+
             const response = await fetch(`${this.apiBaseUrl}/ping`, {
                 method: 'GET',
                 headers: {
@@ -253,7 +253,7 @@ class RedisManager {
     updateRedisCardStatus(isConnected, connectionInfo) {
         // 更新所有Redis卡片的状态
         const redisCardStatuses = document.querySelectorAll('[id^="redisCardStatus"]');
-        
+
         redisCardStatuses.forEach(statusElement => {
             if (isConnected && connectionInfo) {
                 statusElement.textContent = `已连接: ${connectionInfo.host}:${connectionInfo.port}`;
@@ -340,7 +340,7 @@ class RedisManager {
         try {
             // 显示连接中状态
             this.showConnectingStatus(name);
-            
+
             // 加密密码
             let encryptedPassword = '';
             if (password) {
@@ -399,7 +399,7 @@ class RedisManager {
 
                 // 显示连接成功状态
                 this.showConnectionStatus(connection);
-                
+
                 console.log('Redis连接成功:', connection);
                 alert(`连接 "${name}" 建立成功！`);
             } else {
@@ -428,7 +428,7 @@ class RedisManager {
     // 渲染连接列表
     renderConnections() {
         const connectionsList = document.getElementById('connectionsList');
-        
+
         if (this.connections.length === 0) {
             connectionsList.innerHTML = '<p style="color: #6c757d; font-size: 14px; text-align: center; padding: 20px;">暂无保存的连接</p>';
             return;
@@ -485,7 +485,7 @@ class RedisManager {
         const configSearch = document.getElementById('configSearch');
         const configDropdownList = document.getElementById('configDropdownList');
         const configEmptyState = document.getElementById('configEmptyState');
-        
+
         if (!configSearch || !configDropdownList) {
             console.error('配置选择器元素未找到');
             return;
@@ -506,11 +506,11 @@ class RedisManager {
         configSearch.removeEventListener('input', this.handleConfigSearchBound);
         configSearch.removeEventListener('focus', this.handleConfigFocusBound);
         configSearch.removeEventListener('blur', this.handleConfigBlurBound);
-        
+
         this.handleConfigSearchBound = this.handleConfigSearch.bind(this);
         this.handleConfigFocusBound = this.handleConfigFocus.bind(this);
         this.handleConfigBlurBound = this.handleConfigBlur.bind(this);
-        
+
         configSearch.addEventListener('input', this.handleConfigSearchBound);
         configSearch.addEventListener('focus', this.handleConfigFocusBound);
         configSearch.addEventListener('blur', this.handleConfigBlurBound);
@@ -522,7 +522,7 @@ class RedisManager {
     // 渲染配置选项
     renderConfigOptions(searchTerm = '') {
         const configDropdownList = document.getElementById('configDropdownList');
-        
+
         if (this.configFiles.length === 0) {
             configDropdownList.innerHTML = '<div class="config-empty-state">暂无可用的配置文件</div>';
             return;
@@ -532,7 +532,7 @@ class RedisManager {
         const filteredConfigs = this.configFiles.filter(config => {
             const serviceName = config.service || config.service_name || '';
             return serviceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                   config.file_name.toLowerCase().includes(searchTerm.toLowerCase());
+                config.file_name.toLowerCase().includes(searchTerm.toLowerCase());
         });
 
         if (filteredConfigs.length === 0) {
@@ -606,19 +606,19 @@ class RedisManager {
         }
 
         this.selectedConfig = config;
-        
+
         // 更新输入框显示
         const configSearch = document.getElementById('configSearch');
         const serviceName = config.service || config.service_name || '未知服务';
         configSearch.value = serviceName;
-        
+
         // 隐藏下拉列表
         const configDropdownList = document.getElementById('configDropdownList');
         configDropdownList.classList.remove('show');
-        
+
         // 显示Redis键值
         this.displayRedisKeys(config);
-        
+
         console.log('选择配置文件:', config);
     }
 
@@ -626,9 +626,9 @@ class RedisManager {
     displayRedisKeys(config) {
         const redisKeysTitle = document.getElementById('redisKeysTitle');
         const redisKeysList = document.getElementById('redisKeysList');
-        
+
         const redisKeys = config.redis_keys || [];
-        
+
         if (!config || redisKeys.length === 0) {
             redisKeysTitle.style.display = 'none';
             redisKeysList.style.display = 'none';
@@ -647,7 +647,7 @@ class RedisManager {
             }
             return ''; // 不符合新格式的数据不显示
         }).filter(item => item !== '').join('');
-        
+
         // 显示键值展示区域
         redisKeysTitle.style.display = 'block';
         redisKeysList.style.display = 'block';
@@ -689,7 +689,7 @@ class RedisManager {
             statusElement = document.createElement('div');
             statusElement.id = 'connectionStatus';
             statusElement.className = 'connection-status';
-            
+
             // 找到h1元素并在其后插入状态元素
             const h1Element = document.querySelector('.main-content h1');
             if (h1Element) {
@@ -709,7 +709,7 @@ class RedisManager {
         try {
             // 显示连接中状态
             this.showConnectingStatus(connection.name);
-            
+
             // 加密密码
             let encryptedPassword = '';
             if (connection.password) {
@@ -751,10 +751,10 @@ class RedisManager {
 
                 // 显示连接成功状态
                 this.showConnectionStatus(connection);
-                
+
                 console.log('Redis重连成功:', connection);
                 alert(`已连接到: ${connection.name}`);
-                
+
                 // 关闭侧边栏
                 this.toggleSidebar();
             } else {
@@ -823,10 +823,10 @@ class RedisManager {
     // 获取配置值
     getConfigValue(path, defaultValue) {
         if (!this.config) return defaultValue;
-        
+
         const keys = path.split('.');
         let value = this.config;
-        
+
         for (const key of keys) {
             if (value && typeof value === 'object' && key in value) {
                 value = value[key];
@@ -834,7 +834,7 @@ class RedisManager {
                 return defaultValue;
             }
         }
-        
+
         return value;
     }
 
@@ -843,11 +843,11 @@ class RedisManager {
         const sidebar = document.getElementById('sidebar');
         const toggleBtn = document.getElementById('sidebarToggle');
         const mainContent = document.querySelector('.main-content');
-        
+
         sidebar.classList.toggle('hidden');
         toggleBtn.classList.toggle('sidebar-visible');
         mainContent.classList.toggle('sidebar-hidden');
-        
+
         // 更新按钮图标
         if (sidebar.classList.contains('hidden')) {
             toggleBtn.textContent = '▶';
@@ -882,11 +882,11 @@ class RedisManager {
         try {
             // 生成唯一的卡片ID
             const uniqueId = cardId || `redis-card-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-            
+
             // 获取卡片容器
             const cardsContainer = document.querySelector('.cards-container');
             const addCardButton = document.getElementById('addCardButton');
-            
+
             if (!cardsContainer) {
                 console.error('未找到卡片容器');
                 return null;
@@ -897,16 +897,16 @@ class RedisManager {
             if (!response.ok) {
                 throw new Error(`无法加载${cardType}卡片模板`);
             }
-            
+
             const htmlContent = await response.text();
-            
+
             // 创建新的卡片容器
             const cardContainer = document.createElement('div');
             cardContainer.className = 'redis-card-wrapper';
             cardContainer.id = uniqueId;
             cardContainer.style.position = 'relative';
             cardContainer.innerHTML = htmlContent;
-            
+
             // 创建关闭按钮
             const closeButton = document.createElement('button');
             closeButton.className = 'card-close-btn';
@@ -914,47 +914,45 @@ class RedisManager {
             closeButton.title = '关闭卡片';
             closeButton.innerHTML = '✕';
             closeButton.setAttribute('data-card-id', uniqueId);
-            
+
             // 将关闭按钮添加到卡片容器中
             cardContainer.appendChild(closeButton);
-            
+
             // 更新卡片内部的ID，确保唯一性
             this.updateCardIds(cardContainer, uniqueId);
-            
+
             // 插入卡片
             if (addCardButton) {
                 cardsContainer.insertBefore(cardContainer, addCardButton);
             } else {
                 cardsContainer.appendChild(cardContainer);
             }
-            
-            // 如果是base类型，初始化Redis基础管理器
-            if (cardType === 'base') {
-                // 使用setTimeout确保DOM元素完全渲染后再初始化组件
-                setTimeout(() => {
-                    const redisManagerCard = cardContainer.querySelector('.redis-manager-card');
-                    if (redisManagerCard && typeof RedisBaseManager !== 'undefined') {
-                        const redisBaseManager = new RedisBaseManager(
-                            redisManagerCard,
-                            this.redisApiService,
-                            this.eventBus
-                        );
-                        console.log(`Redis基础管理器初始化成功 - 卡片ID: ${uniqueId}`);
-                    } else {
-                        console.error('未找到redis-manager-card元素或RedisBaseManager类未定义');
-                    }
-                }, 0); // 使用0延迟，让浏览器在下一个事件循环中执行
-            }
-            
+
+            // 使用setTimeout确保DOM元素完全渲染后再初始化组件
+            setTimeout(() => {
+                const redisManagerCard = cardContainer.querySelector('.redis-manager-card');
+                if (redisManagerCard && typeof RedisBaseManager !== 'undefined') {
+                    const redisBaseManager = new RedisBaseManager(
+                        redisManagerCard,
+                        this.redisApiService,
+                        this.eventBus,
+                        uniqueId
+                    );
+                    console.log(`Redis基础管理器初始化成功 - 卡片ID: ${uniqueId}`);
+                } else {
+                    console.error('未找到redis-manager-card元素或RedisBaseManager类未定义');
+                }
+            }, 0); // 使用0延迟，让浏览器在下一个事件循环中执行
+
             console.log(`${cardType}类型卡片加载成功 - ID: ${uniqueId}`);
             return uniqueId;
-            
+
         } catch (error) {
             console.error(`加载${cardType}卡片失败:`, error);
             return null;
         }
     }
-    
+
     // 更新卡片内部元素的ID，确保唯一性
     updateCardIds(cardContainer, uniqueId) {
         const elementsWithId = cardContainer.querySelectorAll('[id]');
