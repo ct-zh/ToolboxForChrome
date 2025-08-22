@@ -1,0 +1,96 @@
+<!-- Redis键管理卡片 -->
+<div class="feature-card redis-manager-card" id="redisManagerCard">
+    <div class="feature-card-header">
+        <div class="feature-card-icon" style="background: linear-gradient(135deg, #74D0CB 0%, #5BC0BA 100%); color: white;">
+            🔑
+        </div>
+        <h3 class="feature-card-title">Redis键管理</h3>
+        <div class="feature-card-status" id="redisCardStatus" style="background: #fef3c7; color: #d97706;">未连接</div>
+    </div>
+    <div class="feature-card-content">
+        <!-- 键列表组件容器 -->
+        <div id="keyListContainer" class="redis-component-container">
+            <div class="key-display-component">
+                <!-- 键值展示 -->
+                <div class="key-display-section">
+                    <div class="key-display-header">
+                        <h3>键值展示</h3>
+                    </div>
+                    
+                    <div class="key-display-content">
+                        <div class="key-info">
+                            <div class="key-name-section">
+                                <label>键名:</label>
+                                <div class="key-name-display">
+                                    <span id="displayKeyName">未选择键</span>
+                                </div>
+                            </div>
+                            
+                            <div class="key-value-section">
+                                <label>键值预览:</label>
+                                <div class="key-value-preview">
+                                    <span id="displayKeyValue">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                        
+        <!-- 键操作组件容器 -->
+        <div id="keyOperationContainer" class="redis-component-container">
+            <div class="key-operation-component">
+                <!-- 键类型展示 -->
+                <div class="key-type-section">
+                    <div class="key-type-header">
+                        <h3>键类型</h3>
+                    </div>
+                    
+                    <div class="key-type-content">
+                        <div class="type-display">
+                            <span id="currentKeyType" class="key-type-badge">未知类型</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 删除操作 -->
+                <div class="delete-operation-section">
+                    <div class="delete-header">
+                        <h3>删除操作</h3>
+                    </div>
+                    
+                    <div class="delete-content">
+                        <button id="deleteKeyBtn" class="delete-btn" disabled="">
+                            <span class="btn-icon">🗑️</span>
+                            <span class="btn-text">删除键</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+                        
+        <!-- TTL倒计时组件容器 -->
+        <div id="ttlCountdownContainer" class="redis-component-container">
+            <div class="ttl-countdown-component">
+                <!-- TTL倒计时显示 -->
+                <div class="ttl-display-section">
+                    <div class="ttl-display-header">
+                        <h3>TTL倒计时</h3>
+                    </div>
+                    
+                    <div class="ttl-display-content">
+                        <div class="countdown-display">
+                            <div class="countdown-value">
+                                <span id="currentTTLCountdown" class="ttl-time">∞</span>
+                            </div>
+                            <div class="countdown-status">
+                                <span id="ttlStatus" class="ttl-status-text">永不过期</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

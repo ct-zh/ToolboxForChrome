@@ -1,0 +1,58 @@
+<!-- Redis List类型管理组件 -->
+<div class="feature-card redis-list-card" id="redisListCard">
+    <div class="feature-card-header">
+        <div class="feature-card-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white;">
+            📋
+        </div>
+        <h3 class="feature-card-title">List管理</h3>
+        <div class="feature-card-status" id="listCardStatus" style="background: #fef3c7; color: #d97706;">未连接</div>
+    </div>
+    <div class="feature-card-content">
+        <!-- List操作区域 -->
+        <div class="list-operations">
+            <div class="operation-section">
+                <h4>List操作</h4>
+                <div class="operation-buttons">
+                    <button class="operation-btn" id="lpushBtn">
+                        <span class="btn-icon">⬅️</span>
+                        <span class="btn-text">左推入</span>
+                    </button>
+                    <button class="operation-btn" id="rpushBtn">
+                        <span class="btn-icon">➡️</span>
+                        <span class="btn-text">右推入</span>
+                    </button>
+                    <button class="operation-btn" id="lpopBtn">
+                        <span class="btn-icon">⬅️</span>
+                        <span class="btn-text">左弹出</span>
+                    </button>
+                    <button class="operation-btn" id="rpopBtn">
+                        <span class="btn-icon">➡️</span>
+                        <span class="btn-text">右弹出</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 元素列表区域 -->
+            <div class="elements-list-section">
+                <h4>元素列表</h4>
+                <div class="elements-container">
+                    <div class="elements-header">
+                        <span class="element-index-header">索引</span>
+                        <span class="element-value-header">值</span>
+                        <span class="element-actions-header">操作</span>
+                    </div>
+                    <div id="listElements" class="elements-list">
+                        <!-- List元素将在这里动态显示 -->
+                        <div class="empty-state">
+                            <span>选择一个List类型的键查看元素</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elements-info">
+                    <span class="info-item">长度: <strong id="listLength">0</strong></span>
+                    <span class="info-item">范围: <strong id="listRange">0-0</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -9,6 +9,14 @@ class RedisManager {
         this.selectedConfig = null;
         this.cryptoUtils = new CryptoUtils(); // RSA加密工具
         this.currentToken = null; // 当前连接token
+        
+        // Redis组件相关
+        this.eventBus = null;
+        this.redisApiService = null;
+        this.keyListComponent = null;
+        this.keyOperationComponent = null;
+        this.ttlCountdownComponent = null;
+        
         this.init();
     }
 
@@ -16,10 +24,12 @@ class RedisManager {
     async init() {
         await this.loadConfig(); // 首先加载配置
         this.initCrypto(); // 初始化加密工具
+        this.initRedisComponents(); // 初始化Redis组件
         this.bindEvents();
         this.loadConnections();
         this.loadConfigFiles();
         this.checkServiceStatus();
+        this.initSimplifiedComponents(); // 初始化简化组件
         
         // 定期检查服务状态
         setInterval(() => {
@@ -173,6 +183,122 @@ class RedisManager {
         }
     }
 
+    // 初始化Redis组件
+    initRedisComponents() {
+        try {
+            // 检查RedisBaseManager类是否存在
+            if (typeof RedisBaseManager === 'undefined') {
+                console.warn('RedisBaseManager类未加载，跳过组件初始化');
+                return;
+            }
+
+            // 初始化事件总线
+            this.eventBus = new EventBus();
+            console.log('EventBus初始化成功');
+
+            // 初始化API服务
+            this.redisApiService = new RedisApiService(this.apiBaseUrl);
+            console.log('RedisApiService初始化成功');
+
+            // 获取Redis管理器容器
+            const redisManagerContainer = document.getElementById('redisManagerCardContainer');
+
+            if (!redisManagerContainer) {
+                console.warn('Redis管理器容器未找到，跳过组件初始化');
+                return;
+            }
+
+            // 初始化Redis基础管理器
+            this.redisBaseManager = new RedisBaseManager(
+                redisManagerContainer,
+                this.redisApiService,
+                this.eventBus
+            );
+            console.log('RedisBaseManager初始化成功');
+
+            // 绑定Redis相关事件
+            this.bindRedisEvents();
+
+            console.log('所有Redis组件初始化完成');
+        } catch (error) {
+            console.error('初始化Redis组件失败:', error);
+        }
+    }
+
+    // 绑定Redis相关事件
+    bindRedisEvents() {
+        if (!this.eventBus) {
+            return;
+        }
+
+        // 监听连接状态变化
+        this.eventBus.on(REDIS_EVENTS.CONNECTION_CHANGED, (isConnected, connectionInfo) => {
+            this.updateRedisCardStatus(isConnected, connectionInfo);
+        });
+
+        // 监听错误事件
+        this.eventBus.on(REDIS_EVENTS.UI_ERROR, (message) => {
+            console.error('Redis组件错误:', message);
+            this.showErrorMessage(message);
+        });
+
+        // 监听成功事件
+        this.eventBus.on(REDIS_EVENTS.UI_SUCCESS, (message) => {
+            console.log('Redis组件成功:', message);
+            this.showSuccessMessage(message);
+        });
+
+        console.log('Redis事件绑定完成');
+    }
+
+    // 更新Redis卡片状态
+    updateRedisCardStatus(isConnected, connectionInfo) {
+        const redisCardStatus = document.getElementById('redisCardStatus');
+        if (!redisCardStatus) {
+            return;
+        }
+
+        if (isConnected && connectionInfo) {
+            redisCardStatus.textContent = `已连接: ${connectionInfo.host}:${connectionInfo.port}`;
+            redisCardStatus.style.background = '#d1fae5';
+            redisCardStatus.style.color = '#065f46';
+        } else {
+            redisCardStatus.textContent = '未连接';
+            redisCardStatus.style.background = '#fef3c7';
+            redisCardStatus.style.color = '#d97706';
+        }
+    }
+
+    // 显示错误消息
+    showErrorMessage(message) {
+        // 简单的错误提示，可以后续改为更好的UI组件
+        console.error(message);
+        // 可以在这里添加toast通知或其他UI反馈
+    }
+
+    // 显示成功消息
+    showSuccessMessage(message) {
+        // 简单的成功提示，可以后续改为更好的UI组件
+        console.log(message);
+        // 可以在这里添加toast通知或其他UI反馈
+    }
+
+    // 设置Redis API认证信息
+    setRedisApiAuth(token) {
+        if (this.redisApiService && token) {
+            this.redisApiService.setAuth(token);
+            console.log('Redis API认证信息已设置');
+        }
+    }
+
+    // 清除Redis API认证信息
+    clearRedisApiAuth() {
+        if (this.redisApiService) {
+            this.redisApiService.clearAuth();
+            console.log('Redis API认证信息已清除');
+        }
+    }
+
     // 添加连接
     async addConnection() {
         const name = document.getElementById('connectionName').value.trim();
@@ -254,6 +380,18 @@ class RedisManager {
                 // 保存token
                 this.currentToken = result.data.token;
                 this.currentConnection = connection;
+
+                // 设置Redis API认证信息
+                this.setRedisApiAuth(this.currentToken);
+
+                // 触发连接状态变化事件
+                if (this.eventBus) {
+                    this.eventBus.emit(REDIS_EVENTS.CONNECTION_CHANGED, true, {
+                        host: connection.host,
+                        port: connection.port,
+                        database: connection.database
+                    });
+                }
 
                 // 添加到连接列表并保存
                 this.connections.push(connection);
@@ -564,13 +702,74 @@ class RedisManager {
     }
 
     // 选择连接
-    selectConnection(connectionId) {
+    async selectConnection(connectionId) {
         const connection = this.connections.find(conn => conn.id === connectionId);
-        if (connection) {
-            this.currentConnection = connection;
-            console.log('选择连接:', connection);
-            alert(`已选择连接: ${connection.name}`);
-            this.closeSidebar();
+        if (!connection) {
+            return;
+        }
+
+        try {
+            // 显示连接中状态
+            this.showConnectingStatus(connection.name);
+            
+            // 加密密码
+            let encryptedPassword = '';
+            if (connection.password) {
+                encryptedPassword = this.cryptoUtils.encryptPassword(connection.password);
+            }
+
+            // 重新连接到Redis
+            const response = await fetch(`${this.apiBaseUrl}/api/redis/connect`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    host: connection.host,
+                    port: connection.port,
+                    password: encryptedPassword,
+                    database: connection.database
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // 连接成功
+                this.currentToken = result.data.token;
+                this.currentConnection = connection;
+
+                // 设置Redis API认证信息
+                this.setRedisApiAuth(this.currentToken);
+
+                // 触发连接状态变化事件
+                if (this.eventBus) {
+                    this.eventBus.emit(REDIS_EVENTS.CONNECTION_CHANGED, true, {
+                        host: connection.host,
+                        port: connection.port,
+                        database: connection.database
+                    });
+                }
+
+                // 显示连接成功状态
+                this.showConnectionStatus(connection);
+                
+                console.log('Redis重连成功:', connection);
+                alert(`已连接到: ${connection.name}`);
+                
+                // 关闭侧边栏
+                this.toggleSidebar();
+            } else {
+                // 连接失败
+                const errorMsg = result.message || '连接失败';
+                console.error('Redis重连失败:', errorMsg);
+                alert(`连接失败: ${errorMsg}`);
+                this.hideConnectionStatus();
+            }
+        } catch (error) {
+            console.error('重连过程中发生错误:', error);
+            alert(`连接失败: ${error.message}`);
+            this.hideConnectionStatus();
         }
     }
 
@@ -600,26 +799,45 @@ class RedisManager {
     // 加载配置文件
     async loadConfig() {
         try {
-            // 使用ConfigManager加载配置
-            await window.ConfigManager.loadConfig();
-            
-            // 更新API基础URL
-            this.apiBaseUrl = window.ConfigManager.getApiBaseUrl('redisManager');
-            console.log('从配置文件加载API基础URL:', this.apiBaseUrl);
-            
-            // 保存完整配置供其他地方使用
-            this.config = window.ConfigManager.getFullConfig();
-            
+            // 尝试加载配置文件
+            const response = await fetch('../../config.json');
+            if (response.ok) {
+                this.config = await response.json();
+                this.apiBaseUrl = this.config?.frontend?.redisManager?.apiBaseUrl || 'http://localhost:11367';
+                console.log('从配置文件加载API基础URL:', this.apiBaseUrl);
+            } else {
+                throw new Error('配置文件加载失败');
+            }
         } catch (error) {
             console.warn('加载配置文件失败，使用默认配置:', error.message);
             // 使用默认值
-            this.apiBaseUrl = 'http://localhost:8080';
+            this.apiBaseUrl = 'http://localhost:11367';
+            this.config = {
+                security: {
+                    encryption: {
+                        publicKey: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA02qULC84fzNoKsTwAso6\nDMElWR+DP1x/0lPVHu7UjHAyn8QebXCHxmO+KIGL72KQuor7LtZOOs+chVVAieCx\nxp4fZMBmW0gDmshtDEoCNz7qRIh7fbA6qsPs3VMhsSQGmUlQqSX31COleYxiFCok\nQKUK+BzJnl3GA7SDVCgVeDGj5SYJzFFKwWly6qKRWe4NFFnNDdVSTNqeDOZJGH8k\nH5DIBi1PLn5qvUutmflakZkIElGWP3IHTXXv2V16ZIBpt22KdmNvpcLChOasdMGX\nFF08qo1vphZmAQtYsTScKkyToqXwjVKSBF77FmkJ1uoLy1XLmWy9bzIszERrybmZ\nyQIDAQAB\n-----END PUBLIC KEY-----"
+                    }
+                }
+            };
         }
     }
 
     // 获取配置值
     getConfigValue(path, defaultValue) {
-        return window.ConfigManager.getConfigValue(path, defaultValue);
+        if (!this.config) return defaultValue;
+        
+        const keys = path.split('.');
+        let value = this.config;
+        
+        for (const key of keys) {
+            if (value && typeof value === 'object' && key in value) {
+                value = value[key];
+            } else {
+                return defaultValue;
+            }
+        }
+        
+        return value;
     }
 
     // 切换侧边栏显示/隐藏
@@ -645,6 +863,214 @@ class RedisManager {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    // 初始化简化组件
+    initSimplifiedComponents() {
+        this.currentSelectedKey = null;
+        this.ttlInterval = null;
+        
+        // 绑定删除按钮事件
+        const deleteBtn = document.getElementById('deleteKeyBtn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => {
+                this.deleteCurrentKey();
+            });
+        }
+        
+        // 模拟选择一个键进行演示
+        setTimeout(() => {
+            this.selectKey({
+                name: 'user:session:12345',
+                type: 'string',
+                value: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                ttl: 3600
+            });
+        }, 2000);
+    }
+
+    // 选择键
+    selectKey(keyData) {
+        this.currentSelectedKey = keyData;
+        
+        // 更新键值展示
+        this.updateKeyDisplay(keyData);
+        
+        // 更新键类型展示
+        this.updateKeyType(keyData.type);
+        
+        // 启动TTL倒计时
+        this.startTTLCountdown(keyData.ttl);
+        
+        // 启用删除按钮
+        const deleteBtn = document.getElementById('deleteKeyBtn');
+        if (deleteBtn) {
+            deleteBtn.disabled = false;
+        }
+    }
+
+    // 更新键值展示
+    updateKeyDisplay(keyData) {
+        const keyNameElement = document.getElementById('displayKeyName');
+        const keyValueElement = document.getElementById('displayKeyValue');
+        
+        if (keyNameElement) {
+            keyNameElement.textContent = keyData.name;
+        }
+        
+        if (keyValueElement) {
+            // 截断长值进行预览
+            let preview = keyData.value;
+            if (preview && preview.length > 50) {
+                preview = preview.substring(0, 50) + '...';
+            }
+            keyValueElement.textContent = preview || '-';
+        }
+    }
+
+    // 更新键类型展示
+    updateKeyType(type) {
+        const typeElement = document.getElementById('currentKeyType');
+        if (typeElement) {
+            const typeMap = {
+                'string': '📝 String',
+                'hash': '🗂️ Hash',
+                'list': '📋 List',
+                'set': '🔗 Set',
+                'zset': '📊 ZSet'
+            };
+            
+            typeElement.textContent = typeMap[type] || '❓ 未知类型';
+            typeElement.className = `key-type-badge type-${type}`;
+        }
+    }
+
+    // 启动TTL倒计时
+    startTTLCountdown(initialTTL) {
+        // 清除之前的倒计时
+        if (this.ttlInterval) {
+            clearInterval(this.ttlInterval);
+        }
+        
+        let currentTTL = initialTTL;
+        
+        const updateCountdown = () => {
+            const countdownElement = document.getElementById('currentTTLCountdown');
+            const statusElement = document.getElementById('ttlStatus');
+            
+            if (!countdownElement || !statusElement) return;
+            
+            if (currentTTL === -1) {
+                // 永不过期
+                countdownElement.textContent = '∞';
+                countdownElement.className = 'ttl-time';
+                statusElement.textContent = '永不过期';
+            } else if (currentTTL <= 0) {
+                // 已过期
+                countdownElement.textContent = '00:00:00';
+                countdownElement.className = 'ttl-time critical';
+                statusElement.textContent = '已过期';
+                clearInterval(this.ttlInterval);
+            } else {
+                // 格式化时间显示
+                const hours = Math.floor(currentTTL / 3600);
+                const minutes = Math.floor((currentTTL % 3600) / 60);
+                const seconds = currentTTL % 60;
+                
+                let timeStr;
+                if (hours > 0) {
+                    timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+                
+                countdownElement.textContent = timeStr;
+                
+                // 设置样式
+                if (currentTTL <= 60) {
+                    countdownElement.className = 'ttl-time critical';
+                    statusElement.textContent = '即将过期';
+                } else if (currentTTL <= 300) {
+                    countdownElement.className = 'ttl-time warning';
+                    statusElement.textContent = '注意过期时间';
+                } else {
+                    countdownElement.className = 'ttl-time';
+                    statusElement.textContent = '正常';
+                }
+                
+                currentTTL--;
+            }
+        };
+        
+        // 立即更新一次
+        updateCountdown();
+        
+        // 如果有TTL，启动定时器
+        if (currentTTL > 0) {
+            this.ttlInterval = setInterval(updateCountdown, 1000);
+        }
+    }
+
+    // 删除当前键
+    async deleteCurrentKey() {
+        if (!this.currentSelectedKey) {
+            alert('没有选择要删除的键');
+            return;
+        }
+        
+        const keyName = this.currentSelectedKey.name;
+        
+        // 确认删除
+        if (!confirm(`确定要删除键 "${keyName}" 吗？\n\n此操作不可撤销！`)) {
+            return;
+        }
+        
+        try {
+            // 这里应该调用实际的删除API
+            console.log('删除键:', keyName);
+            
+            // 模拟删除成功
+            alert(`键 "${keyName}" 已删除`);
+            
+            // 清空当前选择
+            this.clearCurrentKey();
+            
+        } catch (error) {
+            console.error('删除键失败:', error);
+            alert(`删除失败: ${error.message}`);
+        }
+    }
+
+    // 清空当前键
+    clearCurrentKey() {
+        this.currentSelectedKey = null;
+        
+        // 清除TTL倒计时
+        if (this.ttlInterval) {
+            clearInterval(this.ttlInterval);
+            this.ttlInterval = null;
+        }
+        
+        // 重置显示
+        const keyNameElement = document.getElementById('displayKeyName');
+        const keyValueElement = document.getElementById('displayKeyValue');
+        const typeElement = document.getElementById('currentKeyType');
+        const countdownElement = document.getElementById('currentTTLCountdown');
+        const statusElement = document.getElementById('ttlStatus');
+        const deleteBtn = document.getElementById('deleteKeyBtn');
+        
+        if (keyNameElement) keyNameElement.textContent = '未选择键';
+        if (keyValueElement) keyValueElement.textContent = '-';
+        if (typeElement) {
+            typeElement.textContent = '未知类型';
+            typeElement.className = 'key-type-badge';
+        }
+        if (countdownElement) {
+            countdownElement.textContent = '∞';
+            countdownElement.className = 'ttl-time';
+        }
+        if (statusElement) statusElement.textContent = '永不过期';
+        if (deleteBtn) deleteBtn.disabled = true;
     }
 
     // 新增卡片

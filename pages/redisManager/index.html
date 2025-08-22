@@ -1011,6 +1011,691 @@
             }
         }
 
+        /* Redis组件样式 */
+        .redis-component-container {
+            margin-bottom: 16px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* 键值展示组件样式 */
+        .key-display-component {
+            padding: 16px;
+        }
+
+        .key-display-header h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .key-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .key-name-section,
+        .key-value-section {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .key-name-section label,
+        .key-value-section label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .key-name-display,
+        .key-value-preview {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            color: #495057;
+            min-height: 20px;
+        }
+
+        /* 键操作组件样式 */
+        .key-operation-component {
+            padding: 16px;
+        }
+
+        .key-type-section,
+        .delete-operation-section {
+            margin-bottom: 16px;
+        }
+
+        .key-type-header h3,
+        .delete-header h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .type-display {
+            display: flex;
+            align-items: center;
+        }
+
+        .key-type-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background: #e3f2fd;
+            color: #1565c0;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #bbdefb;
+        }
+
+        .delete-content {
+            display: flex;
+            justify-content: center;
+        }
+
+        .delete-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover:not(:disabled) {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .delete-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .delete-btn .btn-icon {
+            font-size: 16px;
+        }
+
+        /* TTL倒计时组件样式 */
+        .ttl-countdown-component {
+            padding: 16px;
+        }
+
+        .ttl-display-header h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .countdown-display {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .countdown-value {
+            margin-bottom: 8px;
+        }
+
+        .ttl-time {
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            color: #28a745;
+        }
+
+        .ttl-time.warning {
+            color: #ffc107;
+        }
+
+        .ttl-time.critical {
+            color: #dc3545;
+            animation: pulse 1s infinite;
+        }
+
+        .ttl-status-text {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .redis-component-container {
+                margin-bottom: 12px;
+            }
+
+            .key-display-component,
+            .key-operation-component,
+            .ttl-countdown-component {
+                padding: 12px;
+            }
+
+            .countdown-display {
+                padding: 16px;
+            }
+
+            .ttl-time {
+                font-size: 24px;
+            }
+        }
+        .redis-manager-card {
+            grid-column: span 2;
+            min-height: 600px;
+        }
+        
+        .redis-manager-card .feature-card-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            grid-template-rows: 1fr auto;
+            gap: 16px;
+            height: 100%;
+            align-items: stretch;
+            justify-content: stretch;
+        }
+        
+        .redis-component-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #keyListContainer {
+            grid-row: span 2;
+        }
+        
+        #keyOperationContainer {
+            min-height: 200px;
+        }
+        
+        #ttlCountdownContainer {
+            min-height: 300px;
+        }
+        
+        /* Redis组件内部样式 */
+        .key-list-component,
+        .key-operation-component,
+        .ttl-countdown-component {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 键列表样式 */
+        .key-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .key-list-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .key-list-stats {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .key-search-container {
+            margin-bottom: 12px;
+        }
+        
+        .key-search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .key-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 4px 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 12px;
+            background: white;
+        }
+        
+        .key-list-items {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .key-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid #f8f9fa;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .key-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .key-item.selected {
+            background: #e3f2fd;
+            border-left: 3px solid #74D0CB;
+        }
+        
+        .key-type-icon {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        
+        .key-name {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            word-break: break-all;
+        }
+        
+        .key-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            font-size: 11px;
+            color: #6c757d;
+        }
+        
+        .key-ttl {
+            margin-bottom: 2px;
+        }
+        
+        .key-size {
+            color: #9ca3af;
+        }
+        
+        /* 键操作样式 */
+        .key-operation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .operation-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .operation-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .operation-btn {
+            padding: 6px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+            color: #495057;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .operation-btn:hover {
+            background: #f8f9fa;
+            border-color: #74D0CB;
+        }
+        
+        .operation-btn.primary {
+            background: #74D0CB;
+            color: white;
+            border-color: #74D0CB;
+        }
+        
+        .operation-btn.danger {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        
+        .selected-key-info {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .key-detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .key-detail-label {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .key-detail-value {
+            color: #6c757d;
+            word-break: break-all;
+        }
+        
+        /* TTL倒计时样式 */
+        .ttl-control-panel {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .panel-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .control-btn {
+            padding: 4px 8px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+        
+        .control-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .panel-stats {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .stat-item {
+            font-size: 12px;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .stat-value.warning {
+            color: #f59e0b;
+        }
+        
+        .stat-value.critical {
+            color: #ef4444;
+        }
+        
+        .countdown-items {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .countdown-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f8f9fa;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .countdown-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .countdown-item.warning {
+            border-left: 3px solid #f59e0b;
+        }
+        
+        .countdown-item.critical {
+            border-left: 3px solid #ef4444;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        
+        .countdown-time {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .countdown-time.warning {
+            color: #f59e0b;
+        }
+        
+        .countdown-time.critical {
+            color: #ef4444;
+        }
+        
+        .progress-bar {
+            height: 2px;
+            background: #e9ecef;
+            border-radius: 1px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #74D0CB;
+            transition: width 0.3s;
+        }
+        
+        .progress-fill.warning {
+            background: #f59e0b;
+        }
+        
+        .progress-fill.critical {
+            background: #ef4444;
+        }
+        
+        .item-details {
+            display: flex;
+            gap: 12px;
+            font-size: 10px;
+            color: #9ca3af;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .modal.show {
+            opacity: 1;
+        }
+        
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-dialog {
+            position: relative;
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .modal-header h4 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 4px;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 16px 20px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+        
+        .btn-primary {
+            background: #74D0CB;
+            color: white;
+            border-color: #74D0CB;
+        }
+        
+        .btn-primary:hover {
+            background: #5BC0BA;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 1200px) {
+            .redis-manager-card .feature-card-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr auto auto;
+            }
+            
+            #keyListContainer {
+                grid-row: auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .redis-manager-card {
+                grid-column: span 1;
+                min-height: 400px;
+            }
+            
+            .redis-component-container {
+                padding: 12px;
+            }
+        }
+
         /* 大屏幕优化 */
         @media (min-width: 1200px) {
             .sidebar {
@@ -1142,8 +1827,12 @@
             <!-- 主工作区域 -->
             <div class="workspace">
                 <div class="cards-container">
+                    <!-- Redis键管理卡片容器 -->
+                    <div id="redisManagerCardContainer" class="redis-card-container">
+                        <!-- 动态加载的Redis管理组件将在这里显示 -->
+                    </div>
+                    
                     <!-- 空白卡片 -->
-                    <div class="feature-card"></div>
                     <div class="feature-card"></div>
                     <div class="feature-card"></div>
                     <div class="feature-card"></div>
@@ -1161,7 +1850,11 @@
     <!-- JSEncrypt库用于RSA加密 -->
     <script src="https://cdn.jsdelivr.net/npm/jsencrypt@3.3.2/bin/jsencrypt.min.js"></script>
     <script src="crypto.js"></script>
-    <script src="../../utils/ConfigManager.js"></script>
+    
+    <!-- Redis基础组件 -->
+    <script src="components/base/base.js"></script>
+    
+    <!-- Redis管理器主文件 -->
     <script src="index.js"></script>
 </body>
 </html>
