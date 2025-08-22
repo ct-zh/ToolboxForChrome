@@ -930,15 +930,20 @@ class RedisManager {
             
             // 如果是base类型，初始化Redis基础管理器
             if (cardType === 'base') {
-                const redisManagerCard = cardContainer.querySelector('.redis-manager-card');
-                if (redisManagerCard && typeof RedisBaseManager !== 'undefined') {
-                    const redisBaseManager = new RedisBaseManager(
-                        redisManagerCard,
-                        this.redisApiService,
-                        this.eventBus
-                    );
-                    console.log(`Redis基础管理器初始化成功 - 卡片ID: ${uniqueId}`);
-                }
+                // 使用setTimeout确保DOM元素完全渲染后再初始化组件
+                setTimeout(() => {
+                    const redisManagerCard = cardContainer.querySelector('.redis-manager-card');
+                    if (redisManagerCard && typeof RedisBaseManager !== 'undefined') {
+                        const redisBaseManager = new RedisBaseManager(
+                            redisManagerCard,
+                            this.redisApiService,
+                            this.eventBus
+                        );
+                        console.log(`Redis基础管理器初始化成功 - 卡片ID: ${uniqueId}`);
+                    } else {
+                        console.error('未找到redis-manager-card元素或RedisBaseManager类未定义');
+                    }
+                }, 0); // 使用0延迟，让浏览器在下一个事件循环中执行
             }
             
             console.log(`${cardType}类型卡片加载成功 - ID: ${uniqueId}`);

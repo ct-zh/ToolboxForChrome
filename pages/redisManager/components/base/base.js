@@ -247,24 +247,41 @@ class KeyInputComponent {
      * 绑定事件监听器
      */
     bindEvents() {
-        const keyInput = this.container.querySelector('#keyNameInput');
-        const loadKeyBtn = this.container.querySelector('#loadKeyBtn');
-        const clearKeyBtn = this.container.querySelector('#clearKeyBtn');
+        // 使用类选择器和相对查找，避免ID冲突问题
+        const keyInput = this.container.querySelector('.key-input');
+        const loadKeyBtn = this.container.querySelector('.load-btn');
+        const clearKeyBtn = this.container.querySelector('.clear-btn');
+        
+        console.log('KeyInputComponent bindEvents:', {
+            container: this.container,
+            keyInput: keyInput,
+            loadKeyBtn: loadKeyBtn,
+            clearKeyBtn: clearKeyBtn
+        });
         
         if (keyInput) {
             keyInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
+                    console.log('Enter key pressed, loading key...');
                     this.loadKey();
                 }
             });
         }
         
         if (loadKeyBtn) {
-            loadKeyBtn.addEventListener('click', () => this.loadKey());
+            loadKeyBtn.addEventListener('click', () => {
+                console.log('loadKeyBtn clicked');
+                this.loadKey();
+            });
+        } else {
+            console.error('loadKeyBtn not found in container:', this.container);
         }
         
         if (clearKeyBtn) {
-            clearKeyBtn.addEventListener('click', () => this.clearKey());
+            clearKeyBtn.addEventListener('click', () => {
+                console.log('clearKeyBtn clicked');
+                this.clearKey();
+            });
         }
     }
 
@@ -272,7 +289,7 @@ class KeyInputComponent {
      * 加载键
      */
     async loadKey() {
-        const keyInput = this.container.querySelector('#keyNameInput');
+        const keyInput = this.container.querySelector('.key-input');
         const keyName = keyInput.value.trim();
         
         if (!keyName) {
@@ -323,7 +340,7 @@ class KeyInputComponent {
      * 清除当前键
      */
     clearKey() {
-        const keyInput = this.container.querySelector('#keyNameInput');
+        const keyInput = this.container.querySelector('.key-input');
         keyInput.value = '';
         this.currentKey = null;
         
@@ -335,8 +352,8 @@ class KeyInputComponent {
      * 设置加载状态
      */
     setLoading(loading) {
-        const loadKeyBtn = this.container.querySelector('#loadKeyBtn');
-        const keyInput = this.container.querySelector('#keyNameInput');
+        const loadKeyBtn = this.container.querySelector('.load-btn');
+        const keyInput = this.container.querySelector('.key-input');
         
         if (loadKeyBtn) {
             loadKeyBtn.disabled = loading;
