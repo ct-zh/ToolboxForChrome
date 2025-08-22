@@ -15,43 +15,59 @@ import (
 	"github.com/devtoolbox/redis/handlers"
 )
 
-// PingResponse ping接口响应结构
-type PingResponse struct {
-	Status    string `json:"status"`
-	Message   string `json:"message"`
-	Timestamp int64  `json:"timestamp"`
+// 全局Redis管理器
+var (
+	redisManager RedisManager
+	redisMode    RedisMode = MockMode // 默认使用Mock模式
+)
+
+// initRedisManager 初始化Redis管理器
+func initRedisManager() {
+	// 检查环境变量是否指定了Redis模式
+	if mode := os.Getenv("REDIS_MODE"); mode != "" {
+		switch mode {
+		case "mock":
+			redisMode = MockMode
+		case "real":
+			redisMode = RealMode
+		default:
+			log.Printf("未知的Redis模式: %s，使用默认Mock模式", mode)
+			redisMode = MockMode
+		}
+	}
+	
+	switch redisMode {
+	case MockMode:
+		log.Println("使用Mock Redis模式")
+		mockManager := NewMockRedisManager()
+		mockManager.initMockData() // 初始化测试数据
+		redisManager = mockManager
+	case RealMode:
+		log.Println("使用真实Redis连接模式")
+		// TODO: 实现真实Redis连接
+		log.Println("真实Redis连接模式暂未实现，回退到Mock模式")
+		mockManager := NewMockRedisManager()
+		mockManager.initMockData()
+		redisManager = mockManager
+	default:
+		log.Printf("未知的Redis模式: %s，使用Mock模式", redisMode)
+		mockManager := NewMockRedisManager()
+		mockManager.initMockData()
+		redisManager = mockManager
+	}
 }
 
-// ConfigFile 配置文件结构
-type ConfigFile struct {
-	FileName  string     `json:"file_name"`
-	Service   string     `json:"service"`
-	Package   string     `json:"package,omitempty"`
-	FilePath  string     `json:"file_path,omitempty"`
-	RedisKeys []RedisKey `json:"redis_keys"`
-}
-
-// Parameter Redis键参数结构
-type Parameter struct {
-	Index       int    `json:"index"`
-	Type        string `json:"type"`
-	Description string `json:"description"`
-	Placeholder string `json:"placeholder"`
-}
-
-// RedisKey Redis键结构
-type RedisKey struct {
-	Name       string      `json:"name"`
-	Template   string      `json:"template"`
-	Comment    string      `json:"comment"`
-	Parameters []Parameter `json:"parameters"`
-}
-
-// ConfigResponse 配置文件响应结构
-type ConfigResponse struct {
-	Status  string       `json:"status"`
-	Message string       `json:"message"`
-	Data    []ConfigFile `json:"data"`
+// redisKeyHandler 统一处理Redis键相关请求的路由分发
+func redisKeyHandler(w http.ResponseWriter, r *http.Request) {
+	// 根据HTTP方法分发到不同的处理函数
+	switch r.Method {
+	case "GET":
+		keyInfoHandler(w, r)
+	case "DELETE":
+		deleteKeyHandler(w, r)
+	default:
+		http.Error(w, "方法不允许", http.StatusMethodNotAllowed)
+	}
 }
 
 // originValidationMiddleware 来源验证中间件
@@ -98,10 +114,17 @@ func isOriginAllowed(origin, referer string, allowedOrigins []string) bool {
 		return true
 	}
 	
+	// 开发模式：允许本地文件访问（Origin和Referer为空或null）
+	if (origin == "" || origin == "null") && referer == "" {
+		log.Printf("允许本地文件访问: Origin=%s, Referer=%s", origin, referer)
+		return true
+	}
+	
 	// 检查Origin头
-	if origin != "" {
+	if origin != "" && origin != "null" {
 		for _, allowed := range allowedOrigins {
 			if strings.HasPrefix(origin, allowed) {
+				log.Printf("允许Origin访问: %s (匹配规则: %s)", origin, allowed)
 				return true
 			}
 		}
@@ -111,12 +134,14 @@ func isOriginAllowed(origin, referer string, allowedOrigins []string) bool {
 	if referer != "" {
 		for _, allowed := range allowedOrigins {
 			if strings.HasPrefix(referer, allowed) {
+				log.Printf("允许Referer访问: %s (匹配规则: %s)", referer, allowed)
 				return true
 			}
 		}
 	}
 	
 	// 如果都不匹配，则拒绝
+	log.Printf("拒绝访问: Origin=%s, Referer=%s", origin, referer)
 	return false
 }
 
@@ -161,6 +186,127 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	json.NewEncoder(w).Encode(response)
+}
+
+// keyInfoHandler 处理Redis键信息查询请求
+func keyInfoHandler(w http.ResponseWriter, r *http.Request) {
+	// 只允许GET请求
+	if r.Method != "GET" {
+		http.Error(w, "方法不允许", http.StatusMethodNotAllowed)
+		return
+	}
+	
+	// 从URL路径中提取键名
+	path := strings.TrimPrefix(r.URL.Path, "/api/redis/key/")
+	if path == "" {
+		http.Error(w, "缺少键名参数", http.StatusBadRequest)
+		return
+	}
+	
+	// URL解码键名
+	keyName := path
+	if strings.Contains(keyName, "/") {
+		// 如果路径中还有其他部分，只取第一部分作为键名
+		parts := strings.Split(keyName, "/")
+		keyName = parts[0]
+	}
+	
+	log.Printf("查询Redis键信息: %s", keyName)
+	
+	// 获取键信息
+	keyInfo, err := redisManager.GetKeyInfo(keyName)
+	if err != nil {
+		log.Printf("获取键信息失败: %v", err)
+		response := KeyInfoResponse{
+			Status:  "error",
+			Message: fmt.Sprintf("获取键信息失败: %v", err),
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	// 构造响应数据
+	response := KeyInfoResponse{
+		Status:  "success",
+		Message: "获取键信息成功",
+		Data:    *keyInfo,
+	}
+	
+	// 设置响应头
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	
+	// 返回JSON响应
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("编码响应失败: %v", err)
+		http.Error(w, "内部服务器错误", http.StatusInternalServerError)
+		return
+	}
+	
+	log.Printf("键信息查询请求处理成功: %s", keyName)
+}
+
+// deleteKeyHandler 处理Redis键删除请求
+func deleteKeyHandler(w http.ResponseWriter, r *http.Request) {
+	// 只允许DELETE请求
+	if r.Method != "DELETE" {
+		http.Error(w, "方法不允许", http.StatusMethodNotAllowed)
+		return
+	}
+	
+	// 从URL路径中提取键名
+	path := strings.TrimPrefix(r.URL.Path, "/api/redis/key/")
+	if path == "" {
+		http.Error(w, "缺少键名参数", http.StatusBadRequest)
+		return
+	}
+	
+	// URL解码键名
+	keyName := path
+	if strings.Contains(keyName, "/") {
+		// 如果路径中还有其他部分，只取第一部分作为键名
+		parts := strings.Split(keyName, "/")
+		keyName = parts[0]
+	}
+	
+	log.Printf("删除Redis键: %s", keyName)
+	
+	// 删除键
+	err := redisManager.DeleteKey(keyName)
+	if err != nil {
+		log.Printf("删除键失败: %v", err)
+		response := DeleteKeyResponse{
+			Status:  "error",
+			Message: fmt.Sprintf("删除键失败: %v", err),
+			Success: false,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	// 构造响应数据
+	response := DeleteKeyResponse{
+		Status:  "success",
+		Message: "键删除成功",
+		Success: true,
+	}
+	
+	// 设置响应头
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	
+	// 返回JSON响应
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("编码响应失败: %v", err)
+		http.Error(w, "内部服务器错误", http.StatusInternalServerError)
+		return
+	}
+	
+	log.Printf("键删除请求处理成功: %s", keyName)
 }
 
 // configsHandler 处理配置文件列表请求
@@ -363,6 +509,9 @@ func main() {
 		config.PrintConfig()
 	}
 
+	// 初始化Redis管理器
+	initRedisManager()
+
 	// 创建Redis连接处理器
 	redisConnectHandler, err := handlers.NewRedisConnectHandler()
 	if err != nil {
@@ -374,6 +523,7 @@ func main() {
 	http.HandleFunc("/health", originValidationMiddleware(healthHandler))
 	http.HandleFunc("/api/configs", originValidationMiddleware(configsHandler))
 	http.HandleFunc("/api/redis/connect", originValidationMiddleware(redisConnectHandler.HandleConnect))
+	http.HandleFunc("/api/redis/key/", originValidationMiddleware(redisKeyHandler))
 	
 	// 启动服务器
 	port := fmt.Sprintf(":%d", redisConfig.Port)
@@ -382,13 +532,17 @@ func main() {
 	fmt.Printf("Redis API服务启动中...\n")
 	fmt.Printf("配置名称: %s v%s\n", appConfig.Name, appConfig.Version)
 	fmt.Printf("服务地址: http://%s%s\n", host, port)
+	fmt.Printf("Redis模式: %s\n", redisMode)
 	fmt.Printf("日志级别: %s\n", redisConfig.LogLevel)
 	fmt.Printf("配置目录: %s\n", redisConfig.ConfigDir)
 	fmt.Printf("CORS启用: %t\n", redisConfig.CORSEnabled)
+	fmt.Printf("\n=== API接口列表 ===\n")
 	fmt.Printf("Ping接口: http://%s%s/ping\n", host, port)
 	fmt.Printf("健康检查: http://%s%s/health\n", host, port)
 	fmt.Printf("配置文件接口: http://%s%s/api/configs\n", host, port)
 	fmt.Printf("Redis连接接口: http://%s%s/api/redis/connect\n", host, port)
+	fmt.Printf("Redis键查询: http://%s%s/api/redis/key/{keyName}\n", host, port)
+	fmt.Printf("Redis键删除: http://%s%s/api/redis/key/{keyName} (DELETE)\n", host, port)
 	fmt.Println("按 Ctrl+C 停止服务")
 	fmt.Println("")
 	fmt.Println("环境变量支持:")

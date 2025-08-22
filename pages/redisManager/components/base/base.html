@@ -5,62 +5,296 @@
             🔑
         </div>
         <h3 class="feature-card-title">Redis键管理</h3>
-
     </div>
     <div class="feature-card-content">
-        <!-- 水平布局容器 -->
-        <div class="redis-components-horizontal">
-            <!-- 键值展示区域 -->
-            <div id="keyListContainer" class="redis-component-item">
-                <div class="component-header">
-                    <h4>键值展示</h4>
+        <!-- 统一的Redis键管理容器 -->
+        <div class="redis-key-manager">
+            <!-- 键输入区域 -->
+            <div id="keyInputContainer" class="key-input-section">
+                <div class="input-group">
+                    <input type="text" id="keyNameInput" class="key-input" placeholder="请输入Redis键名" />
+                    <button id="loadKeyBtn" class="load-btn">加载键</button>
+                    <button id="clearKeyBtn" class="clear-btn">清除</button>
                 </div>
-                <div class="component-content">
-                    <div class="key-info-row">
+            </div>
+            
+            <!-- 键信息展示区域 -->
+            <div id="keyOperationContainer" class="key-info-section">
+                <div class="info-grid">
+                    <!-- 键名和值 -->
+                    <div class="info-item">
                         <span class="info-label">键名:</span>
                         <span id="displayKeyName" class="info-value">未选择键</span>
                     </div>
-                    <div class="key-info-row">
+                    <div class="info-item">
                         <span class="info-label">键值:</span>
                         <span id="displayKeyValue" class="info-value">-</span>
                     </div>
-                </div>
-            </div>
-            
-            <!-- 键操作区域 -->
-            <div id="keyOperationContainer" class="redis-component-item">
-                <div class="component-header">
-                    <h4>键操作</h4>
-                </div>
-                <div class="component-content">
-                    <div class="key-info-row">
+                    
+                    <!-- 类型和TTL -->
+                    <div class="info-item">
                         <span class="info-label">类型:</span>
                         <span id="currentKeyType" class="key-type-badge">未知类型</span>
                     </div>
-                    <div class="key-info-row">
-                        <button id="deleteKeyBtn" class="delete-btn" disabled>
-                            <span class="btn-icon">🗑️</span>
-                            <span class="btn-text">删除键</span>
-                        </button>
+                    <div class="info-item" id="ttlCountdownContainer">
+                        <span class="info-label">TTL:</span>
+                        <div class="ttl-display">
+                            <span id="currentTTLCountdown" class="ttl-time">∞</span>
+                            <span id="ttlStatus" class="ttl-status-text">未选择键</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- TTL倒计时区域 -->
-            <div id="ttlCountdownContainer" class="redis-component-item">
-                <div class="component-header">
-                    <h4>TTL倒计时</h4>
-                </div>
-                <div class="component-content">
-                    <div class="key-info-row">
-                        <span class="info-label">剩余时间:</span>
-                        <span id="currentTTLCountdown" class="ttl-time">∞</span>
-                    </div>
-                    <div class="key-info-row">
-                        <span id="ttlStatus" class="ttl-status-text">永不过期</span>
-                    </div>
+                
+                <!-- 操作按钮区域 -->
+                <div class="action-section">
+                    <button id="deleteKeyBtn" class="delete-btn" disabled>
+                        <span class="btn-icon">🗑️</span>
+                        <span class="btn-text">删除键</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.redis-key-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.key-input-section {
+    background: white;
+    padding: 16px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.input-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.key-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.key-input:focus {
+    border-color: #74D0CB;
+    box-shadow: 0 0 0 2px rgba(116, 208, 203, 0.1);
+}
+
+.key-input:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.load-btn, .clear-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.load-btn {
+    background: #74D0CB;
+    color: white;
+}
+
+.load-btn:hover:not(:disabled) {
+    background: #5BC0BA;
+}
+
+.load-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+.clear-btn {
+    background: #6b7280;
+    color: white;
+}
+
+.clear-btn:hover {
+    background: #4b5563;
+}
+
+.key-info-section {
+    background: white;
+    padding: 16px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.info-value {
+    font-size: 14px;
+    color: #1f2937;
+    word-break: break-all;
+    padding: 4px 8px;
+    background: #f9fafb;
+    border-radius: 4px;
+    border: 1px solid #e5e7eb;
+}
+
+.key-type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 4px;
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.key-type-badge.type-string {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.key-type-badge.type-hash {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.key-type-badge.type-list {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.key-type-badge.type-set {
+    background: #e0e7ff;
+    color: #5b21b6;
+}
+
+.key-type-badge.type-zset {
+    background: #fecaca;
+    color: #991b1b;
+}
+
+.ttl-display {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ttl-time {
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Monaco', 'Menlo', monospace;
+    color: #1f2937;
+}
+
+.ttl-time.warning {
+    color: #d97706;
+}
+
+.ttl-time.critical {
+    color: #dc2626;
+    animation: pulse 1s infinite;
+}
+
+.ttl-status-text {
+    font-size: 11px;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.action-section {
+    display: flex;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.delete-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.delete-btn:hover:not(:disabled) {
+    background: #b91c1c;
+}
+
+.delete-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+.btn-icon {
+    font-size: 14px;
+}
+
+.btn-text {
+    font-weight: 500;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .load-btn, .clear-btn {
+        width: 100%;
+    }
+}
+</style>

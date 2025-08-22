@@ -29,7 +29,7 @@ class RedisManager {
         this.loadConnections();
         this.loadConfigFiles();
         this.checkServiceStatus();
-        this.initSimplifiedComponents(); // 初始化简化组件
+        // 移除简化组件初始化，键操作功能已移至base组件
         
         // 定期检查服务状态
         setInterval(() => {
@@ -863,224 +863,19 @@ class RedisManager {
         return div.innerHTML;
     }
 
-    // 初始化简化组件
-    initSimplifiedComponents() {
-        this.currentSelectedKey = null;
-        this.ttlInterval = null;
-        
-        // 绑定删除按钮事件
-        const deleteBtn = document.getElementById('deleteKeyBtn');
-        if (deleteBtn) {
-            deleteBtn.addEventListener('click', () => {
-                this.deleteCurrentKey();
-            });
-        }
-        
-        // 模拟选择一个键进行演示
-        setTimeout(() => {
-            this.selectKey({
-                name: 'user:session:12345',
-                type: 'string',
-                value: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-                ttl: 3600
-            });
-        }, 2000);
-    }
+    // 键操作功能已移至base组件中
 
-    // 选择键
-    selectKey(keyData) {
-        this.currentSelectedKey = keyData;
-        
-        // 更新键值展示
-        this.updateKeyDisplay(keyData);
-        
-        // 更新键类型展示
-        this.updateKeyType(keyData.type);
-        
-        // 启动TTL倒计时
-        this.startTTLCountdown(keyData.ttl);
-        
-        // 启用所有删除按钮
-        const deleteBtns = document.querySelectorAll('[id^="deleteKeyBtn"]');
-        deleteBtns.forEach(btn => btn.disabled = false);
-    }
+    // selectKey方法已移至base组件中
 
-    // 更新键值展示
-    updateKeyDisplay(keyData) {
-        const keyNameElements = document.querySelectorAll('[id^="displayKeyName"]');
-        const keyValueElements = document.querySelectorAll('[id^="displayKeyValue"]');
-        
-        keyNameElements.forEach(el => {
-            el.textContent = keyData.name;
-        });
-        
-        keyValueElements.forEach(el => {
-            // 截断长值进行预览
-            let preview = keyData.value;
-            if (preview && preview.length > 50) {
-                preview = preview.substring(0, 50) + '...';
-            }
-            el.textContent = preview || '-';
-        });
-    }
+    // updateKeyDisplay方法已移至base组件中
 
-    // 更新键类型展示
-    updateKeyType(type) {
-        const typeElements = document.querySelectorAll('[id^="currentKeyType"]');
-        const typeMap = {
-            'string': '📝 String',
-            'hash': '🗂️ Hash',
-            'list': '📋 List',
-            'set': '🔗 Set',
-            'zset': '📊 ZSet'
-        };
-        
-        typeElements.forEach(el => {
-            el.textContent = typeMap[type] || '❓ 未知类型';
-            el.className = `key-type-badge type-${type}`;
-        });
-    }
+    // updateKeyType方法已移至base组件中
 
-    // 启动TTL倒计时
-    startTTLCountdown(initialTTL) {
-        // 清除之前的倒计时
-        if (this.ttlInterval) {
-            clearInterval(this.ttlInterval);
-        }
-        
-        let currentTTL = initialTTL;
-        
-        const updateCountdown = () => {
-            const countdownElements = document.querySelectorAll('[id^="currentTTLCountdown"]');
-            const statusElements = document.querySelectorAll('[id^="ttlStatus"]');
-            
-            if (countdownElements.length === 0 || statusElements.length === 0) return;
-            
-            if (currentTTL === -1) {
-                // 永不过期
-                countdownElements.forEach(el => {
-                    el.textContent = '∞';
-                    el.className = 'ttl-time';
-                });
-                statusElements.forEach(el => el.textContent = '永不过期');
-            } else if (currentTTL <= 0) {
-                // 已过期
-                countdownElements.forEach(el => {
-                    el.textContent = '00:00:00';
-                    el.className = 'ttl-time critical';
-                });
-                statusElements.forEach(el => el.textContent = '已过期');
-                clearInterval(this.ttlInterval);
-            } else {
-                // 格式化时间显示
-                const hours = Math.floor(currentTTL / 3600);
-                const minutes = Math.floor((currentTTL % 3600) / 60);
-                const seconds = currentTTL % 60;
-                
-                let timeStr;
-                if (hours > 0) {
-                    timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                } else {
-                    timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                }
-                
-                countdownElements.forEach(el => {
-                    el.textContent = timeStr;
-                    
-                    // 设置样式
-                    if (currentTTL <= 60) {
-                        el.className = 'ttl-time critical';
-                    } else if (currentTTL <= 300) {
-                        el.className = 'ttl-time warning';
-                    } else {
-                        el.className = 'ttl-time';
-                    }
-                });
-                
-                statusElements.forEach(el => {
-                    if (currentTTL <= 60) {
-                        el.textContent = '即将过期';
-                    } else if (currentTTL <= 300) {
-                        el.textContent = '注意过期时间';
-                    } else {
-                        el.textContent = '正常';
-                    }
-                });
-                
-                currentTTL--;
-            }
-        };
-        
-        // 立即更新一次
-        updateCountdown();
-        
-        // 如果有TTL，启动定时器
-        if (currentTTL > 0) {
-            this.ttlInterval = setInterval(updateCountdown, 1000);
-        }
-    }
+    // startTTLCountdown方法已移至base组件中
 
-    // 删除当前键
-    async deleteCurrentKey() {
-        if (!this.currentSelectedKey) {
-            alert('没有选择要删除的键');
-            return;
-        }
-        
-        const keyName = this.currentSelectedKey.name;
-        
-        // 确认删除
-        if (!confirm(`确定要删除键 "${keyName}" 吗？\n\n此操作不可撤销！`)) {
-            return;
-        }
-        
-        try {
-            // 这里应该调用实际的删除API
-            console.log('删除键:', keyName);
-            
-            // 模拟删除成功
-            alert(`键 "${keyName}" 已删除`);
-            
-            // 清空当前选择
-            this.clearCurrentKey();
-            
-        } catch (error) {
-            console.error('删除键失败:', error);
-            alert(`删除失败: ${error.message}`);
-        }
-    }
+    // deleteCurrentKey方法已移至base组件中
 
-    // 清空当前键
-    clearCurrentKey() {
-        this.currentSelectedKey = null;
-        
-        // 清除TTL倒计时
-        if (this.ttlInterval) {
-            clearInterval(this.ttlInterval);
-            this.ttlInterval = null;
-        }
-        
-        // 重置所有卡片的显示
-        const keyNameElements = document.querySelectorAll('[id^="displayKeyName"]');
-        const keyValueElements = document.querySelectorAll('[id^="displayKeyValue"]');
-        const typeElements = document.querySelectorAll('[id^="currentKeyType"]');
-        const countdownElements = document.querySelectorAll('[id^="currentTTLCountdown"]');
-        const statusElements = document.querySelectorAll('[id^="ttlStatus"]');
-        const deleteBtns = document.querySelectorAll('[id^="deleteKeyBtn"]');
-        
-        keyNameElements.forEach(el => el.textContent = '未选择键');
-        keyValueElements.forEach(el => el.textContent = '-');
-        typeElements.forEach(el => {
-            el.textContent = '未知类型';
-            el.className = 'key-type-badge';
-        });
-        countdownElements.forEach(el => {
-            el.textContent = '∞';
-            el.className = 'ttl-time';
-        });
-        statusElements.forEach(el => el.textContent = '永不过期');
-        deleteBtns.forEach(btn => btn.disabled = true);
-    }
+    // clearCurrentKey方法已移至base组件中
 
     // 加载Redis卡片
     async loadRedisCard(cardType = 'base', cardId = null) {
