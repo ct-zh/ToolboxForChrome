@@ -3,6 +3,9 @@
  * 专注于单个Redis键的管理，包含键输入、键操作和TTL倒计时功能
  */
 
+// 引入IdHelper工具
+// 注意：确保在使用前已加载IdHelper.js文件
+
 /**
  * 事件总线类
  * 用于组件间的事件通信
@@ -237,14 +240,7 @@ class KeyInputComponent {
         this.init();
     }
 
-    /**
-     * 获取带卡片ID后缀的元素ID
-     * @param {string} baseId - 基础ID
-     * @returns {string} 完整的元素ID
-     */
-    getElementId(baseId) {
-        return this.cardId ? `${baseId}-${this.cardId}` : baseId;
-    }
+
 
     /**
      * 初始化组件
@@ -257,17 +253,17 @@ class KeyInputComponent {
      * 绑定事件监听器
      */
     bindEvents() {
-        // 使用正确的ID选择器，包含卡片ID后缀
-        const keyInput = this.container.querySelector(`#${this.getElementId('keyNameInput')}`);
-        const loadKeyBtn = this.container.querySelector(`#${this.getElementId('loadKeyBtn')}`);
-        const clearKeyBtn = this.container.querySelector(`#${this.getElementId('clearKeyBtn')}`);
+        // 使用IdHelper工具获取正确的元素
+        const keyInput = IdHelper.querySelector(this.container, 'keyNameInput', this.cardId);
+        const loadKeyBtn = IdHelper.querySelector(this.container, 'loadKeyBtn', this.cardId);
+        const clearKeyBtn = IdHelper.querySelector(this.container, 'clearKeyBtn', this.cardId);
         
         console.log('KeyInputComponent bindEvents:', {
             container: this.container,
             cardId: this.cardId,
-            keyInputId: this.getElementId('keyNameInput'),
-            loadKeyBtnId: this.getElementId('loadKeyBtn'),
-            clearKeyBtnId: this.getElementId('clearKeyBtn'),
+            keyInputId: IdHelper.getElementId('keyNameInput', this.cardId),
+            loadKeyBtnId: IdHelper.getElementId('loadKeyBtn', this.cardId),
+            clearKeyBtnId: IdHelper.getElementId('clearKeyBtn', this.cardId),
             keyInput: keyInput,
             loadKeyBtn: loadKeyBtn,
             clearKeyBtn: clearKeyBtn
@@ -303,7 +299,7 @@ class KeyInputComponent {
      * 加载键
      */
     async loadKey() {
-        const keyInput = this.container.querySelector(`#${this.getElementId('keyNameInput')}`);
+        const keyInput = IdHelper.querySelector(this.container, 'keyNameInput', this.cardId);
         const keyName = keyInput.value.trim();
         
         if (!keyName) {
@@ -354,7 +350,7 @@ class KeyInputComponent {
      * 清除当前键
      */
     clearKey() {
-        const keyInput = this.container.querySelector(`#${this.getElementId('keyNameInput')}`);
+        const keyInput = IdHelper.querySelector(this.container, 'keyNameInput', this.cardId);
         keyInput.value = '';
         this.currentKey = null;
         
@@ -366,8 +362,8 @@ class KeyInputComponent {
      * 设置加载状态
      */
     setLoading(loading) {
-        const loadKeyBtn = this.container.querySelector(`#${this.getElementId('loadKeyBtn')}`);
-        const keyInput = this.container.querySelector(`#${this.getElementId('keyNameInput')}`);
+        const loadKeyBtn = IdHelper.querySelector(this.container, 'loadKeyBtn', this.cardId);
+        const keyInput = IdHelper.querySelector(this.container, 'keyNameInput', this.cardId);
         
         if (loadKeyBtn) {
             loadKeyBtn.disabled = loading;
@@ -409,14 +405,7 @@ class KeyOperationComponent {
         this.init();
     }
 
-    /**
-     * 获取带卡片ID后缀的元素ID
-     * @param {string} baseId - 基础ID
-     * @returns {string} 完整的元素ID
-     */
-    getElementId(baseId) {
-        return this.cardId ? `${baseId}-${this.cardId}` : baseId;
-    }
+
 
     /**
      * 初始化组件
@@ -430,7 +419,7 @@ class KeyOperationComponent {
      * 绑定事件监听器
      */
     bindEvents() {
-        const deleteBtn = this.container.querySelector(`#${this.getElementId('deleteKeyBtn')}`);
+        const deleteBtn = IdHelper.querySelector(this.container, 'deleteKeyBtn', this.cardId);
         
         if (deleteBtn) {
             deleteBtn.addEventListener('click', () => this.deleteKey());
@@ -481,10 +470,10 @@ class KeyOperationComponent {
      * 更新UI显示
      */
     updateUI() {
-        const keyNameEl = this.container.querySelector('#displayKeyName');
-        const keyValueEl = this.container.querySelector('#displayKeyValue');
-        const keyTypeEl = this.container.querySelector('#currentKeyType');
-        const deleteBtn = this.container.querySelector('#deleteKeyBtn');
+        const keyNameEl = IdHelper.querySelector(this.container, 'displayKeyName', this.cardId);
+        const keyValueEl = IdHelper.querySelector(this.container, 'displayKeyValue', this.cardId);
+        const keyTypeEl = IdHelper.querySelector(this.container, 'currentKeyType', this.cardId);
+        const deleteBtn = IdHelper.querySelector(this.container, 'deleteKeyBtn', this.cardId);
         
         if (this.currentKey) {
             if (keyNameEl) keyNameEl.textContent = this.currentKey.name;
@@ -522,7 +511,7 @@ class KeyOperationComponent {
      * 设置加载状态
      */
     setLoading(loading) {
-        const deleteBtn = this.container.querySelector('#deleteKeyBtn');
+        const deleteBtn = IdHelper.querySelector(this.container, 'deleteKeyBtn', this.cardId);
         
         if (deleteBtn) {
             deleteBtn.disabled = loading;
@@ -565,14 +554,7 @@ class TTLCountdownComponent {
         this.init();
     }
 
-    /**
-     * 获取带卡片ID后缀的元素ID
-     * @param {string} baseId - 基础ID
-     * @returns {string} 完整的元素ID
-     */
-    getElementId(baseId) {
-        return this.cardId ? `${baseId}-${this.cardId}` : baseId;
-    }
+
 
     /**
      * 初始化组件
@@ -653,8 +635,8 @@ class TTLCountdownComponent {
      * 更新UI显示
      */
     updateUI(remainingTTL = null) {
-        const countdownEl = this.container.querySelector('#currentTTLCountdown');
-        const statusEl = this.container.querySelector('#ttlStatus');
+        const countdownEl = IdHelper.querySelector(this.container, 'currentTTLCountdown', this.cardId);
+        const statusEl = IdHelper.querySelector(this.container, 'ttlStatus', this.cardId);
         
         if (!this.currentKey) {
             if (countdownEl) {
@@ -757,7 +739,7 @@ class RedisBaseManager {
      */
     initializeComponents() {
         // 初始化键输入组件
-        const keyInputContainer = this.container.querySelector('#keyInputContainer');
+        const keyInputContainer = IdHelper.querySelector(this.container, 'keyInputContainer', this.cardId);
         if (keyInputContainer) {
             this.components.keyInput = new KeyInputComponent(
                 keyInputContainer,
@@ -765,10 +747,12 @@ class RedisBaseManager {
                 this.eventBus,
                 this.cardId
             );
+        } else {
+            console.error('未找到keyInputContainer元素');
         }
         
         // 初始化键操作组件
-        const keyOperationContainer = this.container.querySelector('#keyOperationContainer');
+        const keyOperationContainer = IdHelper.querySelector(this.container, 'keyOperationContainer', this.cardId);
         if (keyOperationContainer) {
             this.components.keyOperation = new KeyOperationComponent(
                 keyOperationContainer,
@@ -779,10 +763,10 @@ class RedisBaseManager {
         }
         
         // 初始化TTL倒计时组件
-        const ttlCountdownContainer = this.container.querySelector('#ttlCountdownContainer');
-        if (ttlCountdownContainer) {
+        const ttlContainer = IdHelper.querySelector(this.container, 'ttlContainer', this.cardId);
+        if (ttlContainer) {
             this.components.ttlCountdown = new TTLCountdownComponent(
-                ttlCountdownContainer,
+                ttlContainer,
                 this.apiService,
                 this.eventBus,
                 this.cardId
