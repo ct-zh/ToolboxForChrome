@@ -142,8 +142,8 @@ class RedisApiService {
      * @returns {Promise<any>} 键值
      */
     async getKeyValue(keyName) {
-        const result = await this.request(`/api/redis/key/${encodeURIComponent(keyName)}/value`);
-        return result.data.value;
+        const keyInfo = await this.getKeyInfo(keyName);
+        return keyInfo.value;
     }
 
     /**
@@ -152,8 +152,8 @@ class RedisApiService {
      * @returns {Promise<string>} 键类型
      */
     async getKeyType(keyName) {
-        const result = await this.request(`/api/redis/key/${encodeURIComponent(keyName)}/type`);
-        return result.data.type;
+        const keyInfo = await this.getKeyInfo(keyName);
+        return keyInfo.type;
     }
 
     /**
@@ -162,8 +162,8 @@ class RedisApiService {
      * @returns {Promise<number>} TTL值
      */
     async getKeyTTL(keyName) {
-        const result = await this.request(`/api/redis/key/${encodeURIComponent(keyName)}/ttl`);
-        return result.data.ttl;
+        const keyInfo = await this.getKeyInfo(keyName);
+        return keyInfo.ttl;
     }
 
     /**

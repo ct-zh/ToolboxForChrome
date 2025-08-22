@@ -150,7 +150,7 @@ class RedisManager {
             const response = await fetch(`${this.apiBaseUrl}/ping`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 // 设置超时
                 signal: AbortSignal.timeout(5000)
@@ -351,7 +351,7 @@ class RedisManager {
             const response = await fetch(`${this.apiBaseUrl}/api/redis/connect`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     host: host,
@@ -456,7 +456,7 @@ class RedisManager {
             const response = await fetch(`${this.apiBaseUrl}/api/configs`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 signal: AbortSignal.timeout(10000)
             });
