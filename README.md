@@ -1,8 +1,5 @@
 # DevToolkit - Chrome开发者工具集插件
 
-![Chrome Web Store](https://img.shields.io/chrome-web-store/v/your-extension-id-here) 
-![GitHub](https://img.shields.io/github/license/ct-zh/ToolboxForChrome)
-
 一个为开发者设计的Chrome插件，提供日常开发工具集合。
 
 ## todolist
