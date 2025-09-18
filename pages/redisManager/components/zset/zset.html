@@ -1,0 +1,59 @@
+<!-- Redis ZSet类型管理组件 -->
+<div class="feature-card redis-zset-card" id="redisZsetCard">
+    <div class="feature-card-header">
+        <div class="feature-card-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;">
+            📊
+        </div>
+        <h3 class="feature-card-title">ZSet管理</h3>
+    </div>
+    <div class="feature-card-content">
+        <!-- ZSet操作区域 -->
+        <div class="zset-operations">
+            <div class="operation-section">
+                <h4>ZSet操作</h4>
+                <div class="operation-buttons">
+                    <button class="operation-btn" id="zaddBtn">
+                        <span class="btn-icon">➕</span>
+                        <span class="btn-text">添加成员</span>
+                    </button>
+                    <button class="operation-btn" id="zremBtn">
+                        <span class="btn-icon">➖</span>
+                        <span class="btn-text">移除成员</span>
+                    </button>
+                    <button class="operation-btn" id="zscoreBtn">
+                        <span class="btn-icon">🔢</span>
+                        <span class="btn-text">获取分数</span>
+                    </button>
+                    <button class="operation-btn" id="zrankBtn">
+                        <span class="btn-icon">📈</span>
+                        <span class="btn-text">获取排名</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 成员列表区域 -->
+            <div class="members-list-section">
+                <h4>成员列表（按分数排序）</h4>
+                <div class="members-container">
+                    <div class="members-header">
+                        <span class="member-rank-header">排名</span>
+                        <span class="member-score-header">分数</span>
+                        <span class="member-value-header">成员值</span>
+                        <span class="member-actions-header">操作</span>
+                    </div>
+                    <div id="zsetMembers" class="members-list">
+                        <!-- ZSet成员将在这里动态显示 -->
+                        <div class="empty-state">
+                            <span>选择一个ZSet类型的键查看成员</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="members-info">
+                    <span class="info-item">成员数: <strong id="zsetMemberCount">0</strong></span>
+                    <span class="info-item">分数范围: <strong id="zsetScoreRange">0-0</strong></span>
+                    <span class="info-item">总大小: <strong id="zsetTotalSize">0B</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redis管理器</title>
+    <link rel="stylesheet" href="redisManager.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边栏切换按钮 -->
+        <button class="sidebar-toggle sidebar-visible" id="sidebarToggle">
+            ◀
+        </button>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>🔧 Redis管理器</h3>
+            </div>
+            
+            <!-- 标签页导航 -->
+            <div class="sidebar-tabs">
+                <button class="tab-btn active" data-tab="connections">🔗 连接管理</button>
+                <button class="tab-btn" data-tab="configs">⚙️ 配置文件</button>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- Redis连接管理标签页 -->
+                <div class="tab-content active" id="connectionsTab">
+                    <!-- 新增连接表单 -->
+                    <div class="connection-form">
+                        <div class="form-group">
+                            <label for="connectionName">连接名称</label>
+                            <input type="text" id="connectionName" placeholder="例如：本地Redis">
+                        </div>
+                        <div class="form-group">
+                            <label for="host">主机地址</label>
+                            <input type="text" id="host" placeholder="localhost" value="localhost">
+                        </div>
+                        <div class="form-group">
+                            <label for="port">端口</label>
+                            <input type="number" id="port" placeholder="6379" value="6379">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">密码</label>
+                            <input type="password" id="password" placeholder="留空表示无密码">
+                        </div>
+                        <div class="form-group">
+                            <label for="database">数据库</label>
+                            <input type="number" id="database" placeholder="0" value="0" min="0" max="15">
+                        </div>
+                        <button class="add-connection-btn" id="addConnection">
+                            ➕ 添加连接
+                        </button>
+                    </div>
+                    
+                    <!-- 连接列表 -->
+                    <div class="connections-list">
+                        <h4>📋 已保存的连接</h4>
+                        <div id="connectionsList">
+                            <!-- 连接项将通过JavaScript动态添加 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 配置文件管理标签页 -->
+                <div class="tab-content" id="configsTab">
+                    <!-- 配置选择器 -->
+                    <div class="config-selector">
+                        <div class="form-group">
+                            <label for="configSearch">选择配置文件</label>
+                            <div class="config-dropdown">
+                                <input type="text" id="configSearch" placeholder="搜索或选择配置文件..." autocomplete="off">
+                                <div class="config-dropdown-list" id="configDropdownList">
+                                    <!-- 配置选项将通过JavaScript动态添加 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Redis键值列表区域 -->
+                    <div class="redis-keys-section">
+                        <div class="form-group">
+                            <label id="redisKeysTitle" style="display: none;">🔑 Redis键值列表</label>
+                            <div id="redisKeysList" style="display: none;">
+                                <!-- Redis键值将通过JavaScript动态添加 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 空状态提示 -->
+                    <div class="config-empty-state" id="configEmptyState">
+                        <div class="empty-state-icon">📁</div>
+                        <h3>暂无配置文件</h3>
+                        <p>请确保后端服务正在运行，并在 data/redis/ 目录下添加配置文件</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部工具栏 -->
+            <div class="toolbar">
+                <div class="toolbar-left">
+
+                    <h1 class="page-title">Redis管理器</h1>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-light" id="statusLight"></div>
+                    <span class="status-text" id="statusText">服务连接中...</span>
+                </div>
+            </div>
+            
+            <!-- 主工作区域 -->
+            <div class="workspace">
+                <div class="cards-container">
+                    <!-- 动态加载的Redis管理组件将在这里显示 -->
+
+                    <!-- 新增卡片按钮 -->
+                    <div class="add-card-button" id="addCardButton">
+                        <div class="add-card-icon">+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JSEncrypt库用于RSA加密 -->
+    <script src="../../assets/libs/jsencrypt.min.js"></script>
+    <script src="crypto.js"></script>
+    
+    <!-- ID助手工具 -->
+    <script src="utils/IdHelper.js"></script>
+    
+    <!-- Redis基础组件 -->
+    <script src="components/base/base.js"></script>
+    
+    <!-- Redis管理器主文件 -->
+    <script src="index.js"></script>
+</body>
+</html>

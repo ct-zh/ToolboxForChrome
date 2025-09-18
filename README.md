@@ -18,80 +18,71 @@
   - [x] **动态键值对编辑**: 将 "Params" 和 "Headers" 从文本域升级为可动态添加/删除的键值对输入框。
   - [x] **URL与Params双向同步**: 实现 URL 输入框与 "Params" 区域的数据双向绑定。
   - [x] **发送请求逻辑更新**: 更新发送请求的逻辑，以适配新的键值对输入方式。
-- todo JSON美化与压缩
+- ✅ JSON美化与压缩
   - 快速格式化凌乱的JSON字符串，使其易于阅读；或压缩JSON以减少传输大小。
 - ✅ 图片 Base64 转换
 - todo SQL 格式化
   - 美化SQL查询语句，使其结构清晰，易于阅读和调试。
-- todo IP 地址查询/归属地查询
-  - 快速查询IP地址的地理位置信息，辅助网络排查。
-- todo User-Agent 解析器
-  - 解析浏览器User-Agent字符串，显示操作系统、浏览器版本等详细信息。
-- todo Cookie/LocalStorage 管理器
-  - 方便查看、编辑和删除当前网站的Cookie和LocalStorage数据。
 - todo 正则表达式测试工具
   - 输入正则表达式和测试文本，实时显示匹配结果，辅助正则编写和调试。
-- todo UUID/GUID 生成器
-  - 快速生成通用唯一标识符（UUID/GUID），常用于唯一ID的生成。
-- todo MD5/SHA 加密工具
-  - 对输入的字符串进行MD5、SHA1、SHA256等常见哈希加密。
-- todo 代码片段管理
-  - 存储和管理常用的代码片段，方便快速插入到开发中。
 - todo 内网接口扫描添加 + 自动造参数
   - 探索内网接口并尝试自动生成请求参数，提高接口调试效率。
-- todo Mermaid 实时预览
-- todo 常用ai工具网站跳转
 
-## 安装
-1. 克隆本仓库
-```bash
-git clone https://github.com/ct-zh/ToolboxForChrome.git
-```
-2. 在Chrome中加载扩展程序：
-   - 打开 `chrome://extensions/`
-   - 启用"开发者模式"
-   - 点击"加载已解压的扩展程序"
-   - 选择本项目目录
-
-## 开发
-```bash
-# 安装依赖
-npm install
-
-# 开发模式
-npm run dev
-
-# 构建生产版本
-npm run build
-```
 
 ## 项目结构
 ```
 /
 ├───assets/
 │   ├───icons/          # 存放扩展图标
-│   ├───libs/           # 存放第三方库，如 qrcode.min.js
-│   └───css/            # 存放全局CSS文件 (如果需要)
+│   │   ├───icon128.png
+│   │   ├───icon16.png
+│   │   └───icon48.png
+│   └───libs/           # 存放第三方库，如 qrcode.min.js
+│       └───qrcode.min.js
+├───backend/            # 后端服务目录
+│   └───redis/          # Redis管理后端服务
+│       ├───config/     # 后端配置管理
+│       ├───go.mod      # Go模块依赖
+│       └───main.go     # 后端服务主程序
 ├───components/         # 存放可复用的UI组件，如导航栏
 │   └───navbar/
 │       ├───navbar.html
 │       └───navbar.js
+├───data/               # 数据文件目录
+│   └───redis/          # Redis配置数据
+│       └───xiangyue.strategy.service.json
 ├───pages/              # 存放各个独立功能的页面及其逻辑
-│   ├───apiTester/
+│   ├───apiTester/      # API测试工具
 │   │   ├───index.html
 │   │   └───index.js
-│   ├───qrcode/
+│   ├───imageBase64/    # 图片Base64转换
 │   │   ├───index.html
 │   │   └───index.js
-│   ├───timestamp/
+│   ├───jsonParser/     # JSON美化与压缩
 │   │   ├───index.html
 │   │   └───index.js
-│   └───urlEncoderDecoder/
+│   ├───qrcode/         # 二维码生成
+│   │   ├───index.html
+│   │   └───index.js
+│   ├───redisManager/   # Redis管理工具
+│   │   ├───index.html
+│   │   └───index.js
+│   ├───timestamp/      # 时间戳转换
+│   │   ├───index.html
+│   │   └───index.js
+│   └───urlEncoderDecoder/ # URL编码/解码
 │       ├───index.html
 │       └───index.js
 ├───popup/              # 扩展的弹出页面及其逻辑
 │   ├───popup.html
 │   └───popup.js
+├───utils/              # 工具类目录
+│   └───ConfigManager.js # 统一配置管理工具
+├───background.js       # 后台脚本
+├───config.json         # 项目配置文件
+├───config.json.example # 配置文件示例
+├───main.html           # 主页面
+├───main.js             # 主页面逻辑
 ├───manifest.json       # 扩展的配置文件
 ├───README.md           # 项目说明文件
 └───.gitignore          # Git忽略文件

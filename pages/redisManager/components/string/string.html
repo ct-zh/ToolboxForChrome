@@ -1,0 +1,43 @@
+<!-- Redis String类型管理组件 -->
+<div class="feature-card redis-string-card" id="redisStringCard">
+    <div class="feature-card-header">
+        <div class="feature-card-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+            📝
+        </div>
+        <h3 class="feature-card-title">String管理</h3>
+    </div>
+    <div class="feature-card-content">
+        <!-- String操作区域 -->
+        <div class="string-operations">
+            <div class="operation-section">
+                <h4>String操作</h4>
+                <div class="operation-buttons">
+                    <button class="operation-btn" id="getStringBtn">
+                        <span class="btn-icon">📖</span>
+                        <span class="btn-text">获取值</span>
+                    </button>
+                    <button class="operation-btn" id="setStringBtn">
+                        <span class="btn-icon">✏️</span>
+                        <span class="btn-text">设置值</span>
+                    </button>
+                    <button class="operation-btn" id="appendStringBtn">
+                        <span class="btn-icon">➕</span>
+                        <span class="btn-text">追加</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 值显示区域 -->
+            <div class="value-display-section">
+                <h4>当前值</h4>
+                <div class="value-container">
+                    <textarea id="stringValue" class="value-textarea" placeholder="选择一个String类型的键查看值" readonly></textarea>
+                </div>
+                <div class="value-info">
+                    <span class="info-item">长度: <strong id="stringLength">0</strong></span>
+                    <span class="info-item">编码: <strong id="stringEncoding">-</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

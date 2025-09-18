@@ -1,2 +1,8 @@
 .DS_Store
 node_modules/
+.trae/
+.vercel/
+CLAUDE.md
+GEMINI_NOTES.md
+GEMINI.md
+.vercel/project.json

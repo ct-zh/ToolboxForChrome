@@ -11,6 +11,9 @@
       "128": "assets/icons/icon128.png"
     }
   },
+  "background": {
+    "service_worker": "background.js"
+  },
   "permissions": [
     "clipboardWrite",
     "clipboardRead",
@@ -22,6 +25,8 @@
   "web_accessible_resources": [
     {
       "resources": [
+        "main.html",
+        "main.js",
         "pages/timestamp/index.html",
         "pages/timestamp/index.js",
         "pages/qrcode/index.html",
@@ -29,6 +34,14 @@
         "assets/libs/qrcode.min.js",
         "pages/urlEncoderDecoder/index.html",
         "pages/urlEncoderDecoder/index.js",
+        "pages/apiTester/index.html",
+        "pages/apiTester/index.js",
+        "pages/imageBase64/index.html",
+        "pages/imageBase64/index.js",
+        "pages/jsonParser/index.html",
+        "pages/jsonParser/index.js",
+        "pages/redisManager/index.html",
+        "pages/redisManager/index.js",
         "components/navbar/navbar.html"
       ],
       "matches": [

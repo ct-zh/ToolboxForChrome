@@ -1,0 +1,56 @@
+<!-- Redis Set类型管理组件 -->
+<div class="feature-card redis-set-card" id="redisSetCard">
+    <div class="feature-card-header">
+        <div class="feature-card-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white;">
+            🔗
+        </div>
+        <h3 class="feature-card-title">Set管理</h3>
+    </div>
+    <div class="feature-card-content">
+        <!-- Set操作区域 -->
+        <div class="set-operations">
+            <div class="operation-section">
+                <h4>Set操作</h4>
+                <div class="operation-buttons">
+                    <button class="operation-btn" id="saddBtn">
+                        <span class="btn-icon">➕</span>
+                        <span class="btn-text">添加成员</span>
+                    </button>
+                    <button class="operation-btn" id="sremBtn">
+                        <span class="btn-icon">➖</span>
+                        <span class="btn-text">移除成员</span>
+                    </button>
+                    <button class="operation-btn" id="sismemberBtn">
+                        <span class="btn-icon">🔍</span>
+                        <span class="btn-text">检查成员</span>
+                    </button>
+                    <button class="operation-btn" id="spopBtn">
+                        <span class="btn-icon">🎲</span>
+                        <span class="btn-text">随机弹出</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 成员列表区域 -->
+            <div class="members-list-section">
+                <h4>成员列表</h4>
+                <div class="members-container">
+                    <div class="members-header">
+                        <span class="member-value-header">成员值</span>
+                        <span class="member-actions-header">操作</span>
+                    </div>
+                    <div id="setMembers" class="members-list">
+                        <!-- Set成员将在这里动态显示 -->
+                        <div class="empty-state">
+                            <span>选择一个Set类型的键查看成员</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="members-info">
+                    <span class="info-item">成员数: <strong id="setMemberCount">0</strong></span>
+                    <span class="info-item">总大小: <strong id="setTotalSize">0B</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

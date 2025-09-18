@@ -1,0 +1,2785 @@
+{
+  "service": "xiangyue.strategy.service",
+  "package": "constant",
+  "file_path": "/Users/caoting/go/GOPATH/src/git.inke.cn/changsha/xiangyue/server/room/xiangyue.strategy.service/api/constant/redis_key.go",
+  "redis_keys": [
+    {
+      "name": "TaskIdFinalStageUserType",
+      "template": "%s:xiangyue.strategy.strategy.female.type:%s",
+      "comment": "策略用户第二阶段发送的女性用户类型",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 5
+    },
+    {
+      "name": "MaleOnlineSysInfoTipSendFemaleKey",
+      "template": "%s:xiangyue.strategy.male.online.send:%d",
+      "comment": "男用户上线给女性用户发送的上线通知",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 8
+    },
+    {
+      "name": "FemaleTipOnlineMaleUidKey",
+      "template": "%s:xiangyue.strategy.female.tip.uid:%d",
+      "comment": "女性用户收到的男性的上线通知",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 11
+    },
+    {
+      "name": "OnlineNoticeRecordListKey",
+      "template": "%s:xiangyue.strategy.online.notice.uid:%d",
+      "comment": "在线提醒记录key",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 14
+    },
+    {
+      "name": "OnlineNoticeRecordSendKey",
+      "template": "%s:xiangyue.strategy.online.notice.uid.send:%d:%d:%d",
+      "comment": "在线提醒记录发送状态标记key",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        },
+        {
+          "index": 3,
+          "type": "int",
+          "description": "整数参数4",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 17
+    },
+    {
+      "name": "OnlineNoticeFemaleToMaleKey",
+      "template": "%s:xiangyue.strategy.female.to.male.date:%s:uid:%d",
+      "comment": "女用户已经发送过的男用户的id（按date[20060102]）",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 20
+    },
+    {
+      "name": "MaleChangeOnlineRecentlyKey",
+      "template": "%s:xiangyue.strategy.male.change.online.recently:%d",
+      "comment": "男用户频繁上线标记",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 23
+    },
+    {
+      "name": "UnchargedMaleSendNumsKey",
+      "template": "%s:xiangyue.strategy.uncharged.male.send.num:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 25
+    },
+    {
+      "name": "UserAddToHasIncomeSetFlagDailyCacheKey",
+      "template": "%s:xiangyue.strategy.uid.add.to.has.income.set.daily:%s:%d",
+      "comment": "用户是否已经被加入到今日的付费用户池key",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 28
+    },
+    {
+      "name": "UserHasIncomeSetDailyCacheKey",
+      "template": "%s:xiangyue.strategy.uid.add.to.paid.set.daily:%s",
+      "comment": "用户是否已经被加入到今日的付费用户池key",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 31
+    },
+    {
+      "name": "FemaleUserPickUpV2WatchCacheKey",
+      "template": "%s:xiangyue.strategy.user.pick.up.v2.watch.date:%s:%d",
+      "comment": "女用户搭讪 v2 版本 看过的人，set 结构",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 34
+    },
+    {
+      "name": "FemaleUserPickUpV2TimesOfCycleKey",
+      "template": "%s:xiangyue.strategy.user.pick.up.v2.times.of.cycle:%d",
+      "comment": "女用户本轮已经搭讪的次数 string 结构",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 37
+    },
+    {
+      "name": "FemaleUserPickUpPreAllocationKey",
+      "template": "%s:xiangyue.strategy.user.pick.up.pre.allocation:%d",
+      "comment": "批量打招呼预分配用户列表string 结构，用逗号分隔",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 40
+    },
+    {
+      "name": "FemaleUserPickUpSubmitTimesKey",
+      "template": "%s:xiangyue.strategy.user.pick.up.submit.times:%d",
+      "comment": "批量打招呼次数详情，hash",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 43
+    },
+    {
+      "name": "FemaleUserPickUpV2RefreshTagKey",
+      "template": "%s:xiangyue.strategy.user.pick.up.v2.refresh.tag:uid:%d",
+      "comment": "女用户需要休息的标记 ttl 即为过期时间",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 46
+    },
+    {
+      "name": "FemaleUserPickUpV2TotalCacheKey",
+      "template": "%s:xiangyue.strategy.user.pick.up.v2.user.total.date:%s:%d",
+      "comment": "女用户搭讪 v2 版本 看过的人的次数",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 49
+    },
+    {
+      "name": "MaleLatestRegisterUIDListCacheKey",
+      "template": "%s:xiangyue.strategy.user.male.latest.register.uid.list.key",
+      "comment": "最近注册的男用户",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 52
+    },
+    {
+      "name": "MaleLatestRegisterUIDListV4CacheKey",
+      "template": "%s:xiangyue.strategy.user.male.latest.register.uid.v4.list.key",
+      "comment": "最近注册的男用户v4",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 55
+    },
+    {
+      "name": "MaleOldNoChargeUIDListCacheKey",
+      "template": "%s:xiangyue.strategy.user.male.old.no_charge.uid.v2.list.key",
+      "comment": "未付费老男用户池",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 58
+    },
+    {
+      "name": "MaleUnchargedUIDListCacheKey",
+      "template": "%s:xiangyue.strategy.user.male.online.uncharged.uid.list.key",
+      "comment": "在线未付费男用户",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 61
+    },
+    {
+      "name": "MaleChargedUIDListCacheKey",
+      "template": "%s:xiangyue.strategy.user.male.online.charged.uid.list.key",
+      "comment": "在线付费男用户",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 64
+    },
+    {
+      "name": "FemaleUserPickUpV3FirstOfCycleCacheKey",
+      "template": "%s:xiangyue.strategy.user.pick.up.v3.first.of.cycle:%d",
+      "comment": "最近注册的男用户",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 67
+    },
+    {
+      "name": "OnlineNoticeJobKey",
+      "template": "%s:xiangyue.strategy.user.online.notice.job",
+      "comment": "上线提醒任务锁",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 70
+    },
+    {
+      "name": "OnlineNoticeLastTime",
+      "template": "%s:xiangyue.strategy.user.online.notice.last.time",
+      "comment": "上线提醒最后时间",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 73
+    },
+    {
+      "name": "UserIMAccostListKey",
+      "template": "%s:xiangyue.imcenter.user.im.accost.list:%d",
+      "comment": "用户im搭讪列表",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 76
+    },
+    {
+      "name": "UserIntimacyKey",
+      "template": "%s:xiangyue.strategy.user.intimacy:%d",
+      "comment": "用户亲密度",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 79
+    },
+    {
+      "name": "UserBlackKey",
+      "template": "%s:xiangyue.strategy.user.black:%d",
+      "comment": "用户黑名单",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 82
+    },
+    {
+      "name": "UserSettingSettingCacheKey",
+      "template": "%s:xiangyue:strategy.user.buz.user.setting.uid:%d",
+      "comment": "用户设置缓存key",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 85
+    },
+    {
+      "name": "UserServiceBlackCacheKey",
+      "template": "%s:xiangyue:strategy.user.buz.service.black.uid:%s",
+      "comment": "服务黑名单缓存key",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 88
+    },
+    {
+      "name": "OnlineNoticeLimitByFemaleKey",
+      "template": "%s:xiangyue.strategy.user.online.notice.limit.female:%d",
+      "comment": "不给女用户推送上线提醒的男用户列表Key",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 91
+    },
+    {
+      "name": "PickUpOffsetGlobalKey",
+      "template": "%s:xiangyue.strategy.user.online.pick_up.offset",
+      "comment": "批量打招呼最近注册男用户offset",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 94
+    },
+    {
+      "name": "PickUpOnlineMaleOffsetGlobalKey",
+      "template": "%s:xiangyue.strategy.user.global.online.pick_up.offset",
+      "comment": "批量打招呼全局在线男用户offset",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 97
+    },
+    {
+      "name": "PickUpOnlineFemaleOffsetGlobalKey",
+      "template": "%s:xiangyue.strategy.user.global.online.pick_up.offset.female",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 98
+    },
+    {
+      "name": "PickUpOnlineMaleOffsetSecondKey",
+      "template": "%s:xiangyue.strategy.user.global.online.pick_up.second.offset",
+      "comment": "批量打招呼在线男用户单秒offset",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 101
+    },
+    {
+      "name": "PickUpOnlineFemaleOffsetSecondKey",
+      "template": "%s:xiangyue.strategy.user.global.online.pick_up.second.offset.female",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 102
+    },
+    {
+      "name": "PickUpNoChargeOffsetGlobalKey",
+      "template": "%s:xiangyue.strategy.user.online.pick_up.old.no_charge.v2.offset",
+      "comment": "批量打招呼未付费老男用户offset",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 105
+    },
+    {
+      "name": "PickUpMalePerMinutesLimitKey",
+      "template": "%s:xiangyue:strategy.user.pick_up.v3.male.per.minutes.limit:%s",
+      "comment": "批量打招呼男用户每分钟限制 %s Hm",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 108
+    },
+    {
+      "name": "PickUpMalePerMinutesOverLimitKey",
+      "template": "%s:xiangyue:strategy.user.pick_up.v3.male.per.minutes.over_limit:%s",
+      "comment": "批量打招呼已经超出每分钟限制的男用户 %s Hm",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 111
+    },
+    {
+      "name": "PickUpUserQueueKey",
+      "template": "%s:xiangyue.strategy.user.pick_up.v4.queue",
+      "comment": "批量打招呼用户队列",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 114
+    },
+    {
+      "name": "PickUpUserMaleQueueKey",
+      "template": "%s:xiangyue.strategy.user.pick_up.v4.queue.male",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 115
+    },
+    {
+      "name": "OnlineNoticeWomanLastTailNumKey",
+      "template": "%s:xiangyue.strategy.user.online.notice.woman.last.tail.num:%s",
+      "comment": "上线提醒上一次已推送的女用户尾号",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 118
+    },
+    {
+      "name": "OnlineNoticeMaleLastTailNumKey",
+      "template": "%s:xiangyue.strategy.user.online.notice.male.last.tail.num:%s",
+      "comment": "上线提醒上一次已推送的男用户尾号",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 121
+    },
+    {
+      "name": "OnlineNoticePushedManListKey",
+      "template": "%s:xiangyue.strategy.user.online.notice.pushed.man.list:%d",
+      "comment": "上线提醒已给女用户推送过的男用户集合",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 124
+    },
+    {
+      "name": "WithdrawTipNowKey",
+      "template": "%s:strategy.user.withdraw.tip:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 126
+    },
+    {
+      "name": "OnlineNoticeMaleAssignedLastTimeListKey",
+      "template": "%s.strategy.online.notice.male.assigned.last.time",
+      "comment": "上线提醒男用户最后被分配的时间",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 129
+    },
+    {
+      "name": "OnlineNoticeFemaleAssignedLastTimeListKey",
+      "template": "%s.strategy.online.notice.female.assigned.last.time",
+      "comment": "上线提醒女用户最后被分配的时间",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 132
+    },
+    {
+      "name": "PickUpUserQueueLastTimeKey",
+      "template": "%s:strategy.user.pick_up.v3.queue.last.time",
+      "comment": "批量打招呼用户优先队列上次进入时间",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 135
+    },
+    {
+      "name": "PickUpUserQueueAdditionalDataKey",
+      "template": "%s:strategy.user.pick_up.v3.queue.additional.data:%s:%d",
+      "comment": "批量打招呼用户优先队列额外分配数据",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 138
+    },
+    {
+      "name": "PickUpUserQueueAdditionalLockKey",
+      "template": "%s:strategy.user.pick_up.v3.queue.additional.lock:%d",
+      "comment": "批量打招呼用户优先队列额外分配锁",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 141
+    },
+    {
+      "name": "OnlineNoActionPushPoolKey",
+      "template": "%s:strategy.user.online.no.action.pool:%d",
+      "comment": "上线长时间未交互用户池(性别区分)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 144
+    },
+    {
+      "name": "OnlineNoActionPushJobLockKey",
+      "template": "%s:strategy.user.online.no.action.push.job.lock:%d",
+      "comment": "上线长时间未交互消息推送锁",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 147
+    },
+    {
+      "name": "OnlineNoActionPushedKey",
+      "template": "%s:strategy.user.online.no.action.pushed:%d",
+      "comment": "上线长时间未交互消息已推送用户列表",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 150
+    },
+    {
+      "name": "UserCoinBalanceKey",
+      "template": "%s:strategy.user.coin.balance:%d",
+      "comment": "用户虚拟币余额（数据可能存在偏差，仅供参考。用于策略类非严格要求数据准确性使用）",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 153
+    },
+    {
+      "name": "LocalFriendsUserPoolByCityKey",
+      "template": "%s:strategy.local.friends.user.pool.by.city:%s:%d",
+      "comment": "同城好友-同城用户池(zset),city 名字base64编码",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 156
+    },
+    {
+      "name": "LocalFriendsUserCityInfoKey",
+      "template": "%s:strategy.local.friends.user.city.info",
+      "comment": "同城好友-用户城市信息(hash)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 159
+    },
+    {
+      "name": "LocalFriendsEnableUserPoolKey",
+      "template": "%s:strategy.local.friends.enable.users.pool",
+      "comment": "同城交友-开启功能的所有用户(zset)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 162
+    },
+    {
+      "name": "LocalFriendsUserPoolByUidKey",
+      "template": "%s:strategy.local.friends.user.pool.by.uid:%d",
+      "comment": "同城交友-用户自己的同城好友列表（zset）,定时刷新",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 165
+    },
+    {
+      "name": "LocalFriendsUserWatchedByUidKey",
+      "template": "%s:strategy.local.friends.user.watched.by.uid:%d",
+      "comment": "同城交友-用户自己已看过的同城好友列表（set）,用户查看同城好友列表时，排重",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 168
+    },
+    {
+      "name": "LocalFriendsUserPoolByUidRefreshJobLockKey",
+      "template": "%s:strategy.local.friends.user.pool.refresh.job.lock:%d",
+      "comment": "同城交友-刷新同城好友列表任务锁",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 171
+    },
+    {
+      "name": "LocalFriendsUserPoolByUidRefreshJobListKey",
+      "template": "%s:strategy.local.friends.user.pool.refresh.job.list",
+      "comment": "同城交友-刷新同城好友列表任务列表(zset)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 174
+    },
+    {
+      "name": "PickupSameMsgFilterPoolByUid",
+      "template": "%s:strategy.pickup.same.msg.filter.pool:%s:%d:%d",
+      "comment": "重复搭讪语过滤(set)(日期+uid+搭讪语ID)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        },
+        {
+          "index": 3,
+          "type": "int",
+          "description": "整数参数4",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 177
+    },
+    {
+      "name": "FemaleOnlineListByAppNameKey",
+      "template": "%s:strategy.female.online.list.by.app.name:%s",
+      "comment": "在线女用户池子（zset） 根据女用户appname区分",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 180
+    },
+    {
+      "name": "MaleOnlineListByAppNameKey",
+      "template": "%s:strategy.male.online.list.by.app.name:%s",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 182
+    },
+    {
+      "name": "OnlineNoticeByAppNameJobKey",
+      "template": "%s:strategy.user.online.notice.by.app.name.job:%s",
+      "comment": "上线提醒任务锁(区分app)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 185
+    },
+    {
+      "name": "OnlineNoticeMaleListKey",
+      "template": "%s:strategy.online.notice.male.list:%s",
+      "comment": "上线提醒待分配男用户列表",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 188
+    },
+    {
+      "name": "OnlineNoticeFemaleListKey",
+      "template": "%s:strategy.online.notice.female.list:%s",
+      "comment": "上线提醒待分配女用户列表",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 191
+    },
+    {
+      "name": "LoveDiaryOnlinePushLastPushTimeKey",
+      "template": "%s:strategy.love.diary.online.push.last.push.time:%d",
+      "comment": "恋爱日记上线提醒最后发送时间",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 194
+    },
+    {
+      "name": "UserCityInfoKey",
+      "template": "%s:strategy.user.city.info:%d",
+      "comment": "用户城市信息(string)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 197
+    },
+    {
+      "name": "UserCityListKey",
+      "template": "%s:strategy.user.city.list",
+      "comment": "用户城市信息(set)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 199
+    },
+    {
+      "name": "LuckyNumberPairPoolMaleKey",
+      "template": "%s:strategy.lucky.number.pair.pool.male:%d",
+      "comment": "数字心缘男用户匹配池(zset)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 201
+    },
+    {
+      "name": "LuckyNumberPairPoolFemaleByGlobalKey",
+      "template": "%s:strategy.lucky.number.pair.pool.female.global",
+      "comment": "数字心缘女用户匹配池-全局(zset)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 203
+    },
+    {
+      "name": "LuckyNumberPairPoolFemaleBySameCityKey",
+      "template": "%s:strategy.lucky.number.pair.pool.female.same.city:%s",
+      "comment": "数字心缘女用户匹配池-同省(zset)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 205
+    },
+    {
+      "name": "LuckyNumberUserMatchingNumKey",
+      "template": "%s:strategy.lucky.number.user.matching.num:%s:%d",
+      "comment": "数字心缘用户匹配次数(string)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 207
+    },
+    {
+      "name": "LuckyNumberUserMatchingLockKey",
+      "template": "%s:strategy.lucky.number.user.matching.lock:%d",
+      "comment": "数字心缘用户匹配锁(string)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 209
+    },
+    {
+      "name": "LuckyNumberUserMatchingCoolingTimeKey",
+      "template": "%s:strategy.lucky.number.user.matching.cooling.time:%d:%d",
+      "comment": "数字心缘用户匹配成功对冷却时间(string)(小uid+大uid)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 211
+    },
+    {
+      "name": "LuckyNumberUserMatchingDetailKey",
+      "template": "%s:strategy.lucky.number.user.matching.detail:%s",
+      "comment": "数字心缘用户匹配详情(hash)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 213
+    },
+    {
+      "name": "UserDistributionInfoKey",
+      "template": "%s:strategy.user.distributed.info:%d",
+      "comment": "用户分配信息",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 216
+    },
+    {
+      "name": "DistLimitByAvgTimeRecMsgTimeKey",
+      "template": "%s:strategy.distribution.limit.by.avg.time.last.rec.msg.time:%d",
+      "comment": "用户最后收信时间-平均时间发送限制",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 219
+    },
+    {
+      "name": "DistLimitByAvgTimeDistTimeKey",
+      "template": "%s:strategy.distribution.limit.by.avg.time.last.dist.time:%d",
+      "comment": "用户最后被分配时间-平均时间发送限制",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 222
+    },
+    {
+      "name": "SendUserLuckyBottleLockKey",
+      "template": "%s:strategy.lucky.bottle.send.lock:%d",
+      "comment": "漂流瓶-发送锁",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 225
+    },
+    {
+      "name": "PickUpUserLuckyBottleLockKey",
+      "template": "%s:strategy.lucky.bottle.pick.up.lock:%d",
+      "comment": "漂流瓶-打捞锁",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 227
+    },
+    {
+      "name": "UserLuckyBottleOpInfoKey",
+      "template": "%s:strategy.lucky.bottle.user.op.info:%s:%d",
+      "comment": "漂流瓶-用户发送/打捞信息",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 229
+    },
+    {
+      "name": "UserLuckyBottleInfoKey",
+      "template": "%s:strategy.lucky.bottle.info:%d",
+      "comment": "漂流瓶-数据详情",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 231
+    },
+    {
+      "name": "UserLuckyBottlePairPoolBySameCityKey",
+      "template": "%s:strategy.lucky.bottle.pair.pool.same.city:%d:%s",
+      "comment": "漂流瓶-同城匹配池（性别+城市）",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "string",
+          "description": "字符串参数3",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 233
+    },
+    {
+      "name": "UserLuckyBottlePairPoolByGlobalKey",
+      "template": "%s:strategy.lucky.bottle.pair.pool.global:%d",
+      "comment": "漂流瓶-同城匹配池(全局)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 235
+    },
+    {
+      "name": "UserLuckyBottlePickedKey",
+      "template": "%s:strategy.lucky.bottle.picked:%s:%d",
+      "comment": "漂流瓶-用户当天匹配过的用户",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 237
+    },
+    {
+      "name": "UserLuckyBottleSendTipsLockKey",
+      "template": "%s:strategy.lucky.bottle.send.tips:%d:%s",
+      "comment": "漂流瓶-提示锁",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "string",
+          "description": "字符串参数3",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 239
+    },
+    {
+      "name": "UserLuckyBottleIdPickedKey",
+      "template": "%s:strategy.lucky.bottle.id.picked:%s:%d",
+      "comment": "漂流瓶-获取记录",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 241
+    },
+    {
+      "name": "OnlineNoticeByAppNameJobV2Key",
+      "template": "%s:strategy.user.online.notice.by.app.name.job:%s:%d",
+      "comment": "上线提醒任务锁(区分app)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 244
+    },
+    {
+      "name": "OnlineNoticeFemaleAssignedListKey",
+      "template": "%s:strategy.user.online.female.notice.assigned.list",
+      "comment": "最近被分配的女用户",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 247
+    },
+    {
+      "name": "OnlineNoticeFemaleAssignedDealLockKey",
+      "template": "%s:strategy.user.online.female.notice.assigned.deal.lock",
+      "comment": "最近被分配的女用户处理锁",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 249
+    },
+    {
+      "name": "OnlineNoticeMaleAssignedListKey",
+      "template": "%s:strategy.user.online.male.notice.assigned.list",
+      "comment": "最近被分配的男用户",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 252
+    },
+    {
+      "name": "OnlineNoticeMaleAssignedDealLockKey",
+      "template": "%s:strategy.user.online.male.notice.deal.lock",
+      "comment": "最近被分配的男用户处理锁",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 254
+    },
+    {
+      "name": "PayToAddTimesLockKey",
+      "template": "%s:strategy.pay.to.add.times.lock.v2:%d:%d",
+      "comment": "付费增加指定活动次数 锁",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 257
+    },
+    {
+      "name": "UserRegisterTimeKey",
+      "template": "%s:strategy.user.register.time:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 259
+    },
+    {
+      "name": "UserRechargeTotalDailyKey",
+      "template": "%s:strategy.user.recharge.total:%d:%s",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "string",
+          "description": "字符串参数3",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 261
+    },
+    {
+      "name": "UserFirstRechargeKey",
+      "template": "%s:strategy.user.first.recharge:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 263
+    },
+    {
+      "name": "UserLoginEventKey",
+      "template": "%s:strategy.user.login.event:%d:%s",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "string",
+          "description": "字符串参数3",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 265
+    },
+    {
+      "name": "UserPointDailyKey",
+      "template": "%s:strategy.user.point.daily:%d:%s",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "string",
+          "description": "字符串参数3",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 267
+    },
+    {
+      "name": "UserPointDailyByTypeKey",
+      "template": "%s:strategy.user.point.daily.by.type:%d:%d:%s",
+      "comment": "用户每日积分收入 按类型区分 %d=uid %d=pointType %s=date(20050102)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        },
+        {
+          "index": 3,
+          "type": "string",
+          "description": "字符串参数4",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 270
+    },
+    {
+      "name": "UserReplyRateKey",
+      "template": "%s:strategy.user.reply.rate:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 272
+    },
+    {
+      "name": "StrategyUserLevelKey",
+      "template": "%s:strategy.user.level:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 274
+    },
+    {
+      "name": "UserAuthenticationKey",
+      "template": "%s:strategy.user.authentication:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 276
+    },
+    {
+      "name": "FinanceRechargeKafkaDealLockKey",
+      "template": "%s:strategy.finance.recharge.kafka.deal.lock:%s",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 278
+    },
+    {
+      "name": "UserLevelCalcTimeKey",
+      "template": "%s:strategy.user.level.calc.time:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 280
+    },
+    {
+      "name": "OnlineLevelUserKey",
+      "template": "%s:strategy.online.level.user:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 282
+    },
+    {
+      "name": "NewDistributeUserInfoKey",
+      "template": "%s:strategy.new.distribute.user.info:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 284
+    },
+    {
+      "name": "NewDistributeMatchPoolKey",
+      "template": "%s:strategy.new.distribute.match.pool:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 286
+    },
+    {
+      "name": "NewDistributeMatchStartLockKey",
+      "template": "%s:strategy.new.distribute.match.start.lock:%d:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 288
+    },
+    {
+      "name": "NewDistributeMatchDealLockKey",
+      "template": "%s:strategy.new.distribute.match.deal.lock:%d:%s",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "string",
+          "description": "字符串参数3",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 290
+    },
+    {
+      "name": "NewDistributeMatchRepeatLockKey",
+      "template": "%s:strategy.new.distribute.match.repeat.lock:%d:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 292
+    },
+    {
+      "name": "NewDistributeJoinLockKey",
+      "template": "%s:strategy.new.distribute.join.lock:%d:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 294
+    },
+    {
+      "name": "NewDistributeSendRecordKey",
+      "template": "%s:strategy.new.distribute.send.record:%d:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 296
+    },
+    {
+      "name": "NewDistributeSendAutoReplyKey",
+      "template": "%s:strategy.new.distribute.send.auto.reply",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 298
+    },
+    {
+      "name": "NewDistributeSendAutoReplyLockKey",
+      "template": "%s:strategy.new.distribute.send.auto.reply.lock:%d:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 300
+    },
+    {
+      "name": "OnlineLastDidCacheKey",
+      "template": "%s:strategy.online.last.did.cache:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 302
+    },
+    {
+      "name": "NewDistributeLimitKey",
+      "template": "%s:strategy.new.distribute.limit.%s.%s:%d",
+      "comment": "",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "string",
+          "description": "字符串参数3",
+          "placeholder": "%s"
+        },
+        {
+          "index": 3,
+          "type": "int",
+          "description": "整数参数4",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 304
+    },
+    {
+      "name": "CallInviteDialogTimeoutCacheKey",
+      "template": "%s:strategy.invite.dialog.timeout.cache:%d:%s",
+      "comment": "视频通话邀请弹框超时key redis锁，锁一天",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "string",
+          "description": "字符串参数3",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 307
+    },
+    {
+      "name": "CallInviteDialogRequestLockKey",
+      "template": "%s:strategy.invite.dialog.request.lock:%d",
+      "comment": "视频通话邀请弹框请求，防止重复请求锁，锁28秒",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 310
+    },
+    {
+      "name": "CallInviteDialogTimeoutQueueKey",
+      "template": "%s:strategy.invite.dialog.timeout.queue",
+      "comment": "视频通话邀请弹框超时队列，member是uid，score是写入时的时间戳",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 313
+    },
+    {
+      "name": "CallInviteDialogTimeoutQueueLockKey",
+      "template": "%s:strategy.invite.dialog.timeout.queue.lock",
+      "comment": "视频通话邀请弹框超时队列，防止重复请求锁",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 316
+    },
+    {
+      "name": "BossVideoRankKey",
+      "template": "videoScore%s",
+      "comment": "boss后台生成的每三日视频分数排行 %s=20060102",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 319
+    },
+    {
+      "name": "CallInviteDialogUserPoolKey",
+      "template": "%s:strategy.invite.dialog.user.pool:%d",
+      "comment": "视频邀请通话弹窗 - 用户分数池",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 322
+    },
+    {
+      "name": "CallInviteDialogRecommendedCache",
+      "template": "%s:strategy.invite.dialog.recommended.cache:%s",
+      "comment": "每天已经推荐过的用户set",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 325
+    },
+    {
+      "name": "PickUpLevelUserTimesKey",
+      "template": "%s:strategy.pickup.level.user.times:%d:%s",
+      "comment": "用户搭讪次数计数器(按天) hash类型 %d=uid, %s=date(20060102), hash_key=hour(15)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "string",
+          "description": "字符串参数3",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 328
+    },
+    {
+      "name": "PickUpLevelUserLockKey",
+      "template": "%s:strategy.pickup.level.user.lock:%d:%d",
+      "comment": "用户搭讪等级-行为锁 string类型 %d=uid, %d=action",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 331
+    },
+    {
+      "name": "PickUpLevelRollbackTokenKey",
+      "template": "%s:strategy.pickup.level.rollback.token:%d:%s",
+      "comment": "搭讪次数回滚令牌 string类型 %d=uid, %s=rollbackToken",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "string",
+          "description": "字符串参数3",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 334
+    },
+    {
+      "name": "PickUpLevelUserCacheKey",
+      "template": "%s:strategy.pickup.level.user.cache:%d:%s",
+      "comment": "用户搭讪等级缓存 string类型 %d=uid, %s=date(20060102)",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        },
+        {
+          "index": 2,
+          "type": "string",
+          "description": "字符串参数3",
+          "placeholder": "%s"
+        }
+      ],
+      "type": "string",
+      "line": 337
+    },
+    {
+      "name": "UserLatestHeartBeatTimestampKey",
+      "template": "%s:strategy.user.latest.heartbeat.timestamp:%d",
+      "comment": "用户最近一次心跳时间戳 string类型 %d=uid",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "int",
+          "description": "整数参数2",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 340
+    },
+    {
+      "name": "UserTodayOnlineTimeCountKey",
+      "template": "%s:strategy.user.today.online.time.count:%s:%d",
+      "comment": "用户当日在线时长 string类型 %s=date(20060102), %d=uid",
+      "parameters": [
+        {
+          "index": 0,
+          "type": "string",
+          "description": "字符串参数",
+          "placeholder": "%s"
+        },
+        {
+          "index": 1,
+          "type": "string",
+          "description": "字符串参数2",
+          "placeholder": "%s"
+        },
+        {
+          "index": 2,
+          "type": "int",
+          "description": "整数参数3",
+          "placeholder": "%d"
+        }
+      ],
+      "type": "string",
+      "line": 343
+    }
+  ],
+  "metadata": {
+    "parsed_at": "2025-08-15T17:39:11.179778+08:00",
+    "version": "1.0.0",
+    "total_keys": 130,
+    "file_size": 18549
+  }
+}

@@ -1,0 +1,1886 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 卡片关闭按钮样式 */
+        .card-close-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #dc3545;
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+        }
+
+        .card-close-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
+        }
+
+        .card-close-btn:active {
+            transform: scale(0.95);
+            background: #bd2130;
+        }
+
+        /* Redis组件水平布局样式 */
+        .redis-components-horizontal {
+            display: flex;
+            gap: 16px;
+            width: 100%;
+            height: 100%;
+            min-height: 200px;
+        }
+
+        .redis-component-item {
+            flex: 1;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .component-header {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .component-header h4 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .component-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .key-info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 24px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+            min-width: 60px;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            font-size: 13px;
+            color: #495057;
+            font-weight: 500;
+            word-break: break-all;
+            flex: 1;
+        }
+
+        .key-type-badge {
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .ttl-time {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: #28a745;
+        }
+
+        .ttl-time.warning {
+            color: #ffc107;
+        }
+
+        .ttl-time.critical {
+            color: #dc3545;
+        }
+
+        .ttl-status-text {
+            font-size: 11px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+            align-self: flex-start;
+        }
+
+        .delete-btn:hover:not(:disabled) {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .delete-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-icon {
+            font-size: 12px;
+        }
+
+        .btn-text {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .redis-components-horizontal {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .redis-component-item {
+                min-height: auto;
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #74D0CB 0%, #5BC0BA 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 400px;
+            background: white;
+            margin: 10px 0 10px 10px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1000;
+            transition: transform 0.3s ease, margin 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+            margin-left: -400px;
+        }
+
+        /* 侧边栏切换按钮 */
+        .sidebar-toggle {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #74D0CB;
+            color: white;
+            border: none;
+            width: 24px;
+            height: 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 2000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-toggle:hover {
+            background: #5BC0BA;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .sidebar-toggle.sidebar-visible {
+            left: 420px;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #74D0CB 0%, #5BC0BA 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 12px 12px 0 0;
+        }
+
+
+
+        .sidebar-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 标签页导航 */
+        .sidebar-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6c757d;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #74D0CB;
+            border-bottom-color: #74D0CB;
+        }
+
+        /* 标签页内容 */
+        .sidebar-content {
+            padding: 15px;
+            height: calc(100vh - 100px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 连接表单 */
+        .connection-form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #74D0CB;
+        }
+
+        .add-connection-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #74D0CB 0%, #5BC0BA 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .add-connection-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        /* 连接列表 */
+        .connections-list {
+            border-top: 1px solid #e1e5e9;
+            padding-top: 20px;
+        }
+
+        .connections-list h4 {
+            margin-bottom: 12px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .connection-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .connection-item:hover {
+            background: #e9ecef;
+        }
+
+        .connection-name {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .connection-info {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            margin: 10px 10px 10px 5px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: margin 0.3s ease;
+        }
+
+        .main-content.sidebar-hidden {
+            margin-left: 10px;
+        }
+
+        /* 顶部工具栏 */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: white;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-btn {
+            background: linear-gradient(135deg, #74D0CB 0%, #5BC0BA 100%);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 状态指示器 */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 16px;
+            font-size: 13px;
+            color: #495057;
+            margin-left: 16px;
+            margin-top: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+
+        .status-dot.connected {
+            background: #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connecting {
+            background: #ffc107;
+            animation: blink 1s infinite;
+        }
+
+        .status-dot.disconnected {
+            background: #dc3545;
+        }
+
+        .status-light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #dc3545;
+            transition: background 0.3s;
+        }
+
+        .status-light.connected {
+            background: #28a745;
+        }
+
+        .status-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        /* 主工作区域 */
+        .workspace {
+            flex: 1;
+            padding: 15px;
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+
+        /* 配置文件管理模块 */
+        .config-management-section {
+            max-width: none;
+            margin: 0;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .config-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .config-header h2 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .config-header p {
+            font-size: 16px;
+            color: #6c757d;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+
+
+        /* 配置文件选择器样式 */
+        .config-selector {
+            margin-bottom: 24px;
+        }
+
+        .config-selector .form-group {
+            margin-bottom: 0;
+        }
+
+        .config-selector label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .config-dropdown {
+            position: relative;
+        }
+
+        .config-dropdown input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            background: white;
+        }
+
+        .config-dropdown input:focus {
+            outline: none;
+            border-color: #74D0CB;
+        }
+
+        .config-dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .config-dropdown-list.show {
+            display: block;
+        }
+
+        .config-option {
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .config-option:last-child {
+            border-bottom: none;
+        }
+
+        .config-option:hover {
+            background: #f8f9fa;
+        }
+
+        .config-option.selected {
+            background: #74D0CB;
+            color: white;
+        }
+
+        .config-option-name {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .config-option.selected .config-option-name {
+            color: white;
+        }
+
+        .config-option-file {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .config-option.selected .config-option-file {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* 配置管理区域 */
+        .config-selector {
+            padding: 10px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .redis-keys-section {
+            padding: 10px;
+            margin-top: 5px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .redis-keys-section .form-group {
+            margin-bottom: 4px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .redis-keys-section label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Redis键值列表容器 */
+        #redisKeysList {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2px;
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            min-height: 0;
+        }
+
+        /* 自定义滚动条样式 */
+        #redisKeysList::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #redisKeysList::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        #redisKeysList::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        #redisKeysList::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .redis-key-item {
+            display: flex;
+            align-items: stretch;
+            padding: 2px 4px;
+            margin: 0;
+            background: #f8f9fa;
+            border-radius: 2px;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+            min-height: 28px;
+            gap: 2px;
+            overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .redis-key-item:hover {
+            border-color: #74D0CB;
+            box-shadow: 0 2px 8px rgba(116, 208, 203, 0.15);
+        }
+
+        .redis-key-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 水平布局的Redis键样式 */
+        .redis-key-item.horizontal {
+            display: flex;
+            align-items: stretch;
+            gap: 4px;
+            padding: 2px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: auto;
+            white-space: nowrap;
+            height: auto;
+            min-height: 36px;
+        }
+
+        .redis-key-item.horizontal::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .redis-key-item.horizontal::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .redis-key-item.horizontal::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .redis-key-item.horizontal::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .redis-key-item.horizontal .redis-key-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+            min-width: 200px;
+            flex-shrink: 0;
+            margin: 0;
+            padding: 6px 8px;
+            background: #e8f4f8;
+            border-radius: 4px;
+            border: 1px solid #74D0CB;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .redis-key-item.horizontal .redis-key-template {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: #f8f9fa;
+            padding: 6px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #e74c3c;
+            border-left: 4px solid #74D0CB;
+            flex: 1;
+            min-width: 300px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            box-sizing: border-box;
+            overflow-x: auto;
+        }
+
+        .redis-key-name,
+        .redis-key-template {
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .redis-key-name {
+            background: #e3f2fd;
+            color: #1565c0;
+            font-weight: 500;
+            border: 1px solid #bbdefb;
+        }
+        
+        .redis-key-template {
+            background: #f3e5f5;
+            color: #7b1fa2;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            border: 1px solid #e1bee7;
+        }
+
+        .redis-key-comment {
+            color: #6c757d;
+            font-size: 13px;
+            font-style: italic;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            background: #fff3cd;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border-left: 3px solid #ffc107;
+        }
+
+        .redis-key-parameters {
+            margin-bottom: 10px;
+        }
+
+        .redis-key-parameters strong {
+            color: #495057;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .parameter-item {
+            display: inline-block;
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #495057;
+            margin-right: 6px;
+            margin-bottom: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        .redis-key-type,
+        .redis-key-line {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+
+        .redis-key-type {
+            display: inline-block;
+            background: #d1ecf1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-right: 10px;
+            border: 1px solid #bee5eb;
+        }
+
+        .redis-key-line {
+            display: inline-block;
+            background: #f8d7da;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .config-empty-state {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        /* 卡片布局样式 */
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 0;
+            width: 100%;
+        }
+        
+        .redis-card-wrapper {
+            width: 100%;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 8px;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 新增卡片按钮样式 */
+        .add-card-button {
+            background: transparent;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 24px;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .add-card-button:hover {
+            border-color: #74D0CB;
+            background: rgba(116, 208, 203, 0.05);
+        }
+
+        .add-card-icon {
+            font-size: 32px;
+            color: #9ca3af;
+            transition: color 0.3s ease;
+        }
+
+        .add-card-button:hover .add-card-icon {
+            color: #74D0CB;
+        }
+
+        .feature-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .feature-card-icon {
+            font-size: 24px;
+            margin-right: 12px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .feature-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .feature-card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .feature-card-placeholder {
+            font-size: 14px;
+            color: #9ca3af;
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        .feature-card-status {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #fef3c7;
+            color: #d97706;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .feature-card.coming-soon .feature-card-status {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                margin: 5px;
+                border-radius: 8px;
+            }
+            
+            .main-content {
+                margin: 5px;
+                border-radius: 8px;
+            }
+            
+            .sidebar-content {
+                padding: 10px;
+                height: calc(50vh - 60px);
+            }
+            
+            .toolbar {
+                padding: 16px 20px;
+            }
+            
+            .page-title {
+                font-size: 20px;
+            }
+            
+            .workspace {
+                padding: 15px;
+            }
+
+            /* 移动端卡片布局 */
+            .cards-container {
+                gap: 12px;
+            }
+
+            .feature-card {
+                padding: 20px;
+                min-height: 160px;
+            }
+
+            .feature-card-icon {
+                font-size: 20px;
+                width: 36px;
+                height: 36px;
+            }
+
+            .feature-card-title {
+                font-size: 16px;
+            }
+
+            .feature-card-placeholder {
+                font-size: 13px;
+            }
+
+            .config-selector {
+                padding: 8px;
+                margin-bottom: 8px;
+            }
+
+            .redis-keys-section {
+                padding: 8px;
+            }
+
+            .config-dropdown-list {
+                max-height: 150px;
+            }
+
+            #redisKeysList {
+                max-height: 300px;
+            }
+
+            .redis-key-item {
+                padding: 4px 8px;
+            }
+
+            .redis-key-item.horizontal {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 2px;
+                padding: 2px;
+                min-height: 60px;
+            }
+
+            .redis-key-item.horizontal .redis-key-name {
+                min-width: auto;
+                width: 100%;
+                height: auto;
+                padding: 4px 6px;
+                margin-bottom: 4px;
+                font-size: 12px;
+            }
+
+            .redis-key-item.horizontal .redis-key-template {
+                min-width: auto;
+                width: 100%;
+                height: auto;
+                padding: 4px 6px;
+                overflow-x: auto;
+                margin-bottom: 0;
+                font-size: 12px;
+            }
+        }
+
+        /* 平板端适配 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .workspace {
+                padding: 18px;
+            }
+        }
+
+        /* Redis组件样式 */
+        .redis-component-container {
+            margin-bottom: 16px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* 键值展示组件样式 */
+        .key-display-component {
+            padding: 16px;
+        }
+
+        .key-display-header h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .key-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .key-name-section,
+        .key-value-section {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .key-name-section label,
+        .key-value-section label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .key-name-display,
+        .key-value-preview {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            color: #495057;
+            min-height: 20px;
+        }
+
+        /* 键操作组件样式 */
+        .key-operation-component {
+            padding: 16px;
+        }
+
+        .key-type-section,
+        .delete-operation-section {
+            margin-bottom: 16px;
+        }
+
+        .key-type-header h3,
+        .delete-header h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .type-display {
+            display: flex;
+            align-items: center;
+        }
+
+        .key-type-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background: #e3f2fd;
+            color: #1565c0;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #bbdefb;
+        }
+
+        .delete-content {
+            display: flex;
+            justify-content: center;
+        }
+
+        .delete-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover:not(:disabled) {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .delete-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .delete-btn .btn-icon {
+            font-size: 16px;
+        }
+
+        /* TTL倒计时组件样式 */
+        .ttl-countdown-component {
+            padding: 16px;
+        }
+
+        .ttl-display-header h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .countdown-display {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .countdown-value {
+            margin-bottom: 8px;
+        }
+
+        .ttl-time {
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            color: #28a745;
+        }
+
+        .ttl-time.warning {
+            color: #ffc107;
+        }
+
+        .ttl-time.critical {
+            color: #dc3545;
+            animation: pulse 1s infinite;
+        }
+
+        .ttl-status-text {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .redis-component-container {
+                margin-bottom: 12px;
+            }
+
+            .key-display-component,
+            .key-operation-component,
+            .ttl-countdown-component {
+                padding: 12px;
+            }
+
+            .countdown-display {
+                padding: 16px;
+            }
+
+            .ttl-time {
+                font-size: 24px;
+            }
+        }
+        .redis-manager-card {
+            grid-column: span 2;
+            min-height: 600px;
+        }
+        
+        .redis-manager-card .feature-card-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            grid-template-rows: 1fr auto;
+            gap: 16px;
+            height: 100%;
+            align-items: stretch;
+            justify-content: stretch;
+        }
+        
+        .redis-component-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #keyListContainer {
+            grid-row: span 2;
+        }
+        
+        #keyOperationContainer {
+            min-height: 200px;
+        }
+        
+        #ttlCountdownContainer {
+            min-height: 300px;
+        }
+        
+        /* Redis组件内部样式 */
+        .key-list-component,
+        .key-operation-component,
+        .ttl-countdown-component {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 键列表样式 */
+        .key-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .key-list-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .key-list-stats {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .key-search-container {
+            margin-bottom: 12px;
+        }
+        
+        .key-search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .key-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 4px 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 12px;
+            background: white;
+        }
+        
+        .key-list-items {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .key-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid #f8f9fa;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .key-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .key-item.selected {
+            background: #e3f2fd;
+            border-left: 3px solid #74D0CB;
+        }
+        
+        .key-type-icon {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        
+        .key-name {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            word-break: break-all;
+        }
+        
+        .key-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            font-size: 11px;
+            color: #6c757d;
+        }
+        
+        .key-ttl {
+            margin-bottom: 2px;
+        }
+        
+        .key-size {
+            color: #9ca3af;
+        }
+        
+        /* 键操作样式 */
+        .key-operation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .operation-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .operation-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .operation-btn {
+            padding: 6px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+            color: #495057;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .operation-btn:hover {
+            background: #f8f9fa;
+            border-color: #74D0CB;
+        }
+        
+        .operation-btn.primary {
+            background: #74D0CB;
+            color: white;
+            border-color: #74D0CB;
+        }
+        
+        .operation-btn.danger {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        
+        .selected-key-info {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .key-detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .key-detail-label {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .key-detail-value {
+            color: #6c757d;
+            word-break: break-all;
+        }
+        
+        /* TTL倒计时样式 */
+        .ttl-control-panel {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .panel-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .control-btn {
+            padding: 4px 8px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+        
+        .control-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .panel-stats {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .stat-item {
+            font-size: 12px;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .stat-value.warning {
+            color: #f59e0b;
+        }
+        
+        .stat-value.critical {
+            color: #ef4444;
+        }
+        
+        .countdown-items {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .countdown-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f8f9fa;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .countdown-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .countdown-item.warning {
+            border-left: 3px solid #f59e0b;
+        }
+        
+        .countdown-item.critical {
+            border-left: 3px solid #ef4444;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        
+        .countdown-time {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .countdown-time.warning {
+            color: #f59e0b;
+        }
+        
+        .countdown-time.critical {
+            color: #ef4444;
+        }
+        
+        .progress-bar {
+            height: 2px;
+            background: #e9ecef;
+            border-radius: 1px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #74D0CB;
+            transition: width 0.3s;
+        }
+        
+        .progress-fill.warning {
+            background: #f59e0b;
+        }
+        
+        .progress-fill.critical {
+            background: #ef4444;
+        }
+        
+        .item-details {
+            display: flex;
+            gap: 12px;
+            font-size: 10px;
+            color: #9ca3af;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .modal.show {
+            opacity: 1;
+        }
+        
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-dialog {
+            position: relative;
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .modal-header h4 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 4px;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 16px 20px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+        
+        .btn-primary {
+            background: #74D0CB;
+            color: white;
+            border-color: #74D0CB;
+        }
+        
+        .btn-primary:hover {
+            background: #5BC0BA;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 1200px) {
+            .redis-manager-card .feature-card-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr auto auto;
+            }
+            
+            #keyListContainer {
+                grid-row: auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .redis-manager-card {
+                grid-column: span 1;
+                min-height: 400px;
+            }
+            
+            .redis-component-container {
+                padding: 12px;
+            }
+        }
+
+        /* 大屏幕优化 */
+        @media (min-width: 1200px) {
+            .sidebar {
+                width: 450px;
+            }
+
+            .config-management-section {
+                padding: 25px;
+            }
+
+            .workspace {
+                padding: 24px;
+            }
+
+            .feature-card {
+                padding: 28px;
+                min-height: 140px;
+            }
+        }

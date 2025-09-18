@@ -1,0 +1,53 @@
+<!-- Redis Hash类型管理组件 -->
+<div class="feature-card redis-hash-card" id="redisHashCard">
+    <div class="feature-card-header">
+        <div class="feature-card-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white;">
+            🗂️
+        </div>
+        <h3 class="feature-card-title">Hash管理</h3>
+    </div>
+    <div class="feature-card-content">
+        <!-- Hash操作区域 -->
+        <div class="hash-operations">
+            <div class="operation-section">
+                <h4>Hash操作</h4>
+                <div class="operation-buttons">
+                    <button class="operation-btn" id="getHashBtn">
+                        <span class="btn-icon">📖</span>
+                        <span class="btn-text">获取字段</span>
+                    </button>
+                    <button class="operation-btn" id="setHashBtn">
+                        <span class="btn-icon">✏️</span>
+                        <span class="btn-text">设置字段</span>
+                    </button>
+                    <button class="operation-btn" id="delHashBtn">
+                        <span class="btn-icon">🗑️</span>
+                        <span class="btn-text">删除字段</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 字段列表区域 -->
+            <div class="fields-list-section">
+                <h4>字段列表</h4>
+                <div class="fields-container">
+                    <div class="fields-header">
+                        <span class="field-name-header">字段名</span>
+                        <span class="field-value-header">值</span>
+                        <span class="field-actions-header">操作</span>
+                    </div>
+                    <div id="hashFields" class="fields-list">
+                        <!-- Hash字段将在这里动态显示 -->
+                        <div class="empty-state">
+                            <span>选择一个Hash类型的键查看字段</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="fields-info">
+                    <span class="info-item">字段数: <strong id="hashFieldCount">0</strong></span>
+                    <span class="info-item">总大小: <strong id="hashTotalSize">0B</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

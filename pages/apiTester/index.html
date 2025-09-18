@@ -1,31 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>模拟请求</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API 测试工具</title>
   <style>
-    html, body {
-      height: 100%;
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+    body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #74D0CB 0%, #5BC0BA 100%);
+      min-height: 100vh;
+      padding: 20px;
       color: #333;
     }
     .main-container {
-      height: 100vh;
-      padding: 20px;
-      box-sizing: border-box;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 20px;
+      height: calc(100vh - 40px);
     }
     .card {
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
       transition: box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
     }
     .card:hover {
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -37,22 +44,24 @@
       font-weight: 600;
       font-size: 16px;
       color: #495057;
+      flex-shrink: 0;
     }
     .card-body {
       padding: 20px;
-      max-height: 400px;
-      overflow-y: auto;
+      flex: 1;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
+      position: relative;
     }
     .request-panel {
-      flex: 1;
-      min-height: 0;
+      height: 700px; /* 设置固定高度 */
     }
     .url-bar {
       display: flex;
       margin-bottom: 20px;
       gap: 8px;
+      flex-shrink: 0;
     }
     .url-bar select {
       padding: 12px 16px;
@@ -66,8 +75,8 @@
     }
     .url-bar select:focus {
       outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      border-color: #74D0CB;
+      box-shadow: 0 0 0 3px rgba(116, 208, 203, 0.1);
     }
     .url-bar input {
       flex-grow: 1;
@@ -79,8 +88,8 @@
     }
     .url-bar input:focus {
       outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      border-color: #74D0CB;
+      box-shadow: 0 0 0 3px rgba(116, 208, 203, 0.1);
     }
     .url-bar input::placeholder {
       color: #6c757d;
@@ -104,7 +113,7 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     .url-bar button#send {
-      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+      background: linear-gradient(135deg, #74D0CB 0%, #5BC0BA 100%);
       color: white;
     }
     .url-bar button#send:disabled {
@@ -113,11 +122,11 @@
       transform: none;
     }
     .url-bar button#generateCode {
-      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      background: linear-gradient(135deg, #5BC0BA 0%, #4FB5AF 100%);
       color: white;
     }
     .url-bar button#generateCode:hover {
-      background: linear-gradient(135deg, #218838 0%, #1c7d74 100%);
+      background: linear-gradient(135deg, #4FB5AF 0%, #43A9A4 100%);
     }
     .tabs {
       display: flex;
@@ -125,6 +134,7 @@
       border-radius: 8px;
       padding: 4px;
       margin-bottom: 20px;
+      flex-shrink: 0;
     }
     .tab-button {
       flex: 1;
@@ -139,37 +149,46 @@
       transition: all 0.3s ease;
     }
     .tab-button:hover {
-      background: rgba(0, 123, 255, 0.1);
-      color: #007bff;
+      background: rgba(116, 208, 203, 0.1);
+      color: #74D0CB;
     }
     .tab-button.active {
       background: white;
-      color: #007bff;
+      color: #74D0CB;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     .tab-content {
-      min-height: 150px;
-      max-height: 250px;
-      overflow-y: auto;
+      flex: 1;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      margin-bottom: 10px;
       position: relative;
-      padding-bottom: 50px;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      background: #fafafa;
     }
 
     #params-container, #headers-container {
       flex: 1;
       overflow-y: auto;
-      margin-bottom: 10px;
-      max-height: 180px;
+      padding: 15px;
+      padding-bottom: 70px; /* 为add-btn留出空间 */
     }
-    .key-value-editor, .body-editor {
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        flex: 1;
-        overflow: hidden;
+    
+    .key-value-editor {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      flex: 1;
+      overflow: hidden;
+    }
+    
+    .body-editor {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      flex: 1;
+      overflow: hidden;
     }
     .response-panel {
       flex: 1;
@@ -230,22 +249,21 @@
     }
     textarea {
       width: 100%;
-      min-height: 100px;
-      max-height: 200px;
+      height: 100%; /* 铺满整个body div */
       padding: 16px;
-      border: 2px solid #e9ecef;
+      border: none; /* 移除边框，使用父容器的边框 */
       border-radius: 8px;
       font-size: 14px;
       font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      resize: vertical;
+      resize: none;
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
       box-sizing: border-box;
-      flex-grow: 1;
+      margin: 0;
+      background: transparent;
+      outline: none;
     }
     textarea:focus {
-      outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      background: #fff;
     }
     textarea::placeholder {
       color: #6c757d;
@@ -266,8 +284,8 @@
     }
     .key-value-row input:focus {
       outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      border-color: #74D0CB;
+      box-shadow: 0 0 0 3px rgba(116, 208, 203, 0.1);
     }
     .key-value-row button {
       padding: 10px 12px;
@@ -287,29 +305,27 @@
       box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
     }
     .add-btn {
-      margin-top: 10px;
-      margin-bottom: 5px;
       padding: 10px 16px;
       border: none;
-      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      background: linear-gradient(135deg, #5BC0BA 0%, #4FB5AF 100%);
       color: white;
       cursor: pointer;
       border-radius: 8px;
       font-size: 14px;
       font-weight: 600;
       transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2), 0 0 0 4px white;
+      box-shadow: 0 2px 4px rgba(91, 192, 186, 0.2);
       position: absolute;
-      bottom: 10px;
-      left: 20px;
+      bottom: 15px;
+      left: 15px;
+      width: calc(100% - 30px);
+      max-width: 200px;
       z-index: 10;
-      display: block;
-      width: fit-content;
     }
     .add-btn:hover {
-      background: linear-gradient(135deg, #218838 0%, #1c7d74 100%);
+      background: linear-gradient(135deg, #4FB5AF 0%, #43A9A4 100%);
       transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+      box-shadow: 0 4px 8px rgba(91, 192, 186, 0.3);
     }
     .code-panel {
       display: none;
@@ -340,19 +356,19 @@
       right: 12px;
       padding: 8px 12px;
       border: none;
-      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+      background: linear-gradient(135deg, #74D0CB 0%, #5BC0BA 100%);
       color: white;
       cursor: pointer;
       border-radius: 6px;
       font-size: 12px;
       font-weight: 600;
       transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+      box-shadow: 0 2px 4px rgba(116, 208, 203, 0.2);
     }
     .code-container button:hover {
-      background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+      background: linear-gradient(135deg, #5BC0BA 0%, #4FB5AF 100%);
       transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+      box-shadow: 0 4px 8px rgba(116, 208, 203, 0.3);
     }
   </style>
 </head>
@@ -389,7 +405,7 @@
           <button id="add-header-btn" class="add-btn">+ 添加请求头</button>
         </div>
         <div id="body" class="tab-content body-editor" style="display: none;">
-          <textarea placeholder="请求体内容，例如：{\"key\": \"value\"}"></textarea>
+          <textarea placeholder="请求体内容，例如：{&quot;key&quot;: &quot;value&quot;}"></textarea>
         </div>
       </div>
     </div>
